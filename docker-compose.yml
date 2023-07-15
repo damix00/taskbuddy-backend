@@ -1,0 +1,29 @@
+version: "3.2"
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    ports:
+        - 5672:5672
+        - 15672:15672
+    networks:
+        - rabbitmq_go_net
+
+  server:
+    build: .
+    ports:
+        - 9500:9500
+
+  postgresql:
+    image: postgres:latest
+    ports:
+        - 5432:5432
+    environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=root
+        - POSTGRES_DB=swoop
+    volumes:
+      - /var/lib/docker/volumes/postgres/_data
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
