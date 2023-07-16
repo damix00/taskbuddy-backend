@@ -5,7 +5,7 @@ import * as path from 'path';
 const pool = new Pool({
     user: process.env.DB_USER || 'postgres',
     host: process.env.DB_HOST || 'localhost',
-    database: 'swoop',
+    database: 'taskbuddy',
     password: process.env.DB_PASSWORD || 'root',
     port: parseInt(process.env.DB_PORT || '5432'), // typescript moment
 });

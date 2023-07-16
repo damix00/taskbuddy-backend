@@ -1,8 +1,9 @@
 CREATE TABLE IF NOT EXISTS users (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   uuid VARCHAR(1024) NOT NULL UNIQUE,
   username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
+  email_verified BOOLEAN NOT NULL DEFAULT FALSE,
   first_name VARCHAR(255) NOT NULL
   last_name VARCHAR(255) NOT NULL,
   password_hash TEXT NOT NULL, -- bcrypt hash of the user's password
@@ -13,11 +14,12 @@ CREATE TABLE IF NOT EXISTS users (
   token_version BIGINT DEFAULT 1, -- increment to invalidate all tokens for a user
   auth_provider VARCHAR(255) NOT NULL DEFAULT 'taskbuddy', -- google, apple, etc.
   deleted BOOLEAN NOT NULL DEFAULT FALSE, -- soft delete user and later remove from database
-  allow_login BOOLEAN NOT NULL DEFAULT TRUE -- disable login for a user if suspicious activity is detected
+  has_premium BOOLEAN NOT NULL DEFAULT FALSE, -- does the user have a premium subscription
+  limited_access TEXT[] -- limited access, for example disabled login and listing
 );
 
 CREATE TABLE IF NOT EXISTS logins (
-  id SERIAL PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   ip_address VARCHAR(512) NOT NULL,
