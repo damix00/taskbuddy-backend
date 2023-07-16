@@ -4,16 +4,16 @@ import { Response } from "express";
 import { ExtendedRequest } from "../../../types/request";
 import { requireMethod } from "../../../middleware/require_method";
 import * as validation from "../../../verification/validation";
-import * as numbers from "../../../verification/numbers";
 import { checkCaptcha } from "../../../verification/captcha";
-import { addUser } from "../../../database/accounts/users";
+import { addUser } from "../../../database/accounts/users/writes";
 import { generateUUID } from "../../../database/accounts/users/utils";
 import * as bcrypt from '../../../utils/bcrypt';
 import { getUserResponse } from "../../../utils/responses";
+import { doesEmailExist, doesUsernameExist } from "../../../database/accounts/users/user_existence";
 
 async function validate(ip: string,
                         email: string,
-                        phone_number: string,
+                        username: string,
                         first_name: string,
                         last_name: string,
                         password: string,
@@ -21,6 +21,11 @@ async function validate(ip: string,
 
     // Check if the email is valid
     if (!validation.validateEmail(email)) {
+        return false;
+    }
+
+    // Check if the username is valid
+    if (!validation.validateUsername(username)) {
         return false;
     }
 
@@ -39,22 +44,28 @@ async function validate(ip: string,
         return false;
     }
 
-    // Check if the phone number is valid
-    // Doing this last because it's the most expensive check
-    // Also, we don't want to do this check if the captcha is invalid
-    if (!numbers.doesNumberExist(phone_number) || !numbers.isVoIPNumber(phone_number)) {
+    return true;
+}
+
+async function checkExistence(email: string, username: string) {
+    // Check if the email is already in use
+    if (await doesEmailExist(email)) {
+        return false;
+    }
+
+    // Check if the username is already in use
+    if (await doesUsernameExist(username)) {
         return false;
     }
 
     return true;
 }
 
-
 export default [requireMethod("POST"), async (req: ExtendedRequest, res: Response) => {
     // Get the fields from the request body
-    const { email, phone_number, first_name, last_name, password, captcha } = req.body;
+    const { email, username, first_name, last_name, password, captcha } = req.body;
 
-    const fields = [email, phone_number, first_name, last_name, password, captcha]; // Array of fields to check
+    const fields = [email, username, first_name, last_name, password, captcha]; // Array of fields to check
 
     // Check if all fields are present
     for (const field of fields) {
@@ -73,24 +84,31 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
     }
 
     // Validate the fields
-    if (!await validate(req.ip, email, phone_number, first_name, last_name, password, captcha)) {
+    if (!await validate(req.ip, email, username, first_name, last_name, password, captcha)) {
         return res.status(400).json({
             message: "Invalid field values"
         });
     }
 
     try {
+        if (!await checkExistence(email, username)) {
+            return res.status(400).json({
+                message: "Email or username already in use"
+            });
+        }
+
         const uuid = await generateUUID();
         const passwordHash = await bcrypt.hashPassword(password);
 
         const result = await addUser({
             uuid,
             email,
-            phone_number,
+            username,
             first_name,
             last_name,
             password_hash: passwordHash,
-            auth_provider: 'swoop'
+            is_admin: false,
+            auth_provider: 'swoop',
         });
 
         if (!result) {

@@ -43,10 +43,10 @@ export async function doesEmailExist(email: string): Promise<boolean> {
 }
 
 /**
- * Check if a phone number exists in the database
- * @param phone_number
- * @returns {Promise<boolean>} true if the phone number exists, false if it does not
+ * Check if a username exists in the database
+ * @param username
+ * @returns {Promise<boolean>} true if the username exists, false if it does not
  * */
-export async function doesPhoneNumberExist(phone_number: string): Promise<boolean> {
-    return await doesFieldExist("phone_number", phone_number);
+export async function doesUsernameExist(username: string): Promise<boolean> {
+    return await doesFieldExist("username", username);
 }

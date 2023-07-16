@@ -2,7 +2,7 @@
 // Uses Cloudflare's Turnstile captcha
 import { Response } from "express";
 import { requireMethod } from "../../../middleware/require_method";
-import { getUserByEmail } from "../../../database/accounts/users";
+import { getUserByEmail } from "../../../database/accounts/users/reads";
 import { sleep } from "../../../utils/utils";
 import { comparePassword } from "../../../utils/bcrypt";
 import { getUserResponse } from "../../../utils/responses";

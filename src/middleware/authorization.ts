@@ -1,4 +1,4 @@
-import { getUserById } from '../database/accounts/users';
+import { getUserById } from '../database/accounts/users/reads';
 import { verifyToken } from '../jwt/jwt';
 
 // Middleware to authorize a user
@@ -43,7 +43,7 @@ export async function authorize(req: any, res: any, next: any) {
         // If the user is allowed to login, the password hashes match, the emails match
         // and the token versions match, set the req.user to the user
         if (
-            user.allow_login &&
+            !user.hasDisabledAccess('disabled_login') &&
             decoded.password_hash == user.password_hash &&
             decoded.email == user.email &&
             decoded.token_version == user.token_version &&

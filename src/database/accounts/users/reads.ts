@@ -56,10 +56,10 @@ export async function getUserByEmail(email: string): Promise<UserModel | null> {
 }
 
 /**
- * Get a user from the database with the given phone number
+ * Get a user from the database with the given username
  * @param uuid
  * @returns {Promise<User | null>} the user if it exists, null if it does not
  * */
-export async function getUserByPhoneNumber(phoneNumber: string): Promise<UserModel | null> {
-    return await getUser("phone_number", phoneNumber);
+export async function getUserByUsername(username: string): Promise<UserModel | null> {
+    return await getUser("username", username);
 }

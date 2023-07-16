@@ -1,5 +1,6 @@
 import * as users from '../src/database/accounts/users';
 import * as connection from '../src/database/connection';
+import { getUserById } from '../src/database/accounts/users/reads';
 
 describe("Test dates in the database", () => {
     it("connects to the database", async () => {
@@ -7,7 +8,7 @@ describe("Test dates in the database", () => {
     });
 
     it("should return a date", async () => {
-        const user = await users.getUserById(1);
+        const user = await getUserById(1);
 
         expect(user).toBeTruthy();
 

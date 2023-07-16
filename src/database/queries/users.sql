@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(), -- updated whenever a row is updated
   last_login TIMESTAMP NOT NULL DEFAULT NOW(), -- last time the user logged in
-  is_admin BOOLEAN NOT NULL DEFAULT FALSE, -- is the user an admin (for admin dashboard)
+  role VARCHAR(255) NOT NULL DEFAULT 'user', -- is the user an admin (for admin dashboard)
   token_version BIGINT DEFAULT 1, -- increment to invalidate all tokens for a user
   auth_provider VARCHAR(255) NOT NULL DEFAULT 'taskbuddy', -- google, apple, etc.
   deleted BOOLEAN NOT NULL DEFAULT FALSE, -- soft delete user and later remove from database
@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS logins (
 -- Creates indexes on the users table for faster queries
 CREATE INDEX idx_users_uuid ON users (uuid);
 CREATE INDEX idx_users_email ON users (email);
+CREATE INDEX idx_users_username ON users (username);
 
 -- Creates a function that updates the updated_at column
 -- whenever a row in the users table is updated.

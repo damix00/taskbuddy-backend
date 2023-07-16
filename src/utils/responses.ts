@@ -1,20 +1,19 @@
-import { User } from "../database/accounts/users";
+import { UserModel } from "../database/models/user";
 
-export function getUserResponse(user: User) {
+export function getUserResponse(user: UserModel) {
     return {
         user: {
             uuid: user.uuid,
             email: user.email,
-            phone_number: user.phone_number,
-            phone_number_verified: user.phone_number_verified,
+            username: user.username,
             last_login: user.last_login,
             first_name: user.first_name,
             last_name: user.last_name,
-            is_admin: user.is_admin,
+            role: user.role,
             created_at: user.created_at
         },
         required_actions: {
-            verify_phone: !user.phone_number_verified
+            verify_email: !user.email_verified
         }
     }
 }

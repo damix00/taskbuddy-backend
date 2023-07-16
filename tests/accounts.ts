@@ -1,7 +1,8 @@
-import * as users from './database/accounts/users';
+import { User } from '../src/database/accounts/users';
+import { addUser } from '../src/database/accounts/users/writes';
 import { generateUUID } from '../src/database/accounts/users/utils';
-import { User } from './database/accounts/users';
 import * as connection from '../src/database/connection';
+import { getUserByEmail, getUserById, getUserByUUID, getUserByUsername } from '../src/database/accounts/users/reads';
 
 describe("Account database queries", () => {
     it("connects to the database", async () => {
@@ -17,44 +18,40 @@ describe("Account database queries", () => {
     });
 
     it("adds a user to the database", async () => {
-        user = (await users.addUser({
+        user = new User((await addUser({
             uuid: uuid as string,
             email: "test@gmail.com",
+            username: 'say gex',
             password_hash: "password",
             first_name: "Test",
             last_name: "User",
-            phone_number: "1234567890"
-        }))!;
+        }))!);
 
         expect(user).toBeTruthy();
     });
 
     it("gets a user by ID", async () => {
-        const userById = await users.getUserById(user.id);
+        const userById = await getUserById(user.id);
         expect(userById).toBeTruthy();
         expect(userById?.id).toBe(user.id);
     });
 
     it("gets a user by UUID", async () => {
-        const userByUUID = await users.getUserByUUID(user.uuid);
+        const userByUUID = await getUserByUUID(user.uuid);
         expect(userByUUID).toBeTruthy();
         expect(userByUUID?.uuid).toBe(user.uuid);
     });
 
     it("gets a user by email", async () => {
-        const userByEmail = await users.getUserByEmail(user.email);
+        const userByEmail = await getUserByEmail(user.email);
         expect(userByEmail).toBeTruthy();
         expect(userByEmail?.email).toBe(user.email);
     });
 
-    it("gets a user by phone number", async () => {
-        const userByPhoneNumber = await users.getUserByPhoneNumber(user.phone_number);
+    it("gets a user by username", async () => {
+        const userByPhoneNumber = await getUserByUsername(user.username);
         expect(userByPhoneNumber).toBeTruthy();
-        expect(userByPhoneNumber?.phone_number).toBe(user.phone_number);
-    });
-
-    it("verifies a user's phone number", async () => {
-       expect(await user.verifyPhoneNumber()).toBeTruthy(); 
+        expect(userByPhoneNumber?.username).toBe(user.username);
     });
 
     it("changes a user's password", async () => {
