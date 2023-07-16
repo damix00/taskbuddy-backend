@@ -107,7 +107,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
             first_name,
             last_name,
             password_hash: passwordHash,
-            is_admin: false,
+            role: 'user',
             auth_provider: 'swoop',
         });
 

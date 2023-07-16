@@ -1,5 +1,7 @@
+import { NextFunction, Response } from 'express';
 import { getUserById } from '../database/accounts/users/reads';
 import { verifyToken } from '../jwt/jwt';
+import { ExtendedRequest } from '../types/request';
 
 // Middleware to authorize a user
 export async function authorize(req: any, res: any, next: any) {
@@ -70,12 +72,11 @@ export async function authorize(req: any, res: any, next: any) {
 
 }
 
-export async function requireAdmin(req: any, res: any, next: any) {
-    // @ts-ignore
+export async function requireAdmin(req: ExtendedRequest, res: Response, next: NextFunction) {
     const user = req.user;
 
     // If the user is not an admin, return error
-    if (!user.is_admin) {
+    if (!user.isAdmin()) {
         return res.status(403).json({
             message: 'Forbidden'
         });

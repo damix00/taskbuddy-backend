@@ -48,7 +48,7 @@ export class User implements UserModel {
 
         this._refetch();
 
-        return !!r;
+        return r;
     }
 
     public async addLogin(ip: string, userAgent: string): Promise<boolean> {
@@ -68,24 +68,15 @@ export class User implements UserModel {
         }
     }
 
-    public async delete(): Promise<boolean> {
-        this.deleted = true;
-        const result = await updateUser({ ...this, deleted: true });
-
-        this._refetch();
-
-        return !!result;
+    public delete(): Promise<boolean> {
+        return this.update({ deleted: true });
     }
 
     public async changePassword(newPassword: string): Promise<boolean> {
         const hash = await bcrypt.hashPassword(newPassword);
         this.password_hash = hash;
 
-        const result = await updateUser({ ...this, password_hash: hash });
-
-        this._refetch();
-
-        return !!result;
+        return await this.update({ password_hash: hash });
     }
     
     public async comparePassword(password: string): Promise<boolean> {
@@ -95,7 +86,10 @@ export class User implements UserModel {
     public async refetch(): Promise<void> {
         const result = await getUserById(this.id);
 
-        throw new Error('User not found');
+        if (!result)
+            throw new Error('User not found');
+
+        this.setData(result);
     }
 
     public hasDisabledAccess(access: LimitedAccess): boolean {
@@ -108,11 +102,8 @@ export class User implements UserModel {
         }
 
         this.limited_access.push(access);
-        const result = await updateUser({ ...this, limited_access: this.limited_access });
-
-        this._refetch();
-
-        return !!result;
+        
+        return await this.update({ limited_access: this.limited_access });
     }
 
     public async removeDisabledAccess(access: LimitedAccess): Promise<boolean> {
@@ -121,10 +112,19 @@ export class User implements UserModel {
         }
 
         this.limited_access = this.limited_access.filter(a => a !== access);
-        const result = await updateUser({ ...this, limited_access: this.limited_access });
 
-        this._refetch();
+        return await this.update({ limited_access: this.limited_access });
+    }
 
-        return !!result;
+    public hasRole(role: Role): boolean {
+        return this.role === role;
+    }
+
+    public isAdmin(): boolean {
+        return this.role === 'admin';
+    }
+
+    public setRole(role: Role): Promise<boolean> {
+        return this.update({ role });
     }
 }

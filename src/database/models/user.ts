@@ -31,4 +31,7 @@ export interface UserModel extends UserFields {
     hasDisabledAccess: (access: LimitedAccess) => boolean;
     addDisabledAccess: (access: LimitedAccess) => Promise<boolean>;
     removeDisabledAccess: (access: LimitedAccess) => Promise<boolean>;
+    hasRole: (role: Role) => boolean;
+    isAdmin: () => boolean;
+    setRole: (role: Role) => Promise<boolean>;
 };
