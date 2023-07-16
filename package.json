@@ -27,7 +27,7 @@
   },
   "name": "backend",
   "version": "1.0.0",
-  "description": "Backend for swoop",
+  "description": "Backend for TaskBuddy",
   "main": "out/index.js",
   "scripts": {
     "dev": "concurrently \"tsc --watch\" \"nodemon out/src/index.js\"",
