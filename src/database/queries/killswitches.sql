@@ -11,3 +11,9 @@ CREATE TABLE IF NOT EXISTS `killswitches` (
   `created_at` TIMESTAMP NOT NULL DEFAULT NOW(),
   `updated_at` TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW()
 );
+
+-- Creates indexes on the killswitches table for faster queries
+CREATE INDEX idx_killswitches_value ON killswitches (value);
+CREATE INDEX idx_killswitches_type ON killswitches (type);
+CREATE INDEX idx_killswitches_enabled ON killswitches (enabled);
+CREATE INDEX idx_killswitches_added_by ON killswitches (added_by);

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   email_verified BOOLEAN NOT NULL DEFAULT FALSE,
-  first_name VARCHAR(255) NOT NULL
+  first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
   password_hash TEXT NOT NULL, -- bcrypt hash of the user's password
   created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
@@ -30,6 +30,9 @@ CREATE TABLE IF NOT EXISTS logins (
 CREATE INDEX idx_users_uuid ON users (uuid);
 CREATE INDEX idx_users_email ON users (email);
 CREATE INDEX idx_users_username ON users (username);
+
+-- Creates indexes on the logins table for faster queries
+CREATE INDEX idx_logins_user_id ON logins (user_id);
 
 -- Creates a function that updates the updated_at column
 -- whenever a row in the users table is updated.
