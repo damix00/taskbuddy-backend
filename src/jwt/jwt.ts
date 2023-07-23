@@ -4,6 +4,7 @@ export type UserPayload = {
     id: number; // User ID
     uuid: string; // Unique identifier
     email: string; // Email address
+    phone_number: string; // Phone number
     username: string; // Username
     password_hash: string; // Password hash
     token_version: number; // Token version

@@ -10,6 +10,8 @@ export class User implements UserModel {
     username: string;
     email: string;
     email_verified: boolean;
+    phone_number: string;
+    phone_number_verified: boolean;
     first_name: string;
     last_name: string;
     password_hash: string;
@@ -50,7 +52,8 @@ export class User implements UserModel {
 
         return r;
     }
-
+    
+    // This will add a login to the database associated with the user
     public async addLogin(ip: string, userAgent: string): Promise<boolean> {
         try {
             await updateUser({ ...this, last_login: new Date() });
@@ -126,5 +129,21 @@ export class User implements UserModel {
 
     public setRole(role: Role): Promise<boolean> {
         return this.update({ role });
+    }
+
+    public async setPremium(premium: boolean): Promise<boolean> {
+        return await this.update({ has_premium: premium });
+    }
+
+    public async setPhoneNumber(phoneNumber: string): Promise<boolean> {
+        return await this.update({ phone_number: phoneNumber });
+    }
+
+    public async setPhoneNumberVerified(verified: boolean): Promise<boolean> {
+        return await this.update({ phone_number_verified: verified });
+    }
+
+    public async logOutOfAllDevices(): Promise<boolean> {
+        return await this.update({ token_version: ++this.token_version });
     }
 }

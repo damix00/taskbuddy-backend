@@ -9,6 +9,7 @@ type PartialUser = {
     uuid: string;
     email: string;
     username: string;
+    phone_number: string;
     first_name: string;
     last_name: string;
     password_hash: string;
@@ -23,8 +24,8 @@ type PartialUser = {
 */
 export async function addUser(user: PartialUser): Promise<UserModel | null> {
     try {
-        const query = 'INSERT INTO users (uuid, email, username, first_name, last_name, password_hash, role, auth_provider) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
-        const params = [user.uuid, user.email, user.username, user.first_name, user.last_name, user.password_hash, user.role || 'user', user.auth_provider || 'taskbuddy'];
+        const query = 'INSERT INTO users (uuid, email, username, first_name, last_name, password_hash, role, auth_provider, phone_number) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
+        const params = [user.uuid, user.email, user.username, user.first_name, user.last_name, user.password_hash, user.role || 'user', user.auth_provider || 'taskbuddy', user.phone_number];
         const result = await executeQuery<UserModel>(query, params);
 
         return result.length > 0 ? result[0] : null;

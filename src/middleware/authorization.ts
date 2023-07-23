@@ -85,3 +85,27 @@ export async function requireAdmin(req: ExtendedRequest, res: Response, next: Ne
     // Call next to continue to the next middleware
     next();
 }
+
+type RequireOption = {
+    field: string,
+    value: any,
+};
+
+export async function requireOption(options: RequireOption[]) {
+    return (req: ExtendedRequest, res: Response, next: NextFunction) => {
+        const user = req.user;
+
+        for (const option of options) {
+            // If the user does not have the required field, return error
+            // @ts-ignore
+            if (user[option.field] != option.value) {
+                return res.status(403).json({
+                    message: 'Forbidden'
+                });
+            }
+        }
+
+        // Call next to continue to the next middleware
+        next();
+    }
+}

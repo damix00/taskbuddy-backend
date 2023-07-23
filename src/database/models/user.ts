@@ -7,6 +7,8 @@ export interface UserFields {
     username: string;
     email: string;
     email_verified: boolean;
+    phone_number: string;
+    phone_number_verified: boolean;
     first_name: string;
     last_name: string;
     password_hash: string;
@@ -34,4 +36,8 @@ export interface UserModel extends UserFields {
     hasRole: (role: Role) => boolean;
     isAdmin: () => boolean;
     setRole: (role: Role) => Promise<boolean>;
+    setPremium: (premium: boolean) => Promise<boolean>;
+    setPhoneNumber: (phoneNumber: string) => Promise<boolean>;
+    setPhoneNumberVerified: (verified: boolean) => Promise<boolean>;
+    logOutOfAllDevices: () => Promise<boolean>;
 };
