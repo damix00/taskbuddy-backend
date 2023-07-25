@@ -21,6 +21,7 @@ export interface UserFields {
     deleted: boolean;
     has_premium: boolean;
     limited_access: LimitedAccess[];
+    verified: boolean;
 };
 
 export interface UserModel extends UserFields {
@@ -40,4 +41,5 @@ export interface UserModel extends UserFields {
     setPhoneNumber: (phoneNumber: string) => Promise<boolean>;
     setPhoneNumberVerified: (verified: boolean) => Promise<boolean>;
     logOutOfAllDevices: () => Promise<boolean>;
+    setVerified: (verified: boolean) => Promise<boolean>;
 };

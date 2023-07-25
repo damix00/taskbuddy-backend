@@ -63,9 +63,9 @@ async function checkExistence(email: string, username: string) {
 
 export default [requireMethod("POST"), async (req: ExtendedRequest, res: Response) => {
     // Get the fields from the request body
-    const { email, username, first_name, last_name, password, captcha } = req.body;
+    const { email, username, phone_number, first_name, last_name, password, captcha } = req.body;
 
-    const fields = [email, username, first_name, last_name, password, captcha]; // Array of fields to check
+    const fields = [email, username, phone_number, first_name, last_name, password, captcha]; // Array of fields to check
 
     // Check if all fields are present
     for (const field of fields) {
@@ -77,7 +77,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
     }
 
     // Some fields are missing
-    if (fields.length !== 6) {
+    if (fields.length !== 7) {
         return res.status(400).json({
             message: "Invalid field count"
         });
@@ -103,6 +103,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
         const result = await addUser({
             uuid,
             email,
+            phone_number,
             username,
             first_name,
             last_name,

@@ -21,6 +21,7 @@ describe("Account database queries", () => {
         user = new User((await addUser({
             uuid: uuid as string,
             email: "test@gmail.com",
+            phone_number: '1234567890',
             username: 'say gex',
             password_hash: "password",
             first_name: "Test",

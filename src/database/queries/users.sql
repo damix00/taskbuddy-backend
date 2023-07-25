@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   auth_provider VARCHAR(255) NOT NULL DEFAULT 'taskbuddy', -- google, apple, etc.
   deleted BOOLEAN NOT NULL DEFAULT FALSE, -- soft delete user and later remove from database
   has_premium BOOLEAN NOT NULL DEFAULT FALSE, -- does the user have a premium subscription
+  verified BOOLEAN NOT NULL DEFAULT FALSE, -- is the user verified (famous people)
   limited_access TEXT[] -- limited access, for example disabled login and listing
 );
 

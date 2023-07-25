@@ -24,6 +24,7 @@ export class User implements UserModel {
     deleted: boolean;
     has_premium: boolean;
     limited_access: LimitedAccess[];
+    verified: boolean;
 
     refetchOnUpdate: boolean = true;
 
@@ -145,5 +146,9 @@ export class User implements UserModel {
 
     public async logOutOfAllDevices(): Promise<boolean> {
         return await this.update({ token_version: ++this.token_version });
+    }
+
+    public async setVerified(verified: boolean): Promise<boolean> {
+        return await this.update({ verified });
     }
 }
