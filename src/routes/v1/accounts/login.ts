@@ -37,7 +37,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
 
         user = new User(user);
 
-        if (!comparePassword(password, user.password_hash)) {
+        if (!(await comparePassword(password, user.password_hash))) {
             return res.status(401).json({
                 message: "Invalid email or password"
             });
