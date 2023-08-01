@@ -92,7 +92,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
 
     try {
         if (!await checkExistence(email, username)) {
-            return res.status(400).json({
+            return res.status(403).json({
                 message: "Email or username already in use"
             });
         }

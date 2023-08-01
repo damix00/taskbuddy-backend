@@ -97,7 +97,7 @@ export class User implements UserModel {
     }
 
     public hasDisabledAccess(access: LimitedAccess): boolean {
-        return this.limited_access.includes(access);
+        return this.limited_access?.includes(access);
     }
 
     public async addDisabledAccess(access: LimitedAccess): Promise<boolean> {

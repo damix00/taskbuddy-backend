@@ -2,6 +2,8 @@ import { NextFunction, Response } from 'express';
 import { getUserById } from '../database/accounts/users/reads';
 import { verifyToken } from '../jwt/jwt';
 import { ExtendedRequest } from '../types/request';
+import { User } from '../database/accounts/users';
+import { UserModel } from '../database/models/user';
 
 // Middleware to authorize a user
 export async function authorize(req: any, res: any, next: any) {
@@ -16,7 +18,7 @@ export async function authorize(req: any, res: any, next: any) {
     }
 
     // Split the token
-    const split = token.split('');
+    const split = token.split(' ');
 
     // If the split is not of length 2 or the first item is not 'Bearer', return error
     if (split.length !== 2 || split[0] !== 'Bearer') {
@@ -33,7 +35,7 @@ export async function authorize(req: any, res: any, next: any) {
         const decoded = verifyToken(bearer);
 
         // Get the user by the user ID
-        const user = await getUserById(decoded.id);
+        let user: UserModel | null = await getUserById(decoded.id);
 
         // If there is no user, return error
         if (!user) {
@@ -42,14 +44,17 @@ export async function authorize(req: any, res: any, next: any) {
             });
         }
 
+        user = new User(user);
+
         // If the user is allowed to login, the password hashes match, the emails match
         // and the token versions match, set the req.user to the user
         if (
-            !user.hasDisabledAccess('disabled_login') &&
-            decoded.password_hash == user.password_hash &&
-            decoded.email == user.email &&
-            decoded.token_version == user.token_version &&
-            !user.deleted) {
+        !user.hasDisabledAccess('disabled_login') &&
+        decoded.password_hash == user.password_hash &&
+        decoded.email == user.email &&
+        decoded.token_version == user.token_version &&
+        decoded.phone_number == user.phone_number &&
+        !user.deleted) {
             req.user = user;
             
             // Call next to continue to the next middleware

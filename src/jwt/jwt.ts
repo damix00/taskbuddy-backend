@@ -18,3 +18,16 @@ export function signToken(payload: UserPayload): string {
 export function verifyToken(token: string): UserPayload {
     return jwt.verify(token, process.env.JWT_SECRET as string) as UserPayload;
 }
+
+export function toUserPayload(user: UserPayload): UserPayload {
+    return {
+        id: user.id,
+        uuid: user.uuid,
+        email: user.email,
+        phone_number: user.phone_number,
+        username: user.username,
+        password_hash: user.password_hash,
+        token_version: user.token_version,
+        created_at: user.created_at
+    };
+}

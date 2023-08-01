@@ -8,6 +8,7 @@ import { comparePassword } from "../../../utils/bcrypt";
 import { getUserResponse } from "../../../utils/responses";
 import { ExtendedRequest } from "../../../types/request";
 import { checkCaptcha } from "../../../verification/captcha";
+import { User } from "../../../database/accounts/users";
 
 export default [requireMethod("POST"), async (req: ExtendedRequest, res: Response) => {
     const { email, password, captcha } = req.body;
@@ -25,7 +26,7 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
     }
 
     try {
-        const user = await getUserByEmail(email);
+        let user = await getUserByEmail(email);
 
         if (!user) {
             await sleep(200); // Prevent timing attacks
@@ -33,6 +34,8 @@ export default [requireMethod("POST"), async (req: ExtendedRequest, res: Respons
                 message: "Invalid email or password"
             });
         }
+
+        user = new User(user);
 
         if (!comparePassword(password, user.password_hash)) {
             return res.status(401).json({
