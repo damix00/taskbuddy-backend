@@ -6,7 +6,7 @@ import { User } from '../database/accounts/users';
 import { UserModel } from '../database/models/user';
 
 // Middleware to authorize a user
-export async function authorize(req: any, res: any, next: any) {
+export async function authorize(req: ExtendedRequest, res: Response, next: NextFunction) {
     // Get the token from the headers
     const token = req.headers["authorization"];
 
@@ -35,7 +35,7 @@ export async function authorize(req: any, res: any, next: any) {
         const decoded = verifyToken(bearer);
 
         // Get the user by the user ID
-        let user: UserModel | null = await getUserById(decoded.id);
+        let user: User | null = await User.createInstance(decoded.id);
 
         // If there is no user, return error
         if (!user) {
@@ -43,8 +43,6 @@ export async function authorize(req: any, res: any, next: any) {
                 message: 'Invalid token'
             });
         }
-
-        user = new User(user);
 
         // If the user is allowed to login, the password hashes match, the emails match
         // and the token versions match, set the req.user to the user
@@ -55,7 +53,7 @@ export async function authorize(req: any, res: any, next: any) {
         decoded.token_version == user.token_version &&
         decoded.phone_number == user.phone_number &&
         !user.deleted) {
-            req.user = user;
+            req.user = user!;
             
             // Call next to continue to the next middleware
             next();

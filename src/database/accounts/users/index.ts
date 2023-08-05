@@ -34,6 +34,7 @@ export class User implements UserModel {
 
     // Called on every update function
     // If refetchOnUpdate is true, refetches the user from the database
+    // Used to keep the user instance up to date
     private async _refetch(): Promise<void> {
         if (this.refetchOnUpdate) {
             this.refetch();
@@ -44,7 +45,17 @@ export class User implements UserModel {
         Object.assign(this, user);
         this.refetchOnUpdate = refetchOnUpdate;
     }
-    
+
+    // Returns a user instance by their ID
+    public static async createInstance(id: number): Promise<User | null> {
+        const result = await getUserById(id);
+
+        if (!result)
+            return null;
+
+        return new User(result);
+    }
+
     public async update(data: Partial<UserModel>): Promise<boolean> {
         const newUser = { ...this, ...data };
         const r = await updateUser(newUser);
