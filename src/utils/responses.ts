@@ -15,7 +15,8 @@ export function getUserResponse(user: UserModel) {
             created_at: user.created_at
         },
         required_actions: {
-            verify_email: !user.email_verified,
+            // verify_email: !user.email_verified,
+            verify_email: false, // Disable email verification because it is not needed
             verify_phone_number: !user.phone_number_verified
         },
         token: signToken(toUserPayload(user)),
