@@ -4,6 +4,9 @@ WORKDIR /app
 
 COPY . .
 
+# update git repo
+RUN git pull
+
 # install dependencies
 RUN npm install
 # install typescript
