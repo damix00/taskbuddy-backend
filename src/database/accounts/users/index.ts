@@ -50,8 +50,7 @@ export class User implements UserModel {
     public static async createInstance(id: number): Promise<User | null> {
         const result = await getUserById(id);
 
-        if (!result)
-            return null;
+        if (!result) return null;
 
         return new User(result);
     }
@@ -64,7 +63,7 @@ export class User implements UserModel {
 
         return r;
     }
-    
+
     // This will add a login to the database associated with the user
     public async addLogin(ip: string, userAgent: string): Promise<boolean> {
         try {
@@ -73,11 +72,13 @@ export class User implements UserModel {
 
             this._refetch();
 
-            await executeQuery('INSERT INTO logins (user_id, ip_address, user_agent) VALUES ($1, $2, $3)', [this.id, ip, userAgent]);
+            await executeQuery(
+                "INSERT INTO logins (user_id, ip_address, user_agent) VALUES ($1, $2, $3)",
+                [this.id, ip, userAgent]
+            );
             return true;
-        }
-        catch (e) {
-            console.error('Error in function `addLogin`');
+        } catch (e) {
+            console.error("Error in function `addLogin`");
             console.error(e);
             return false;
         }
@@ -91,9 +92,13 @@ export class User implements UserModel {
         const hash = await bcrypt.hashPassword(newPassword);
         this.password_hash = hash;
 
-        return await this.update({ password_hash: hash });
+        // Increment token version to log out all devices
+        return await this.update({
+            password_hash: hash,
+            token_version: ++this.token_version,
+        });
     }
-    
+
     public async comparePassword(password: string): Promise<boolean> {
         return await bcrypt.comparePassword(password, this.password_hash);
     }
@@ -101,8 +106,7 @@ export class User implements UserModel {
     public async refetch(): Promise<void> {
         const result = await getUserById(this.id);
 
-        if (!result)
-            throw new Error('User not found');
+        if (!result) throw new Error("User not found");
 
         this.setData(result);
     }
@@ -117,7 +121,7 @@ export class User implements UserModel {
         }
 
         this.limited_access.push(access);
-        
+
         return await this.update({ limited_access: this.limited_access });
     }
 
@@ -126,7 +130,7 @@ export class User implements UserModel {
             return false;
         }
 
-        this.limited_access = this.limited_access.filter(a => a !== access);
+        this.limited_access = this.limited_access.filter((a) => a !== access);
 
         return await this.update({ limited_access: this.limited_access });
     }
@@ -136,7 +140,7 @@ export class User implements UserModel {
     }
 
     public isAdmin(): boolean {
-        return this.role === 'admin';
+        return this.role === "admin";
     }
 
     public setRole(role: Role): Promise<boolean> {

@@ -1,9 +1,9 @@
 // Used for verifying user phone numbers via SMS or call
 
-import twilio from 'twilio';
-import { accountSid, authToken, verifySid } from './details';
-import { User } from '../database/accounts/users';
-import { getUserByUUID } from '../database/accounts/users/reads';
+import twilio from "twilio";
+import { accountSid, authToken, verifySid } from "../config";
+import { User } from "../database/accounts/users";
+import { getUserByUUID } from "../database/accounts/users/reads";
 
 const client = twilio(accountSid, authToken);
 
@@ -23,11 +23,11 @@ async function sendOTPViaChannel(uuid: string, channel: string) {
 
 // Send an OTP to the user's phone number
 export async function sendOTP(uuid: string) {
-    return await sendOTPViaChannel(uuid, 'sms');
+    return await sendOTPViaChannel(uuid, "sms");
 }
 
 export async function callOTP(uuid: string) {
-    return await sendOTPViaChannel(uuid, 'call');
+    return await sendOTPViaChannel(uuid, "call");
 }
 
 // Verify the OTP sent to the user's phone number
@@ -57,10 +57,11 @@ export async function isVoIPNumber(number: string): Promise<boolean> {
         const response = await client.lookups.v2
             .phoneNumbers(number)
             .fetch({ fields: "line_type_intelligence" }); // Only fetch the line type intelligence
-    
-        return response.lineTypeIntelligence.type.toLowerCase().includes("voip");
-    }
-    catch (err) {
+
+        return response.lineTypeIntelligence.type
+            .toLowerCase()
+            .includes("voip");
+    } catch (err) {
         console.log(err);
         return true;
     }
@@ -69,13 +70,10 @@ export async function isVoIPNumber(number: string): Promise<boolean> {
 // Check if a phone number existis
 export async function doesNumberExist(number: string) {
     try {
-        const response = await client.lookups.v2
-            .phoneNumbers(number)
-            .fetch({ }); // Don't fetch anything - saves money
-    
+        const response = await client.lookups.v2.phoneNumbers(number).fetch({}); // Don't fetch anything - saves money
+
         return response.valid;
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
         return false;
     }
