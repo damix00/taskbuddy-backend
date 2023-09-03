@@ -1,7 +1,9 @@
-import create from './v1/accounts/create';
-import login from './v1/accounts/login';
-import me from './v1/accounts/me';
-import ping from './v1/ping';
+import email from "./v1/accounts/check-existence/email";
+import username from "./v1/accounts/check-existence/username";
+import create from "./v1/accounts/create";
+import login from "./v1/accounts/login";
+import me from "./v1/accounts/me";
+import ping from "./v1/ping";
 
 export type route = {
     path: string;
@@ -10,25 +12,33 @@ export type route = {
 
 const userRoutes: route[] = [
     {
-        path: '/v1/accounts/me',
-        handler: me
+        path: "/v1/accounts/me",
+        handler: me,
     },
     {
-        path: '/v1/accounts/login',
-        handler: login
+        path: "/v1/accounts/login",
+        handler: login,
     },
     {
-        path: '/v1/accounts/create',
-        handler: create
-    }
+        path: "/v1/accounts/create",
+        handler: create,
+    },
+    {
+        path: "/v1/accounts/check-existence/email",
+        handler: email,
+    },
+    {
+        path: "/v1/accounts/check-existence/username",
+        handler: username,
+    },
 ];
 
 const routes: route[] = [
     {
-        path: '/v1/ping',
-        handler: ping
+        path: "/v1/ping",
+        handler: ping,
     },
-    ...userRoutes
+    ...userRoutes,
 ];
 
 export default routes;
