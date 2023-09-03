@@ -1,7 +1,7 @@
 import { DataModel } from "../data_model";
-import { KillswitchModel } from "../models/killswitch";
+import { KillswitchFields, KillswitchModel } from "../models/killswitch";
 
-class Killswitch extends DataModel implements KillswitchModel {
+export class Killswitch extends DataModel implements KillswitchModel {
     id: number;
     type: string;
     description: string;
@@ -9,7 +9,7 @@ class Killswitch extends DataModel implements KillswitchModel {
     created_at: Date;
     updated_at: Date;
 
-    constructor(data: KillswitchModel, refetchOnUpdate: boolean = true) {
+    constructor(data: KillswitchFields, refetchOnUpdate: boolean = true) {
         super(refetchOnUpdate);
 
         this.id = data.id;

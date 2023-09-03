@@ -15,3 +15,11 @@ export interface KillswitchModel extends KillswitchFields {
     delete(): Promise<boolean>;
     update(data: Partial<KillswitchModel>): Promise<boolean>;
 }
+
+export const KillswitchTypes = {
+    DISABLE_ROUTES: "disable_routes",
+    DISABLE_AUTH: "disable_auth",
+    DISABLE_REGISTRATION: "disable_registration",
+    DISABLE_LOGIN: "disable_login",
+    DISABLE_ALL: "disable_all",
+};
