@@ -1,4 +1,7 @@
-export interface ProfileFields {
+import { DataModel } from "../../data_model";
+import { ProfileFields, ProfileModel } from "../../models/profile";
+
+export class Profile extends DataModel implements ProfileModel {
     id: number;
     user_id: number;
     created_at: Date;
@@ -21,9 +24,14 @@ export interface ProfileFields {
     location_lon: number;
     is_private: boolean;
     deleted: boolean;
-}
 
-export interface ProfileModel extends ProfileFields {
+    constructor(profile: ProfileFields, refetchOnUpdate: boolean = true) {
+        super(refetchOnUpdate);
+
+        Object.assign(this, profile);
+        this.refetchOnUpdate = refetchOnUpdate;
+    }
+
     deleteProfile: () => Promise<boolean>;
     update: (data: Partial<ProfileModel>) => Promise<boolean>;
     refetch: () => Promise<void>;

@@ -1,17 +1,18 @@
+import { DataModel } from "../data_model";
 import { KillswitchModel } from "../models/killswitch";
 
-class Killswitch implements KillswitchModel {
+class Killswitch extends DataModel implements KillswitchModel {
     id: number;
-    value: string;
     type: string;
     description: string;
     enabled: boolean;
     created_at: Date;
     updated_at: Date;
 
-    constructor(data: KillswitchModel) {
+    constructor(data: KillswitchModel, refetchOnUpdate: boolean = true) {
+        super(refetchOnUpdate);
+
         this.id = data.id;
-        this.value = data.value;
         this.type = data.type;
         this.description = data.description;
         this.enabled = data.enabled;
@@ -26,6 +27,9 @@ class Killswitch implements KillswitchModel {
         return true;
     }
     public async setEnabled(enabled: boolean): Promise<boolean> {
+        return true;
+    }
+    public async setDescription(description: string): Promise<boolean> {
         return true;
     }
     public async delete(): Promise<boolean> {
