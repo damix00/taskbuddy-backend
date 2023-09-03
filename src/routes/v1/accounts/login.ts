@@ -9,49 +9,57 @@ import { getUserResponse } from "../../../utils/responses";
 import { ExtendedRequest } from "../../../types/request";
 import { checkCaptcha } from "../../../verification/captcha";
 import { User } from "../../../database/accounts/users";
+import setKillswitch from "../../../middleware/killswitch";
+import { KillswitchTypes } from "../../../database/models/killswitch";
 
-export default [requireMethod("POST"), async (req: ExtendedRequest, res: Response) => {
-    const { email, password, captcha } = req.body;
+export default [
+    setKillswitch([
+        KillswitchTypes.DISABLE_AUTH,
+        KillswitchTypes.DISABLE_LOGIN,
+    ]),
+    requireMethod("POST"),
+    async (req: ExtendedRequest, res: Response) => {
+        const { email, password, captcha } = req.body;
 
-    if (!email || !password || !captcha) {
-        return res.status(400).json({
-            message: "Missing required parameters"
-        });
-    }
-
-    if (!checkCaptcha(captcha, req.ip)) {
-        return res.status(400).json({
-            message: "Invalid captcha"
-        });
-    }
-
-    try {
-        let user = await getUserByEmail(email);
-
-        if (!user) {
-            await sleep(200); // Prevent timing attacks
-            return res.status(401).json({
-                message: "Invalid email or password"
+        if (!email || !password || !captcha) {
+            return res.status(400).json({
+                message: "Missing required parameters",
             });
         }
 
-        user = new User(user);
-
-        if (!(await comparePassword(password, user.password_hash))) {
-            return res.status(401).json({
-                message: "Invalid email or password"
+        if (!checkCaptcha(captcha, req.ip)) {
+            return res.status(400).json({
+                message: "Invalid captcha",
             });
         }
 
-        user.addLogin(req.ip, req.userAgent);
+        try {
+            let user = await getUserByEmail(email);
 
-        res.status(200).json(getUserResponse(user));
-    }
-    catch (e) {
-        console.error(e);
+            if (!user) {
+                await sleep(200); // Prevent timing attacks
+                return res.status(401).json({
+                    message: "Invalid email or password",
+                });
+            }
 
-        return res.status(500).json({
-            message: "Internal server error"
-        });
-    }
-}];
+            user = new User(user);
+
+            if (!(await comparePassword(password, user.password_hash))) {
+                return res.status(401).json({
+                    message: "Invalid email or password",
+                });
+            }
+
+            user.addLogin(req.ip, req.userAgent);
+
+            res.status(200).json(getUserResponse(user));
+        } catch (e) {
+            console.error(e);
+
+            return res.status(500).json({
+                message: "Internal server error",
+            });
+        }
+    },
+];

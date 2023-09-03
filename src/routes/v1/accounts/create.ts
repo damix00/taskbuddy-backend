@@ -13,6 +13,8 @@ import {
     doesEmailExist,
     doesUsernameExist,
 } from "../../../database/accounts/users/user_existence";
+import setKillswitch from "../../../middleware/killswitch";
+import { KillswitchTypes } from "../../../database/models/killswitch";
 
 async function validate(
     ip: string,
@@ -69,6 +71,11 @@ async function checkExistence(email: string, username: string) {
 }
 
 export default [
+    // Killswitches (can be disabled in the admin panel)
+    setKillswitch([
+        KillswitchTypes.DISABLE_AUTH,
+        KillswitchTypes.DISABLE_REGISTRATION,
+    ]),
     requireMethod("POST"),
     async (req: ExtendedRequest, res: Response) => {
         // Get the fields from the request body
