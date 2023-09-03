@@ -84,7 +84,7 @@ export class User implements UserModel {
         }
     }
 
-    public delete(): Promise<boolean> {
+    public deleteUser(): Promise<boolean> {
         return this.update({ deleted: true });
     }
 

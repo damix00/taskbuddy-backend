@@ -1,5 +1,8 @@
-export type LimitedAccess = 'disabled_login' | 'disabled_premium' | 'disabled_listing';
-export type Role = 'user' | 'admin';
+export type LimitedAccess =
+    | "disabled_login"
+    | "disabled_premium"
+    | "disabled_listing";
+export type Role = "user" | "admin";
 
 export interface UserFields {
     id: number;
@@ -22,12 +25,12 @@ export interface UserFields {
     has_premium: boolean;
     limited_access: LimitedAccess[];
     verified: boolean;
-};
+}
 
 export interface UserModel extends UserFields {
     update: (data: Partial<UserModel>) => Promise<boolean>;
     addLogin: (ip: string, userAgent: string) => Promise<boolean>;
-    delete: () => Promise<boolean>;
+    deleteUser: () => Promise<boolean>;
     changePassword: (newPassword: string) => Promise<boolean>;
     comparePassword: (password: string) => Promise<boolean>;
     refetch: () => Promise<void>;
@@ -42,4 +45,4 @@ export interface UserModel extends UserFields {
     setPhoneNumberVerified: (verified: boolean) => Promise<boolean>;
     logOutOfAllDevices: () => Promise<boolean>;
     setVerified: (verified: boolean) => Promise<boolean>;
-};
+}
