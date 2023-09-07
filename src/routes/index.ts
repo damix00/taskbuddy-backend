@@ -1,5 +1,4 @@
-import email from "./v1/accounts/check-existence/email";
-import username from "./v1/accounts/check-existence/username";
+import checkExistence from "./v1/accounts/check-existence";
 import create from "./v1/accounts/create";
 import login from "./v1/accounts/login";
 import me from "./v1/accounts/me";
@@ -24,12 +23,8 @@ const userRoutes: route[] = [
         handler: create,
     },
     {
-        path: "/v1/accounts/check-existence/email",
-        handler: email,
-    },
-    {
-        path: "/v1/accounts/check-existence/username",
-        handler: username,
+        path: "/v1/accounts/check-existence",
+        handler: checkExistence,
     },
 ];
 
