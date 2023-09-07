@@ -1,8 +1,13 @@
-import { User } from '../src/database/accounts/users';
-import { addUser, permaDelete } from '../src/database/accounts/users/writes';
-import { generateUUID } from '../src/database/accounts/users/utils';
-import * as connection from '../src/database/connection';
-import { getUserByEmail, getUserById, getUserByUUID, getUserByUsername } from '../src/database/accounts/users/reads';
+import { User } from "../src/database/accounts/users";
+import { addUser, permaDelete } from "../src/database/accounts/users/writes";
+import { generateUUID } from "../src/database/accounts/users/utils";
+import * as connection from "../src/database/connection";
+import {
+    getUserByEmail,
+    getUserById,
+    getUserByUUID,
+    getUserByUsername,
+} from "../src/database/accounts/users/reads";
 
 describe("Account database queries", () => {
     it("connects to the database", async () => {
@@ -18,15 +23,17 @@ describe("Account database queries", () => {
     });
 
     it("adds a user to the database", async () => {
-        user = new User((await addUser({
-            uuid: uuid as string,
-            email: "test@gmail.com",
-            phone_number: '1234567890',
-            username: 'say gex',
-            password_hash: "password",
-            first_name: "Test",
-            last_name: "User",
-        }))!);
+        user = new User(
+            (await addUser({
+                uuid: uuid as string,
+                email: "test@gmail.com",
+                phone_number: "1234567890",
+                username: "say gex",
+                password_hash: "password",
+                first_name: "Test",
+                last_name: "User",
+            }))!
+        );
 
         expect(user).toBeTruthy();
     });
@@ -64,11 +71,11 @@ describe("Account database queries", () => {
         expect(user.password_hash).not.toBe(current);
     });
 
-    it('soft-deletes an account', async () => {
-        expect(await user.delete()).toBeTruthy();  
+    it("soft-deletes an account", async () => {
+        expect(await user.deleteUser()).toBeTruthy();
     });
 
-    it('deletes an account', async () => {
+    it("deletes an account", async () => {
         expect(await permaDelete(user.id)).toBeTruthy();
     });
 
