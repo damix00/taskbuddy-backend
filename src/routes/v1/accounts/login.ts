@@ -11,6 +11,7 @@ import { checkCaptcha } from "../../../verification/captcha";
 import { User } from "../../../database/accounts/users";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
+import * as killswitches from "../../../utils/global_killswitches";
 
 export default [
     setKillswitch([
@@ -20,6 +21,8 @@ export default [
     requireMethod("POST"),
     async (req: ExtendedRequest, res: Response) => {
         const { email, password } = req.body;
+
+        let time = Date.now();
 
         if (!email || !password) {
             return res.status(400).json({
@@ -49,6 +52,18 @@ export default [
                 return res.status(401).json({
                     message: "Invalid email or password",
                 });
+            }
+
+            let current = Date.now();
+
+            // We add a fake delay because people do not trust instant logins
+            if (
+                !killswitches.isKillswitchEnabled(
+                    KillswitchTypes.DISABLE_FAKE_DELAY
+                ) &&
+                Date.now() - current < 1000
+            ) {
+                await sleep(1000 - (Date.now() - current));
             }
 
             user.addLogin(req.ip, req.userAgent);

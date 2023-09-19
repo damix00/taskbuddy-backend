@@ -22,4 +22,5 @@ export enum KillswitchTypes {
     DISABLE_REGISTRATION = "disable_registration",
     DISABLE_LOGIN = "disable_login",
     DISABLE_ALL = "disable_all",
+    DISABLE_FAKE_DELAY = "disable_fake_delay",
 }
