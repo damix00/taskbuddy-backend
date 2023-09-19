@@ -16,9 +16,10 @@ async function doesFieldExist(field: string, value: string): Promise<boolean> {
         const users = await executeQuery<UserModel>(query, params);
 
         return users.length > 0;
-    }
-    catch (e) {
-        console.error(`Error in function \`doesFieldExist\` for field \`${field}\``);
+    } catch (e) {
+        console.error(
+            `Error in function \`doesFieldExist\` for field \`${field}\``
+        );
         console.error(e);
         return false;
     }
@@ -49,4 +50,15 @@ export async function doesEmailExist(email: string): Promise<boolean> {
  * */
 export async function doesUsernameExist(username: string): Promise<boolean> {
     return await doesFieldExist("username", username);
+}
+
+/**
+ * Check if a phone number exists in the database
+ * @param phoneNumber
+ * @returns {Promise<boolean>} true if the phone number exists, false if it does not
+ */
+export async function doesPhoneNumberExist(
+    phoneNumber: string
+): Promise<boolean> {
+    return await doesFieldExist("phone_number", phoneNumber);
 }

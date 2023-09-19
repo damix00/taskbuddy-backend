@@ -19,19 +19,19 @@ export default [
     ]),
     requireMethod("POST"),
     async (req: ExtendedRequest, res: Response) => {
-        const { email, password, captcha } = req.body;
+        const { email, password } = req.body;
 
-        if (!email || !password || !captcha) {
+        if (!email || !password) {
             return res.status(400).json({
                 message: "Missing required parameters",
             });
         }
 
-        if (!checkCaptcha(captcha, req.ip)) {
-            return res.status(400).json({
-                message: "Invalid captcha",
-            });
-        }
+        // if (!checkCaptcha(captcha, req.ip)) {
+        //     return res.status(400).json({
+        //         message: "Invalid captcha",
+        //     });
+        // }
 
         try {
             let user = await getUserByEmail(email);
@@ -53,7 +53,7 @@ export default [
 
             user.addLogin(req.ip, req.userAgent);
 
-            res.status(200).json(getUserResponse(user));
+            res.status(200).json({ ...getUserResponse(user), message: "OK" });
         } catch (e) {
             console.error(e);
 
