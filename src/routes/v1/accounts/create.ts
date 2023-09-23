@@ -1,5 +1,4 @@
 // /v1/accounts/create - creates an account
-// Uses Cloudflare's Turnstile captcha
 import { Response } from "express";
 import { ExtendedRequest } from "../../../types/request";
 import { requireMethod } from "../../../middleware/require_method";
@@ -17,6 +16,11 @@ import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
 import { addProfile } from "../../../database/accounts/profiles/writes";
 import { User } from "../../../database/accounts/users";
+import FirebaseStorage from "../../../firebase/storage/files";
+import uniqueFilename from "unique-filename";
+import os from "os";
+import path from "path";
+import fs from "fs";
 
 async function validate(
     ip: string,
@@ -89,7 +93,6 @@ export default [
             last_name,
             password,
             bio,
-            profile_picture,
             // captcha,
         } = req.body;
 
@@ -101,9 +104,10 @@ export default [
             last_name,
             password,
             bio,
-            profile_picture,
             // captcha,
         ]; // Array of fields to check
+
+        const { profile_picture } = req.files || {};
 
         // Check if all fields are present
         for (const field of fields) {
@@ -139,6 +143,37 @@ export default [
         }
 
         try {
+            let pfp = "";
+
+            if (profile_picture) {
+                // Update the file to firebase storage and get the URL
+                const filename = uniqueFilename(os.tmpdir(), "pfp__");
+                const ext = path.extname(profile_picture.name).toLowerCase();
+                const mvfilename = `${filename}${ext}`;
+
+                // Temporarily save the file to the server
+                await profile_picture.mv(mvfilename);
+
+                const upload = await FirebaseStorage.uploadFile(
+                    mvfilename,
+                    profile_picture.mimetype,
+                    ext
+                );
+
+                // Delete the file from the server
+                fs.rmSync(mvfilename);
+
+                // Check if the upload was successful
+                if (!upload) {
+                    return res.status(500).json({
+                        message: "Internal server error",
+                    });
+                }
+
+                // Get the URL
+                pfp = upload[0].metadata.mediaLink;
+            }
+
             if (!(await checkExistence(email, username))) {
                 return res.status(403).json({
                     message: "Email or username already in use",
@@ -175,7 +210,7 @@ export default [
             // Create a new profile for the user
             const profile = await addProfile({
                 user_id: result.id,
-                profile_picture,
+                profile_picture: pfp,
                 bio: bio || "",
                 location_text: "",
                 location_lat: 0,

@@ -9,6 +9,8 @@ import * as connection from "./database/connection";
 import userAgent from "./middleware/global/user_agent";
 import route_killswitch from "./middleware/global/route_killswitch";
 import * as killswitches from "./utils/global_killswitches";
+import fileUpload from "express-fileupload";
+import FirebaseStorage from "./firebase/storage/files";
 
 dotenv.config();
 
@@ -19,6 +21,22 @@ const PORT = process.env.PORT || 9500;
 // Initialize killswitches
 killswitches.init();
 
+// Initialize Firebase Storage
+FirebaseStorage.init();
+
+// File upload handler
+app.use(
+    fileUpload({
+        useTempFiles: true,
+        // The OS temp directory
+        // for example, on windows %TEMP% (C:\Users\Username\AppData\Local\Temp)
+        // on linux /tmp
+        tempFileDir: os.tmpdir(),
+        limits: {
+            fileSize: 1024 * 1024 * 1024, // 1 GB
+        },
+    })
+);
 app.use(
     cors({
         origin: "*",
