@@ -15,6 +15,8 @@ import {
 } from "../../../database/accounts/users/user_existence";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
+import { addProfile } from "../../../database/accounts/profiles/writes";
+import { User } from "../../../database/accounts/users";
 
 async function validate(
     ip: string,
@@ -22,8 +24,8 @@ async function validate(
     username: string,
     first_name: string,
     last_name: string,
-    password: string,
-    captcha: string
+    password: string
+    // captcha: string
 ): Promise<boolean> {
     // Check if the email is valid
     if (!validation.validateEmail(email)) {
@@ -49,9 +51,9 @@ async function validate(
     }
 
     // Check if the captcha is valid
-    if (await checkCaptcha(captcha, ip)) {
-        return false;
-    }
+    // if (await checkCaptcha(captcha, ip)) {
+    //     return false;
+    // }
 
     return true;
 }
@@ -86,7 +88,9 @@ export default [
             first_name,
             last_name,
             password,
-            captcha,
+            bio,
+            profile_picture,
+            // captcha,
         } = req.body;
 
         const fields = [
@@ -96,7 +100,9 @@ export default [
             first_name,
             last_name,
             password,
-            captcha,
+            bio,
+            profile_picture,
+            // captcha,
         ]; // Array of fields to check
 
         // Check if all fields are present
@@ -109,7 +115,7 @@ export default [
         }
 
         // Some fields are missing
-        if (fields.length !== 7) {
+        if (fields.length !== 8) {
             return res.status(400).json({
                 message: "Invalid field count",
             });
@@ -123,8 +129,8 @@ export default [
                 username,
                 first_name,
                 last_name,
-                password,
-                captcha
+                password
+                // captcha
             ))
         ) {
             return res.status(400).json({
@@ -142,7 +148,8 @@ export default [
             const uuid = await generateUUID();
             const passwordHash = await bcrypt.hashPassword(password);
 
-            const result = await addUser({
+            // Create a new account
+            let result = await addUser({
                 uuid,
                 email,
                 phone_number,
@@ -154,7 +161,34 @@ export default [
                 auth_provider: "taskbuddy",
             });
 
+            // Check if the account was created
+            // If not, return an error
             if (!result) {
+                return res.status(500).json({
+                    message: "Internal server error",
+                });
+            }
+
+            // Create a new user instance from the result
+            result = new User(result);
+
+            // Create a new profile for the user
+            const profile = await addProfile({
+                user_id: result.id,
+                profile_picture,
+                bio: bio || "",
+                location_text: "",
+                location_lat: 0,
+                location_lon: 0,
+                is_private: false,
+            });
+
+            // Check if the profile was created
+            // If not, delete the user and return an error
+            if (!profile) {
+                // Delete the user
+                await result.deleteUser();
+
                 return res.status(500).json({
                     message: "Internal server error",
                 });

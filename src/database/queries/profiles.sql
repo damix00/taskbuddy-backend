@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     user_id BIGSERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user id
     created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(), -- updated whenever a row is updated
-    profile_picture TEXT NOT NULL, -- URL to profile picture
+    profile_picture TEXT, -- URL to profile picture
     bio TEXT NOT NULL, -- User specified biography
     rating_employer DECIMAL NOT NULL DEFAULT 0, -- Rating as an employer
     rating_employee DECIMAL NOT NULL DEFAULT 0, -- Rating as an employee

@@ -3,7 +3,7 @@ export interface ProfileFields {
     user_id: number;
     created_at: Date;
     updated_at: Date;
-    profile_picture: string;
+    profile_picture?: string | null;
     bio: string;
     rating_employer: number;
     rating_employee: number;

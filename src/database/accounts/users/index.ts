@@ -30,16 +30,17 @@ export class User extends DataModel implements UserModel {
     constructor(user: UserFields, refetchOnUpdate: boolean = true) {
         super(refetchOnUpdate);
 
+        // Set the user's data
         Object.assign(this, user);
         this.refetchOnUpdate = refetchOnUpdate;
     }
 
-    public async refetch(): Promise<void> {
+    public override async refetch(): Promise<void> {
         const result = await getUserById(this.id);
 
         if (!result) throw new Error("User not found");
 
-        this.setData(result);
+        super.setData(result);
     }
 
     // Returns a user instance by their ID

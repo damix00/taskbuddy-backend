@@ -1,5 +1,8 @@
 import { DataModel } from "../../data_model";
 import { ProfileFields, ProfileModel } from "../../models/profile";
+import { permaDelete } from "../users/writes";
+import { getProfileById } from "./reads";
+import { updateProfile } from "./writes";
 
 export class Profile extends DataModel implements ProfileModel {
     id: number;
@@ -32,9 +35,57 @@ export class Profile extends DataModel implements ProfileModel {
         this.refetchOnUpdate = refetchOnUpdate;
     }
 
-    deleteProfile: () => Promise<boolean>;
-    update: (data: Partial<ProfileModel>) => Promise<boolean>;
-    refetch: () => Promise<void>;
+    public getFields(): ProfileFields {
+        return {
+            id: this.id,
+            user_id: this.user_id,
+            created_at: this.created_at,
+            updated_at: this.updated_at,
+            profile_picture: this.profile_picture,
+            bio: this.bio,
+            rating_employer: this.rating_employer,
+            rating_employee: this.rating_employee,
+            rating_count_employer: this.rating_count_employer,
+            rating_count_employee: this.rating_count_employee,
+            cancelled_employer: this.cancelled_employer,
+            cancelled_employee: this.cancelled_employee,
+            completed_employer: this.completed_employer,
+            completed_employee: this.completed_employee,
+            followers: this.followers,
+            following: this.following,
+            posts: this.posts,
+            location_text: this.location_text,
+            location_lat: this.location_lat,
+            location_lon: this.location_lon,
+            is_private: this.is_private,
+            deleted: this.deleted,
+        };
+    }
+
+    // Updates the class instance with new data
+    public override async refetch() {
+        const result = await getProfileById(this.id);
+
+        if (!result) throw new Error("Profile not found");
+
+        super.setData(result);
+    }
+
+    public async deleteProfile(): Promise<boolean> {
+        // TODO: Delete all posts, comments, and ratings associated with this profile
+        return false;
+    }
+
+    public async update(data: Partial<ProfileModel>) {
+        const newProfile = { ...this, ...data };
+        super.setData(newProfile);
+
+        const r = await updateProfile(this.getFields());
+
+        this._refetch();
+
+        return r;
+    }
     setProfilePicture: (profilePicture: string) => Promise<boolean>;
     setBio: (bio: string) => Promise<boolean>;
     setRatingEmployer: (rating: number) => Promise<boolean>;
