@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as path from "path";
 import { dbHost, dbPassword, dbPort, dbUser } from "../config";
 
-// I
 const pool = new Pool({
     user: dbUser,
     host: dbHost,

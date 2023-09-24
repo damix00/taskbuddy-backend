@@ -22,3 +22,5 @@ CREATE TABLE IF NOT EXISTS profiles (
     is_private BOOLEAN NOT NULL DEFAULT FALSE, -- Is the user's profile private
     deleted BOOLEAN NOT NULL DEFAULT FALSE -- soft delete user and later remove from database
 );
+
+CREATE INDEX IF NOT EXISTS profiles_user_id_idx ON profiles(user_id);

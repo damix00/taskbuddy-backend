@@ -5,13 +5,15 @@ import { requireMethod } from "../../../middleware/require_method";
 import { getUserByEmail } from "../../../database/accounts/users/reads";
 import { sleep } from "../../../utils/utils";
 import { comparePassword } from "../../../utils/bcrypt";
-import { getUserResponse } from "../../../utils/responses";
+import { getUserProfileResponse } from "../../../utils/responses";
 import { ExtendedRequest } from "../../../types/request";
 import { checkCaptcha } from "../../../verification/captcha";
 import { User } from "../../../database/accounts/users";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
 import * as killswitches from "../../../utils/global_killswitches";
+import { getProfileByUid } from "../../../database/accounts/profiles/reads";
+import { Profile } from "../../../database/accounts/profiles";
 
 export default [
     setKillswitch([
@@ -68,7 +70,18 @@ export default [
 
             user.addLogin(req.ip, req.userAgent);
 
-            res.status(200).json({ ...getUserResponse(user), message: "OK" });
+            const profile = await getProfileByUid(user.id);
+            if (profile) {
+                console.log(getUserProfileResponse(user, new Profile(profile)));
+                return res.status(200).json({
+                    ...getUserProfileResponse(user, new Profile(profile)),
+                    message: "OK",
+                });
+            }
+
+            res.status(500).json({
+                message: "Internal server error",
+            });
         } catch (e) {
             console.error(e);
 

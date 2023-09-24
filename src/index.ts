@@ -11,6 +11,7 @@ import route_killswitch from "./middleware/global/route_killswitch";
 import * as killswitches from "./utils/global_killswitches";
 import fileUpload from "express-fileupload";
 import FirebaseStorage from "./firebase/storage/files";
+import initFirebase from "./firebase/config";
 
 dotenv.config();
 
@@ -21,8 +22,8 @@ const PORT = process.env.PORT || 9500;
 // Initialize killswitches
 killswitches.init();
 
-// Initialize Firebase Storage
-FirebaseStorage.init();
+// Initialize Firebase
+initFirebase();
 
 // File upload handler
 app.use(

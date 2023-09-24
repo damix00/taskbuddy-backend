@@ -65,11 +65,13 @@ async function validate(
 async function checkExistence(email: string, username: string) {
     // Check if the email is already in use
     if (await doesEmailExist(email)) {
+        console.log("email exists");
         return false;
     }
 
     // Check if the username is already in use
     if (await doesUsernameExist(username)) {
+        console.log("username exists");
         return false;
     }
 
@@ -103,7 +105,7 @@ export default [
             first_name,
             last_name,
             password,
-            bio,
+            // bio,
             // captcha,
         ]; // Array of fields to check
 
@@ -118,8 +120,18 @@ export default [
             }
         }
 
+        console.log({
+            email,
+            username,
+            phone_number,
+            first_name,
+            last_name,
+            password,
+            bio,
+        });
+
         // Some fields are missing
-        if (fields.length !== 8) {
+        if (fields.length < 6 || fields.length > 7) {
             return res.status(400).json({
                 message: "Invalid field count",
             });
@@ -145,18 +157,27 @@ export default [
         try {
             let pfp = "";
 
+            if (!(await checkExistence(email, username))) {
+                return res.status(403).json({
+                    message: "Email or username already in use",
+                });
+            }
+
             if (profile_picture) {
                 // Update the file to firebase storage and get the URL
                 const filename = uniqueFilename(os.tmpdir(), "pfp__");
-                const ext = path.extname(profile_picture.name).toLowerCase();
-                const mvfilename = `${filename}${ext}`;
+                const ext = path
+                    .extname(profile_picture.name)
+                    .toLowerCase()
+                    .replace(".", "");
+                const mvfilename = `${filename}.${ext}`;
 
                 // Temporarily save the file to the server
                 await profile_picture.mv(mvfilename);
 
                 const upload = await FirebaseStorage.uploadFile(
                     mvfilename,
-                    profile_picture.mimetype,
+                    `image/${ext.toLowerCase()}`,
                     ext
                 );
 
@@ -172,12 +193,6 @@ export default [
 
                 // Get the URL
                 pfp = upload[0].metadata.mediaLink;
-            }
-
-            if (!(await checkExistence(email, username))) {
-                return res.status(403).json({
-                    message: "Email or username already in use",
-                });
             }
 
             const uuid = await generateUUID();

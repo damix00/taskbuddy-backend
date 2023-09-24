@@ -4,74 +4,83 @@ import { verifyToken } from "../verification/jwt";
 import { ExtendedRequest } from "../types/request";
 import { User } from "../database/accounts/users";
 import { UserModel } from "../database/models/user";
+import { getProfileByUid } from "../database/accounts/profiles/reads";
+import { Profile } from "../database/accounts/profiles";
 
 // Middleware to authorize a user
-export async function authorize(
-    req: ExtendedRequest,
-    res: Response,
-    next: NextFunction
-) {
-    // Get the token from the headers
-    const token = req.headers["authorization"];
+export function authorize(fetchProfile: boolean = false) {
+    return async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+        // Get the token from the headers
+        const token = req.headers["authorization"];
 
-    // If no token, return error
-    if (!token) {
-        return res.status(401).json({
-            message: "No token provided",
-        });
-    }
+        // If no token, return error
+        if (!token) {
+            return res.status(401).json({
+                message: "No token provided",
+            });
+        }
 
-    // Split the token
-    const split = token.split(" ");
+        // Split the token
+        const split = token.split(" ");
 
-    // If the split is not of length 2 or the first item is not 'Bearer', return error
-    if (split.length !== 2 || split[0] !== "Bearer") {
-        return res.status(401).json({
-            message: "Invalid token format",
-        });
-    }
+        // If the split is not of length 2 or the first item is not 'Bearer', return error
+        if (split.length !== 2 || split[0] !== "Bearer") {
+            return res.status(401).json({
+                message: "Invalid token format",
+            });
+        }
 
-    // Get the bearer token
-    const bearer = split[1];
+        // Get the bearer token
+        const bearer = split[1];
 
-    // Try to verify the token
-    try {
-        const decoded = verifyToken(bearer);
+        // Try to verify the token
+        try {
+            const decoded = verifyToken(bearer);
 
-        // Get the user by the user ID
-        let user: User | null = await User.createInstance(decoded.id);
+            // Get the user by the user ID
+            let user: User | null = await User.createInstance(decoded.id);
 
-        // If there is no user, return error
-        if (!user) {
+            // If there is no user, return error
+            if (!user) {
+                return res.status(401).json({
+                    message: "Invalid token",
+                });
+            }
+
+            // If the user is allowed to login, the password hashes match, the emails match
+            // and the token versions match, set the req.user to the user
+            if (
+                !user.hasDisabledAccess("disabled_login") &&
+                decoded.email == user.email &&
+                decoded.token_version == user.token_version &&
+                decoded.phone_number == user.phone_number &&
+                !user.deleted
+            ) {
+                req.user = user!;
+
+                // If the profile is requested, fetch it
+                if (fetchProfile) {
+                    const profile = await getProfileByUid(user.id);
+
+                    if (profile) {
+                        req.profile = new Profile(profile);
+                    }
+                }
+
+                // Call next to continue to the next middleware
+                next();
+            } else {
+                return res.status(401).json({
+                    message: "Invalid token",
+                });
+            }
+        } catch (e) {
+            console.log(e);
             return res.status(401).json({
                 message: "Invalid token",
             });
         }
-
-        // If the user is allowed to login, the password hashes match, the emails match
-        // and the token versions match, set the req.user to the user
-        if (
-            !user.hasDisabledAccess("disabled_login") &&
-            decoded.email == user.email &&
-            decoded.token_version == user.token_version &&
-            decoded.phone_number == user.phone_number &&
-            !user.deleted
-        ) {
-            req.user = user!;
-
-            // Call next to continue to the next middleware
-            next();
-        } else {
-            return res.status(401).json({
-                message: "Invalid token",
-            });
-        }
-    } catch (e) {
-        console.log(e);
-        return res.status(401).json({
-            message: "Invalid token",
-        });
-    }
+    };
 }
 
 // Require verified phone number and email

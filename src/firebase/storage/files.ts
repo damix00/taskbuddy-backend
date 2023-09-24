@@ -1,8 +1,9 @@
 import { getStorage } from "firebase-admin/storage";
 import { randomString } from "../../utils/utils";
+import { Bucket } from "@google-cloud/storage";
 
 export default class FirebaseStorage {
-    static bucket = getStorage().bucket();
+    static bucket: Bucket;
 
     static init() {
         this.bucket = getStorage().bucket();

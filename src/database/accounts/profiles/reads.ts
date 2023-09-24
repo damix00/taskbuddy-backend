@@ -9,9 +9,10 @@ import { ProfileModel } from "../../models/profile";
  * */
 async function getProfile(field: string, value: any) {
     try {
-        const query = `SELECT * FROM profiles WHERE ${field} = ?`;
+        const query = `SELECT * FROM profiles WHERE ${field} = $1`;
         const params = [value];
         const profiles = await executeQuery<ProfileModel>(query, params);
+
         return profiles.length > 0 ? profiles[0] : null;
     } catch (e) {
         console.error(

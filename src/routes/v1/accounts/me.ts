@@ -2,15 +2,19 @@
 
 import { Response } from "express";
 import { authorize } from "../../../middleware/authorization";
-import { getUserResponse } from "../../../utils/responses";
+import {
+    getUserProfileResponse,
+    getUserResponse,
+} from "../../../utils/responses";
 import { ExtendedRequest } from "../../../types/request";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
+import { getProfileByUid } from "../../../database/accounts/profiles/reads";
 
 export default [
     setKillswitch([KillswitchTypes.DISABLE_AUTH]),
-    authorize,
-    (req: ExtendedRequest, res: Response) => {
-        res.status(200).json(getUserResponse(req.user));
+    authorize(true),
+    async (req: ExtendedRequest, res: Response) => {
+        res.status(200).json(getUserProfileResponse(req.user, req.profile!));
     },
 ];

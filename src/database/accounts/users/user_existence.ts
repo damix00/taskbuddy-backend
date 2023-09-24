@@ -11,7 +11,7 @@ import { UserModel } from "../../models/user";
  * */
 async function doesFieldExist(field: string, value: string): Promise<boolean> {
     try {
-        const query = `SELECT id FROM users WHERE ${field} = $1`;
+        const query = `SELECT * FROM users WHERE ${field} = $1`;
         const params = [value];
         const users = await executeQuery<UserModel>(query, params);
 
