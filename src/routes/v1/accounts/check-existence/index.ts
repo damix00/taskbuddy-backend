@@ -3,15 +3,11 @@ import {
     doesEmailExist,
     doesPhoneNumberExist,
     doesUsernameExist,
-} from "../../../../database/accounts/users/user_existence";
+} from "../../../../database/accounts/users/queries/user_existence";
 import { KillswitchTypes } from "../../../../database/models/killswitch";
 import setKillswitch from "../../../../middleware/killswitch";
 import { requireMethod } from "../../../../middleware/require_method";
 import { ExtendedRequest } from "../../../../types/request";
-import {
-    getUserByEmail,
-    getUserByPhoneNumber,
-} from "../../../../database/accounts/users/reads";
 
 export default [
     setKillswitch([KillswitchTypes.DISABLE_AUTH]),

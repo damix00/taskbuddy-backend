@@ -4,23 +4,23 @@ import { ExtendedRequest } from "../../../types/request";
 import { requireMethod } from "../../../middleware/require_method";
 import * as validation from "../../../verification/validation";
 import { checkCaptcha } from "../../../verification/captcha";
-import { addUser } from "../../../database/accounts/users/writes";
-import { generateUUID } from "../../../database/accounts/users/utils";
+import { generateUUID } from "../../../database/accounts/users/queries/utils";
 import * as bcrypt from "../../../utils/bcrypt";
 import { getUserResponse } from "../../../utils/responses";
 import {
     doesEmailExist,
     doesUsernameExist,
-} from "../../../database/accounts/users/user_existence";
+} from "../../../database/accounts/users/queries/user_existence";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
-import { addProfile } from "../../../database/accounts/profiles/writes";
 import { User } from "../../../database/accounts/users";
 import FirebaseStorage from "../../../firebase/storage/files";
 import uniqueFilename from "unique-filename";
 import os from "os";
 import path from "path";
 import fs from "fs";
+import { UserWrites } from "../../../database/accounts/users/wrapper";
+import { ProfileWrites } from "../../../database/accounts/profiles/wrapper";
 
 async function validate(
     ip: string,
@@ -199,7 +199,7 @@ export default [
             const passwordHash = await bcrypt.hashPassword(password);
 
             // Create a new account
-            let result = await addUser({
+            let result = await UserWrites.addUser({
                 uuid,
                 email,
                 phone_number,
@@ -223,7 +223,7 @@ export default [
             result = new User(result);
 
             // Create a new profile for the user
-            const profile = await addProfile({
+            const profile = await ProfileWrites.addProfile({
                 user_id: result.id,
                 profile_picture: pfp,
                 bio: bio || "",

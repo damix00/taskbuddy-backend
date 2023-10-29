@@ -1,11 +1,10 @@
 import { NextFunction, Response } from "express";
-import { getUserById } from "../database/accounts/users/reads";
 import { verifyToken } from "../verification/jwt";
 import { ExtendedRequest } from "../types/request";
 import { User } from "../database/accounts/users";
 import { UserModel } from "../database/models/user";
-import { getProfileByUid } from "../database/accounts/profiles/reads";
 import { Profile } from "../database/accounts/profiles";
+import { ProfileReads } from "../database/accounts/profiles/wrapper";
 
 // Middleware to authorize a user
 export function authorize(fetchProfile: boolean = false) {
@@ -60,10 +59,10 @@ export function authorize(fetchProfile: boolean = false) {
 
                 // If the profile is requested, fetch it
                 if (fetchProfile) {
-                    const profile = await getProfileByUid(user.id);
+                    const profile = await ProfileReads.getProfileByUid(user.id);
 
                     if (profile) {
-                        req.profile = new Profile(profile);
+                        req.profile = profile;
                     }
                 }
 

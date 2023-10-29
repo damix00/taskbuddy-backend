@@ -1,8 +1,7 @@
 import { DataModel } from "../../data_model";
 import { ProfileFields, ProfileModel } from "../../models/profile";
-import { permaDelete } from "../users/writes";
-import { getProfileById } from "./reads";
-import { updateProfile } from "./writes";
+import { reads } from "./queries/reads";
+import { writes } from "./queries/writes";
 
 export class Profile extends DataModel implements ProfileModel {
     id: number;
@@ -64,7 +63,7 @@ export class Profile extends DataModel implements ProfileModel {
 
     // Updates the class instance with new data
     public override async refetch() {
-        const result = await getProfileById(this.id);
+        const result = await reads.getProfileById(this.id);
 
         if (!result) throw new Error("Profile not found");
 
@@ -76,32 +75,94 @@ export class Profile extends DataModel implements ProfileModel {
         return false;
     }
 
+    // Updates the database with new data
     public async update(data: Partial<ProfileModel>) {
+        // Create new object with updated fields
         const newProfile = { ...this, ...data };
-        super.setData(newProfile);
+        super.setData(newProfile); // Update the class instance
 
-        const r = await updateProfile(this.getFields());
+        const r = await writes.updateProfile(this.getFields()); // Update the database
 
-        this._refetch();
+        this._refetch(); // Refetch the class instance if refetchOnUpdate is true
 
         return r;
     }
-    setProfilePicture: (profilePicture: string) => Promise<boolean>;
-    setBio: (bio: string) => Promise<boolean>;
-    setRatingEmployer: (rating: number) => Promise<boolean>;
-    setRatingEmployee: (rating: number) => Promise<boolean>;
-    setRatingCountEmployer: (count: number) => Promise<boolean>;
-    setRatingCountEmployee: (count: number) => Promise<boolean>;
-    setCancelledEmployer: (count: number) => Promise<boolean>;
-    setCancelledEmployee: (count: number) => Promise<boolean>;
-    setCompletedEmployer: (count: number) => Promise<boolean>;
-    setCompletedEmployee: (count: number) => Promise<boolean>;
-    setFollowers: (count: number) => Promise<boolean>;
-    setFollowing: (count: number) => Promise<boolean>;
-    setPosts: (count: number) => Promise<boolean>;
-    setLocationText: (locationText: string) => Promise<boolean>;
-    setLocationLat: (locationLat: number) => Promise<boolean>;
-    setLocationLon: (locationLon: number) => Promise<boolean>;
-    setIsPrivate: (isPrivate: boolean) => Promise<boolean>;
-    setDeleted: (deleted: boolean) => Promise<boolean>;
+
+    // Private setter method
+    private async setter(field: string, value: any): Promise<boolean> {
+        const data = { ...this.getFields(), [field]: value }; // Create new object with updated field
+        return await this.update(data); // Update the profile
+    }
+
+    public async setProfilePicture(profilePicture: string) {
+        return await this.setter("profile_picture", profilePicture);
+    }
+
+    public async setBio(bio: string) {
+        return await this.setter("bio", bio);
+    }
+
+    public async setRatingEmployer(rating: number) {
+        return await this.setter("rating_employer", rating);
+    }
+
+    public async setRatingEmployee(rating: number) {
+        return await this.setter("rating_employee", rating);
+    }
+
+    public async setRatingCountEmployer(count: number) {
+        return await this.setter("rating_count_employer", count);
+    }
+
+    public async setRatingCountEmployee(count: number) {
+        return await this.setter("rating_count_employee", count);
+    }
+
+    public async setCancelledEmployer(count: number) {
+        return await this.setter("cancelled_employer", count);
+    }
+
+    public async setCancelledEmployee(count: number) {
+        return await this.setter("cancelled_employee", count);
+    }
+
+    public async setCompletedEmployer(count: number) {
+        return await this.setter("completed_employer", count);
+    }
+
+    public async setCompletedEmployee(count: number) {
+        return await this.setter("completed_employee", count);
+    }
+
+    public async setFollowers(count: number) {
+        return await this.setter("followers", count);
+    }
+
+    public async setFollowing(count: number) {
+        return await this.setter("following", count);
+    }
+
+    public async setPosts(count: number) {
+        return await this.setter("posts", count);
+    }
+
+    public async setLocationText(locationText: string) {
+        return await this.setter("location_text", locationText);
+    }
+
+    public async setLocationLat(locationLat: number) {
+        return await this.setter("location_lat", locationLat);
+    }
+
+    public async setLocationLon(locationLon: number) {
+        return await this.setter("location_lon", locationLon);
+    }
+
+    public async setIsPrivate(isPrivate: boolean) {
+        return await this.setter("is_private", isPrivate);
+    }
+
+    public async setDeleted(deleted: boolean) {
+        return await this.setter("deleted", deleted);
+    }
 }

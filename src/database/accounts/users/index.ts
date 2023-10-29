@@ -1,9 +1,11 @@
 import { executeQuery } from "../../connection";
 import { LimitedAccess, Role, UserFields, UserModel } from "../../models/user";
 import * as bcrypt from "../../../utils/bcrypt";
-import { getUserById } from "./reads";
-import { updateUser } from "./writes";
+import { reads } from "./queries/reads";
+import { writes } from "./queries/writes";
 import { DataModel } from "../../data_model";
+import { Login } from "../logins";
+import { LoginWrites } from "../logins/wrapper";
 
 export class User extends DataModel implements UserModel {
     id: number;
@@ -36,7 +38,7 @@ export class User extends DataModel implements UserModel {
     }
 
     public override async refetch(): Promise<void> {
-        const result = await getUserById(this.id);
+        const result = await reads.getUserById(this.id);
 
         if (!result) throw new Error("User not found");
 
@@ -45,7 +47,7 @@ export class User extends DataModel implements UserModel {
 
     // Returns a user instance by their ID
     public static async createInstance(id: number): Promise<User | null> {
-        const result = await getUserById(id);
+        const result = await reads.getUserById(id);
 
         if (!result) return null;
 
@@ -55,7 +57,7 @@ export class User extends DataModel implements UserModel {
     // Updates the user's data
     public async update(data: Partial<UserModel>): Promise<boolean> {
         const newUser = { ...this, ...data };
-        const r = await updateUser(newUser);
+        const r = await writes.updateUser(newUser);
 
         this._refetch();
 
@@ -63,19 +65,23 @@ export class User extends DataModel implements UserModel {
     }
 
     // This will add a login to the database associated with the user
-    public async addLogin(ip: string, userAgent: string): Promise<boolean> {
+    public async addLogin(
+        ip: string,
+        userAgent: string
+    ): Promise<Login | null> {
         // Update the last login timestamp
-        await updateUser({ ...this, last_login: new Date() });
         this.last_login = new Date();
+
+        // Update the user in the database
+        await writes.updateUser(this);
 
         this._refetch(); // Refetch user data
 
-        // Insert a login record into the database
-        await executeQuery(
-            "INSERT INTO logins (user_id, ip_address, user_agent) VALUES ($1, $2, $3)",
-            [this.id, ip, userAgent]
-        );
-        return true;
+        return await LoginWrites.addLogin({
+            user_id: this.id,
+            ip_address: ip,
+            user_agent: userAgent,
+        });
     }
 
     public deleteUser(): Promise<boolean> {

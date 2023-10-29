@@ -2,7 +2,6 @@
 // Uses Cloudflare's Turnstile captcha
 import { Response } from "express";
 import { requireMethod } from "../../../middleware/require_method";
-import { getUserByEmail } from "../../../database/accounts/users/reads";
 import { sleep } from "../../../utils/utils";
 import { comparePassword } from "../../../utils/bcrypt";
 import { getUserProfileResponse } from "../../../utils/responses";
@@ -12,8 +11,9 @@ import { User } from "../../../database/accounts/users";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
 import * as killswitches from "../../../utils/global_killswitches";
-import { getProfileByUid } from "../../../database/accounts/profiles/reads";
 import { Profile } from "../../../database/accounts/profiles";
+import { ProfileReads } from "../../../database/accounts/profiles/wrapper";
+import { UserReads } from "../../../database/accounts/users/wrapper";
 
 export default [
     setKillswitch([
@@ -39,7 +39,7 @@ export default [
         // }
 
         try {
-            let user = await getUserByEmail(email);
+            const user = await UserReads.getUserByEmail(email);
 
             if (!user) {
                 await sleep(200); // Prevent timing attacks
@@ -47,8 +47,6 @@ export default [
                     message: "Invalid email or password",
                 });
             }
-
-            user = new User(user);
 
             if (!(await comparePassword(password, user.password_hash))) {
                 return res.status(401).json({
@@ -70,11 +68,11 @@ export default [
 
             user.addLogin(req.ip, req.userAgent);
 
-            const profile = await getProfileByUid(user.id);
+            const profile = await ProfileReads.getProfileByUid(user.id);
+
             if (profile) {
-                console.log(getUserProfileResponse(user, new Profile(profile)));
                 return res.status(200).json({
-                    ...getUserProfileResponse(user, new Profile(profile)),
+                    ...getUserProfileResponse(user, profile),
                     message: "OK",
                 });
             }

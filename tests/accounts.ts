@@ -1,13 +1,7 @@
 import { User } from "../src/database/accounts/users";
-import { addUser, permaDelete } from "../src/database/accounts/users/writes";
-import { generateUUID } from "../src/database/accounts/users/utils";
+import { generateUUID } from "./database/accounts/users/queries/utils";
 import * as connection from "../src/database/connection";
-import {
-    getUserByEmail,
-    getUserById,
-    getUserByUUID,
-    getUserByUsername,
-} from "../src/database/accounts/users/reads";
+import { UserReads, UserWrites } from "./database/accounts/users/wrapper";
 
 describe("Account database queries", () => {
     it("connects to the database", async () => {
@@ -24,7 +18,7 @@ describe("Account database queries", () => {
 
     it("adds a user to the database", async () => {
         user = new User(
-            (await addUser({
+            (await UserWrites.addUser({
                 uuid: uuid as string,
                 email: "test@gmail.com",
                 phone_number: "1234567890",
@@ -39,26 +33,28 @@ describe("Account database queries", () => {
     });
 
     it("gets a user by ID", async () => {
-        const userById = await getUserById(user.id);
+        const userById = await UserReads.getUserById(user.id);
 
         expect(userById).toBeTruthy();
         expect(userById?.id).toBe(user.id);
     });
 
     it("gets a user by UUID", async () => {
-        const userByUUID = await getUserByUUID(user.uuid);
+        const userByUUID = await UserReads.getUserByUUID(user.uuid);
         expect(userByUUID).toBeTruthy();
         expect(userByUUID?.uuid).toBe(user.uuid);
     });
 
     it("gets a user by email", async () => {
-        const userByEmail = await getUserByEmail(user.email);
+        const userByEmail = await UserReads.getUserByEmail(user.email);
         expect(userByEmail).toBeTruthy();
         expect(userByEmail?.email).toBe(user.email);
     });
 
     it("gets a user by username", async () => {
-        const userByPhoneNumber = await getUserByUsername(user.username);
+        const userByPhoneNumber = await UserReads.getUserByUsername(
+            user.username
+        );
         expect(userByPhoneNumber).toBeTruthy();
         expect(userByPhoneNumber?.username).toBe(user.username);
     });
@@ -76,7 +72,7 @@ describe("Account database queries", () => {
     });
 
     it("deletes an account", async () => {
-        expect(await permaDelete(user.id)).toBeTruthy();
+        expect(await UserWrites.permaDelete(user.id)).toBeTruthy();
     });
 
     // This test is disabled because it causes the test suite to hang

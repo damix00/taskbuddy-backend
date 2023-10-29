@@ -9,7 +9,6 @@ import {
 import { ExtendedRequest } from "../../../types/request";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
-import { getProfileByUid } from "../../../database/accounts/profiles/reads";
 
 export default [
     setKillswitch([KillswitchTypes.DISABLE_AUTH]),

@@ -1,3 +1,5 @@
+import { Login } from "../accounts/logins";
+
 export type LimitedAccess =
     | "disabled_login"
     | "disabled_premium"
@@ -29,7 +31,7 @@ export interface UserFields {
 
 export interface UserModel extends UserFields {
     update: (data: Partial<UserModel>) => Promise<boolean>;
-    addLogin: (ip: string, userAgent: string) => Promise<boolean>;
+    addLogin: (ip: string, userAgent: string) => Promise<Login | null>;
     deleteUser: () => Promise<boolean>;
     changePassword: (newPassword: string) => Promise<boolean>;
     comparePassword: (password: string) => Promise<boolean>;

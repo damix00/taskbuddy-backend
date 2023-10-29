@@ -1,7 +1,7 @@
 // user_existence.ts - check if a given field/value exists in the database for users
 
-import { executeQuery } from "../../connection";
-import { UserModel } from "../../models/user";
+import { executeQuery } from "../../../connection";
+import { UserModel } from "../../../models/user";
 
 /**
  * Returns if a user exists in the database with the given field and value

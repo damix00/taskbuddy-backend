@@ -26,7 +26,9 @@ CREATE TABLE IF NOT EXISTS logins (
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   ip_address VARCHAR(512) NOT NULL,
-  user_agent VARCHAR(1024) NOT NULL
+  user_agent VARCHAR(1024) NOT NULL,
+  is_online BOOLEAN NOT NULL DEFAULT TRUE,
+  last_updated_online TIMESTAMP NOT NULL DEFAULT NOW(),
 );
 
 -- Creates indexes on the users table for faster queries

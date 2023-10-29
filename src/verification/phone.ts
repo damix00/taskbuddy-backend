@@ -3,12 +3,12 @@
 import twilio from "twilio";
 import { accountSid, authToken, verifySid } from "../config";
 import { User } from "../database/accounts/users";
-import { getUserByUUID } from "../database/accounts/users/reads";
+import { UserReads } from "../database/accounts/users/wrapper";
 
 const client = twilio(accountSid, authToken);
 
 async function sendOTPViaChannel(uuid: string, channel: string) {
-    const user = await getUserByUUID(uuid);
+    const user = await UserReads.getUserByUUID(uuid);
 
     if (!user) {
         throw new Error("User not found");
@@ -32,7 +32,7 @@ export async function callOTP(uuid: string) {
 
 // Verify the OTP sent to the user's phone number
 export async function verifyOTP(uuid: string, code: string) {
-    let user = await getUserByUUID(uuid);
+    let user = await UserReads.getUserByUUID(uuid);
 
     if (!user) {
         throw new Error("User not found");
