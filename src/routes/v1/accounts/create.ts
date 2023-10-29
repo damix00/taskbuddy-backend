@@ -6,7 +6,10 @@ import * as validation from "../../../verification/validation";
 import { checkCaptcha } from "../../../verification/captcha";
 import { generateUUID } from "../../../database/accounts/users/queries/utils";
 import * as bcrypt from "../../../utils/bcrypt";
-import { getUserResponse } from "../../../utils/responses";
+import {
+    getUserProfileResponse,
+    getUserResponse,
+} from "../../../utils/responses";
 import {
     doesEmailExist,
     doesUsernameExist,
@@ -244,7 +247,17 @@ export default [
                 });
             }
 
-            res.status(200).json(getUserResponse(result));
+            const login = await result.addLogin(req.ip, req.userAgent);
+
+            if (!login) {
+                return res.status(500).json({
+                    message: "Internal server error",
+                });
+            }
+
+            res.status(200).json(
+                getUserProfileResponse(result, login.id, profile)
+            );
         } catch (e) {
             console.error(e);
 

@@ -2,7 +2,7 @@ import { ProfileFields } from "../database/models/profile";
 import { UserFields } from "../database/models/user";
 import { signToken, toUserPayload } from "../verification/jwt";
 
-export function getUserResponse(user: UserFields) {
+export function getUserResponse(user: UserFields, login_id: number) {
     return {
         user: {
             uuid: user.uuid,
@@ -20,7 +20,8 @@ export function getUserResponse(user: UserFields) {
             verify_email: false, // Disable email verification because it is not needed
             verify_phone_number: !user.phone_number_verified,
         },
-        token: signToken(toUserPayload(user)),
+        login_id,
+        token: signToken(toUserPayload(user, login_id)),
     };
 }
 
@@ -69,10 +70,11 @@ export function getProfileResponse(profile: ProfileFields) {
 
 export function getUserProfileResponse(
     user: UserFields,
+    login_id: number,
     profile: ProfileFields
 ) {
     return {
-        ...getUserResponse(user),
+        ...getUserResponse(user, login_id),
         ...getProfileResponse(profile),
     };
 }

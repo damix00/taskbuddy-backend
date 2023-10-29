@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS logins (
   ip_address VARCHAR(512) NOT NULL,
   user_agent VARCHAR(1024) NOT NULL,
   is_online BOOLEAN NOT NULL DEFAULT TRUE,
-  last_updated_online TIMESTAMP NOT NULL DEFAULT NOW(),
+  last_updated_online TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Creates indexes on the users table for faster queries

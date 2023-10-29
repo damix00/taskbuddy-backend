@@ -5,7 +5,8 @@ import { Profile } from "../database/accounts/profiles";
 
 export interface ExtendedRequest extends Request {
     userAgent: string;
-    user: User;
+    user?: User | null;
+    login_id: number;
     profile?: Profile | null;
     files: { [key: string]: UploadedFile };
 }

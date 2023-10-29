@@ -5,6 +5,7 @@ import { User } from "../database/accounts/users";
 import { UserModel } from "../database/models/user";
 import { Profile } from "../database/accounts/profiles";
 import { ProfileReads } from "../database/accounts/profiles/wrapper";
+import { LoginReads } from "../database/accounts/logins/wrapper";
 
 // Middleware to authorize a user
 export function authorize(fetchProfile: boolean = false) {
@@ -46,6 +47,18 @@ export function authorize(fetchProfile: boolean = false) {
                 });
             }
 
+            if (!decoded.login_id) {
+                return res.status(401).json({
+                    message: "Invalid token",
+                });
+            }
+
+            if (!LoginReads.getLoginById(decoded.login_id)) {
+                return res.status(401).json({
+                    message: "Invalid token",
+                });
+            }
+
             // If the user is allowed to login, the password hashes match, the emails match
             // and the token versions match, set the req.user to the user
             if (
@@ -55,7 +68,8 @@ export function authorize(fetchProfile: boolean = false) {
                 decoded.phone_number == user.phone_number &&
                 !user.deleted
             ) {
-                req.user = user!;
+                req.user = user;
+                req.login_id = decoded.login_id;
 
                 // If the profile is requested, fetch it
                 if (fetchProfile) {
@@ -88,7 +102,7 @@ export async function requireVerifiedInfo(
     res: Response,
     next: NextFunction
 ) {
-    const user = req.user;
+    const user = req.user!;
 
     // If the user is not verified, return error
     if (user.email_verified || user.phone_number_verified) {
@@ -110,7 +124,7 @@ export async function requireAdmin(
     res: Response,
     next: NextFunction
 ) {
-    const user = req.user;
+    const user = req.user!;
 
     // If the user is not an admin, return error
     if (!user.isAdmin()) {

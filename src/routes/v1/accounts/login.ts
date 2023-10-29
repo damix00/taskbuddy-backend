@@ -66,13 +66,19 @@ export default [
                 await sleep(1000 - (Date.now() - current));
             }
 
-            user.addLogin(req.ip, req.userAgent);
+            const login = await user.addLogin(req.ip, req.userAgent);
+
+            if (!login) {
+                return res.status(500).json({
+                    message: "Internal server error",
+                });
+            }
 
             const profile = await ProfileReads.getProfileByUid(user.id);
 
             if (profile) {
                 return res.status(200).json({
-                    ...getUserProfileResponse(user, profile),
+                    ...getUserProfileResponse(user, login.id, profile),
                     message: "OK",
                 });
             }

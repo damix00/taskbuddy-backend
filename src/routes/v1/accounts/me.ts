@@ -14,6 +14,8 @@ export default [
     setKillswitch([KillswitchTypes.DISABLE_AUTH]),
     authorize(true),
     async (req: ExtendedRequest, res: Response) => {
-        res.status(200).json(getUserProfileResponse(req.user, req.profile!));
+        res.status(200).json(
+            getUserProfileResponse(req.user!, req.login_id, req.profile!)
+        );
     },
 ];
