@@ -58,7 +58,7 @@ export namespace writes {
     export async function updateUser(user: UserModel): Promise<boolean> {
         try {
             const query =
-                "UPDATE users SET username = $1, email = $2, email_verified = $3, first_name = $4, last_name = $5, password_hash = $6, updated_at = $7, last_login = $8, role = $9, token_version = $10, auth_provider = $11, deleted = $12, has_premium = $13 WHERE id = $14 RETURNING *";
+                "UPDATE users SET username = $1, email = $2, email_verified = $3, first_name = $4, last_name = $5, password_hash = $6, updated_at = $7, last_login = $8, role = $9, token_version = $10, auth_provider = $11, deleted = $12, has_premium = $13, verified = $14, limited_access = $15, phone_number = $16, phone_number_verified = $17 WHERE id = $18 RETURNING *";
             const params = [
                 user.username,
                 user.email,
@@ -73,6 +73,10 @@ export namespace writes {
                 user.auth_provider,
                 user.deleted,
                 user.has_premium,
+                user.verified,
+                user.limited_access,
+                user.phone_number,
+                user.phone_number_verified,
                 user.id,
             ];
             const result = await executeQuery<UserModel>(query, params);

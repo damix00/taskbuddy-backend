@@ -6,10 +6,18 @@ import { UserModel } from "../database/models/user";
 import { Profile } from "../database/accounts/profiles";
 import { ProfileReads } from "../database/accounts/profiles/wrapper";
 import { LoginReads } from "../database/accounts/logins/wrapper";
+import * as killswitches from "../utils/global_killswitches";
 
 // Middleware to authorize a user
 export function authorize(fetchProfile: boolean = false) {
     return async (req: ExtendedRequest, res: Response, next: NextFunction) => {
+        if (killswitches.isKillswitchEnabled("DISABLE_AUTH")) {
+            return res.status(503).json({
+                error: "Service Unavailable",
+                message: "This service is currently unavailable.",
+            });
+        }
+
         // Get the token from the headers
         const token = req.headers["authorization"];
 
