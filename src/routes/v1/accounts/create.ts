@@ -123,16 +123,6 @@ export default [
             }
         }
 
-        console.log({
-            email,
-            username,
-            phone_number,
-            first_name,
-            last_name,
-            password,
-            bio,
-        });
-
         // Some fields are missing
         if (fields.length < 6 || fields.length > 7) {
             return res.status(400).json({
@@ -158,44 +148,10 @@ export default [
         }
 
         try {
-            let pfp = "";
-
             if (!(await checkExistence(email, username))) {
                 return res.status(403).json({
                     message: "Email or username already in use",
                 });
-            }
-
-            if (profile_picture) {
-                // Update the file to firebase storage and get the URL
-                const filename = uniqueFilename(os.tmpdir(), "pfp__");
-                const ext = path
-                    .extname(profile_picture.name)
-                    .toLowerCase()
-                    .replace(".", "");
-                const mvfilename = `${filename}.${ext}`;
-
-                // Temporarily save the file to the server
-                await profile_picture.mv(mvfilename);
-
-                const upload = await FirebaseStorage.uploadFile(
-                    mvfilename,
-                    `image/${ext.toLowerCase()}`,
-                    ext
-                );
-
-                // Delete the file from the server
-                fs.rmSync(mvfilename);
-
-                // Check if the upload was successful
-                if (!upload) {
-                    return res.status(500).json({
-                        message: "Internal server error",
-                    });
-                }
-
-                // Get the URL
-                pfp = upload[0].metadata.mediaLink;
             }
 
             const uuid = await generateUUID();
@@ -228,7 +184,6 @@ export default [
             // Create a new profile for the user
             const profile = await ProfileWrites.addProfile({
                 user_id: result.id,
-                profile_picture: pfp,
                 bio: bio || "",
                 location_text: "",
                 location_lat: 0,
@@ -245,6 +200,12 @@ export default [
                 return res.status(500).json({
                     message: "Internal server error",
                 });
+            }
+
+            try {
+                profile.uploadProfilePicture(profile_picture);
+            } catch (e) {
+                console.error(e); // We don't have to care if this fails, because the user can upload a profile picture later
             }
 
             const login = await result.addLogin(req.ip, req.userAgent);

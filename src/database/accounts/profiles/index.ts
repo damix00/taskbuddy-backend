@@ -1,7 +1,13 @@
+import fileUpload from "express-fileupload";
 import { DataModel } from "../../data_model";
 import { ProfileFields, ProfileModel } from "../../models/profile";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
+import uniqueFilename from "unique-filename";
+import path from "path";
+import FirebaseStorage from "../../../firebase/storage/files";
+import os from "os";
+import fs from "fs";
 
 export class Profile extends DataModel implements ProfileModel {
     id: number;
@@ -83,7 +89,7 @@ export class Profile extends DataModel implements ProfileModel {
 
         const r = await writes.updateProfile(this.getFields()); // Update the database
 
-        this._refetch(); // Refetch the class instance if refetchOnUpdate is true
+        await this._refetch(); // Refetch the class instance if refetchOnUpdate is true
 
         return r;
     }
@@ -94,8 +100,53 @@ export class Profile extends DataModel implements ProfileModel {
         return await this.update(data); // Update the profile
     }
 
-    public async setProfilePicture(profilePicture: string) {
+    public async setProfilePicture(profilePicture: string | null) {
         return await this.setter("profile_picture", profilePicture);
+    }
+
+    public async uploadProfilePicture(
+        file: fileUpload.UploadedFile
+    ): Promise<boolean> {
+        // Update the file to firebase storage and get the URL
+        const filename = uniqueFilename(os.tmpdir(), "pfp__");
+        const ext = path.extname(file.name).toLowerCase().replace(".", "");
+        const mvfilename = `${filename}.${ext}`;
+
+        // Temporarily save the file to the server
+        await file.mv(mvfilename);
+
+        const upload = await FirebaseStorage.uploadFile(
+            mvfilename,
+            `image/${ext.toLowerCase()}`,
+            ext
+        );
+
+        // Delete the file from the server
+        fs.rmSync(mvfilename);
+
+        // Check if the upload was successful
+        if (!upload) {
+            return false;
+        }
+
+        // Get the URL
+        let pfp = upload[0].metadata.mediaLink;
+
+        // Set the profile picture in the database
+        return await this.setProfilePicture(pfp);
+    }
+
+    public async removeProfilePicture(): Promise<boolean> {
+        try {
+            // Delete the file from firebase storage
+            await FirebaseStorage.deleteFile(this.profile_picture);
+
+            // Set the profile picture to null
+            return await this.setProfilePicture(null);
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 
     public async setBio(bio: string) {

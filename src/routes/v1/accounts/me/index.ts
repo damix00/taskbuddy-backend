@@ -1,9 +1,9 @@
 // Get the current user's information
 
 import { Response } from "express";
-import { authorize } from "../../../middleware/authorization";
-import { getUserProfileResponse } from "../../../utils/responses";
-import { ExtendedRequest } from "../../../types/request";
+import { authorize } from "../../../../middleware/authorization";
+import { getUserProfileResponse } from "../../../../utils/responses";
+import { ExtendedRequest } from "../../../../types/request";
 
 export default [
     authorize(true),

@@ -59,7 +59,7 @@ export class User extends DataModel implements UserModel {
         const newUser = { ...this, ...data };
         const r = await writes.updateUser(newUser);
 
-        this._refetch();
+        await this._refetch();
 
         return r;
     }

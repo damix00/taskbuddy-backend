@@ -42,7 +42,7 @@ export class Login extends DataModel implements LoginModel {
         const newLogin = { ...this, ...data };
         const r = await writes.updateLogin(newLogin);
 
-        this._refetch();
+        await this._refetch();
 
         return r;
     }

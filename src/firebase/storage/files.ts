@@ -37,4 +37,15 @@ export default class FirebaseStorage {
             },
         });
     }
+
+    static async deleteFile(path: string) {
+        const url = new URL(path);
+        url.search = "";
+
+        const p = url.toString().split("/");
+
+        const file = this.bucket.file(decodeURIComponent(p[p.length - 1]));
+
+        return await file.delete();
+    }
 }

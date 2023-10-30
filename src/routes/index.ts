@@ -2,6 +2,7 @@ import checkExistence from "./v1/accounts/check-existence";
 import create from "./v1/accounts/create";
 import login from "./v1/accounts/login";
 import me from "./v1/accounts/me";
+import profile from "./v1/accounts/me/profile";
 import callPhone from "./v1/accounts/verification/phone/call";
 import sendPhone from "./v1/accounts/verification/phone/send";
 import verifyPhone from "./v1/accounts/verification/phone/verify";
@@ -11,6 +12,13 @@ export type route = {
     path: string;
     handler: any;
 };
+
+const meRoutes: route[] = [
+    {
+        path: "/v1/accounts/me/profile",
+        handler: profile,
+    },
+];
 
 const verificationRoutes: route[] = [
     {
@@ -28,8 +36,10 @@ const verificationRoutes: route[] = [
 ];
 
 const userRoutes: route[] = [
+    ...meRoutes,
+    ...verificationRoutes,
     {
-        path: "/v1/accounts/me",
+        path: "/v1/accounts/me/",
         handler: me,
     },
     {
@@ -44,15 +54,14 @@ const userRoutes: route[] = [
         path: "/v1/accounts/check-existence",
         handler: checkExistence,
     },
-    ...verificationRoutes,
 ];
 
 const routes: route[] = [
+    ...userRoutes,
     {
         path: "/v1/ping",
         handler: ping,
     },
-    ...userRoutes,
 ];
 
 export default routes;

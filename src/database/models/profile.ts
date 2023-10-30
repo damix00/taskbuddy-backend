@@ -1,3 +1,5 @@
+import fileUpload from "express-fileupload";
+
 export interface ProfileFields {
     id: number;
     user_id: number;
@@ -27,7 +29,9 @@ export interface ProfileModel extends ProfileFields {
     deleteProfile: () => Promise<boolean>;
     update: (data: Partial<ProfileModel>) => Promise<boolean>;
     refetch: () => Promise<void>;
-    setProfilePicture: (profilePicture: string) => Promise<boolean>;
+    uploadProfilePicture: (file: fileUpload.UploadedFile) => Promise<boolean>;
+    removeProfilePicture: () => Promise<boolean>;
+    setProfilePicture: (profilePicture: string | null) => Promise<boolean>;
     setBio: (bio: string) => Promise<boolean>;
     setRatingEmployer: (rating: number) => Promise<boolean>;
     setRatingEmployee: (rating: number) => Promise<boolean>;
