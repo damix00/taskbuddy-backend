@@ -49,8 +49,10 @@ export default async (req: ExtendedRequest, res: Response) => {
         });
 
         if (profile_picture) {
-            // Remove old profile picture
-            await req.profile.removeProfilePicture();
+            try {
+                if (req.profile.profile_picture.length > 0)
+                    await req.profile.removeProfilePicture();
+            } catch (e) {}
             // Upload new profile picture
             await req.profile.uploadProfilePicture(profile_picture);
         } else if (
