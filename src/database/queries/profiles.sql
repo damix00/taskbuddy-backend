@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS profiles (
     followers BIGINT NOT NULL DEFAULT 0, -- Number of users following the user
     following BIGINT NOT NULL DEFAULT 0, -- Number of users the user is following
     posts BIGINT NOT NULL DEFAULT 0, -- Number of posts the user has made
-    location_text TEXT NOT NULL, -- User specified location (town name)
-    location_lat DECIMAL NOT NULL, -- Latitude of user location - user specified
-    location_lon DECIMAL NOT NULL, -- Longitude of user location - user specified
+    location_text TEXT, -- User specified location (town name)
+    location_lat DECIMAL, -- Latitude of user location - user specified
+    location_lon DECIMAL, -- Longitude of user location - user specified
     is_private BOOLEAN NOT NULL DEFAULT FALSE, -- Is the user's profile private
     deleted BOOLEAN NOT NULL DEFAULT FALSE -- soft delete user and later remove from database
 );

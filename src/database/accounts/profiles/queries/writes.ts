@@ -7,8 +7,8 @@ export namespace writes {
         profile_picture?: string | null;
         bio: string;
         location_text: string;
-        location_lat: number;
-        location_lon: number;
+        location_lat?: number | null;
+        location_lon?: number | null;
         is_private: boolean;
     };
 

@@ -186,8 +186,8 @@ export default [
                 user_id: result.id,
                 bio: bio || "",
                 location_text: "",
-                location_lat: 0,
-                location_lon: 0,
+                location_lat: null,
+                location_lon: null,
                 is_private: false,
             });
 

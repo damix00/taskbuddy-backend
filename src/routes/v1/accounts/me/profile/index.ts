@@ -13,10 +13,7 @@ export default [
             return _update(req, res);
         } else {
             return res.status(405).json({
-                error: {
-                    code: 405,
-                    message: "Method not allowed",
-                },
+                message: "Method not allowed",
             });
         }
     },
