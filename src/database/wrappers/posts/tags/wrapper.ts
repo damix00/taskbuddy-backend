@@ -20,9 +20,9 @@ export class TagWrites {
     // Function to create a new tag
     public static async createTag(
         category_id: number,
-        translations: [string, string][]
-    ): Promise<boolean> {
-        return await writes.createTag(category_id, translations);
+        translations: { [key: string]: string }
+    ): Promise<Tag | null> {
+        return toTag(await writes.createTag(category_id, translations));
     }
 
     // Function to update a tag

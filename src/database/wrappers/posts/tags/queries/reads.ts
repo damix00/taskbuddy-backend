@@ -6,9 +6,9 @@ namespace reads {
         try {
             const query = `
                 SELECT *
-                FROM tags
-                INNER JOIN post_categories ON tags.category_id = post_categories.category_id
-                WHERE id = ?
+                FROM post_tags
+                INNER JOIN post_categories ON post_tags.category_id = post_categories.category_id
+                WHERE id = $1
             `;
 
             const result = await executeQuery<PostTagModel>(query, [id]);
