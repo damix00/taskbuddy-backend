@@ -1,5 +1,5 @@
-import { executeQuery } from "../../../connection";
-import { ProfileModel } from "../../../models/profile";
+import { executeQuery } from "../../../../connection";
+import { ProfileModel } from "../../../../models/users/profile";
 
 export namespace reads {
     /**

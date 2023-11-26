@@ -1,5 +1,5 @@
-import { executeQuery } from "../connection";
-import { KillswitchFields } from "../models/killswitch";
+import { executeQuery } from "../../connection";
+import { KillswitchFields } from "../../models/killswitch";
 import { doesKillswitchExist } from "./reads";
 
 export async function setKillswitch({

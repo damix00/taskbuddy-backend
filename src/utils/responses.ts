@@ -1,5 +1,5 @@
-import { ProfileFields } from "../database/models/profile";
-import { UserFields } from "../database/models/user";
+import { ProfileFields } from "../database/models/users/profile";
+import { UserFields } from "../database/models/users/user";
 import { signToken, toUserPayload } from "../verification/jwt";
 
 export function getUserResponse(user: UserFields, login_id: number) {

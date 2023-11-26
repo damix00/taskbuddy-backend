@@ -1,4 +1,4 @@
-import { Login } from "../accounts/logins";
+import { Login } from "../../wrappers/accounts/logins";
 
 export type LimitedAccess =
     | "disabled_login"

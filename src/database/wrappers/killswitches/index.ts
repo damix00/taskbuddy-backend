@@ -1,5 +1,5 @@
-import { DataModel } from "../data_model";
-import { KillswitchFields, KillswitchModel } from "../models/killswitch";
+import { DataModel } from "../../data_model";
+import { KillswitchFields, KillswitchModel } from "../../models/killswitch";
 
 export class Killswitch extends DataModel implements KillswitchModel {
     id: number;

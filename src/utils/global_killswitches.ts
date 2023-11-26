@@ -1,5 +1,5 @@
-import { Killswitch } from "../database/killswitches";
-import { getKillswitches } from "../database/killswitches/reads";
+import { Killswitch } from "../database/wrappers/killswitches";
+import { getKillswitches } from "../database/wrappers/killswitches/reads";
 
 export let killswitches: Killswitch[] = [];
 

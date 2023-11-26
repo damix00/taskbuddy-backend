@@ -4,8 +4,8 @@
 // Returns the UserModel interface - does not have the functions implemented
 // To use the functions create a new instance of the User class
 
-import { executeQuery } from "../../../connection";
-import { UserModel } from "../../../models/user";
+import { executeQuery } from "../../../../connection";
+import { UserModel } from "../../../../models/users/user";
 
 export namespace reads {
     /**

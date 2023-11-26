@@ -7,13 +7,12 @@ import { comparePassword } from "../../../utils/bcrypt";
 import { getUserProfileResponse } from "../../../utils/responses";
 import { ExtendedRequest } from "../../../types/request";
 import { checkCaptcha } from "../../../verification/captcha";
-import { User } from "../../../database/accounts/users";
+import { User } from "../../../database/wrappers/accounts/users";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
 import * as killswitches from "../../../utils/global_killswitches";
-import { Profile } from "../../../database/accounts/profiles";
-import { ProfileReads } from "../../../database/accounts/profiles/wrapper";
-import { UserReads } from "../../../database/accounts/users/wrapper";
+import { ProfileReads } from "../../../database/wrappers/accounts/profiles/wrapper";
+import { UserReads } from "../../../database/wrappers/accounts/users/wrapper";
 
 export default [
     setKillswitch([

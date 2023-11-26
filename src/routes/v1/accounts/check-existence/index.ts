@@ -3,7 +3,7 @@ import {
     doesEmailExist,
     doesPhoneNumberExist,
     doesUsernameExist,
-} from "../../../../database/accounts/users/queries/user_existence";
+} from "../../../../database/wrappers/accounts/users/queries/user_existence";
 import { KillswitchTypes } from "../../../../database/models/killswitch";
 import setKillswitch from "../../../../middleware/killswitch";
 import { requireMethod } from "../../../../middleware/require_method";

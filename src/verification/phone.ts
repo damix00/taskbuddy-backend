@@ -2,8 +2,8 @@
 
 import twilio from "twilio";
 import { accountSid, authToken, verifySid } from "../config";
-import { User } from "../database/accounts/users";
-import { UserReads } from "../database/accounts/users/wrapper";
+import { User } from "../database/wrappers/accounts/users";
+import { UserReads } from "../database/wrappers/accounts/users/wrapper";
 
 const client = twilio(accountSid, authToken);
 

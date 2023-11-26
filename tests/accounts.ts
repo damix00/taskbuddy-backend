@@ -1,7 +1,10 @@
-import { User } from "../src/database/accounts/users";
-import { generateUUID } from "./database/accounts/users/queries/utils";
+import { User } from "./database/wrappers/accounts/users";
+import { generateUUID } from "./database/wrappers/accounts/users/queries/utils";
 import * as connection from "../src/database/connection";
-import { UserReads, UserWrites } from "./database/accounts/users/wrapper";
+import {
+    UserReads,
+    UserWrites,
+} from "./database/wrappers/accounts/users/wrapper";
 
 describe("Account database queries", () => {
     it("connects to the database", async () => {

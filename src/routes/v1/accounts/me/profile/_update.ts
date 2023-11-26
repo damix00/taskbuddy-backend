@@ -28,8 +28,6 @@ export default async (req: ExtendedRequest, res: Response) => {
             username,
         } = req.body;
 
-        console.log(req.body);
-
         const { profile_picture } = req.files || {};
 
         if (!req.profile || !req.user) return;

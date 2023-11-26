@@ -1,7 +1,7 @@
 import { writes } from "./queries/writes";
 import { reads } from "./queries/reads";
 import { Profile } from ".";
-import { ProfileFields, ProfileModel } from "../../models/profile";
+import { ProfileFields, ProfileModel } from "../../../models/users/profile";
 
 function toProfile(
     profile: ProfileModel | ProfileFields | null

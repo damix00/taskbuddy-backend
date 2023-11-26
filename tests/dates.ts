@@ -1,6 +1,6 @@
-import * as users from "../src/database/accounts/users";
+import * as users from "./database/wrappers/accounts/users";
 import * as connection from "../src/database/connection";
-import { UserReads } from "./database/accounts/users/wrapper";
+import { UserReads } from "./database/wrappers/accounts/users/wrapper";
 
 describe("Test dates in the database", () => {
     it("connects to the database", async () => {

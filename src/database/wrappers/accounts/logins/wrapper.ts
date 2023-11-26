@@ -2,7 +2,7 @@
 // Meant to be used outside of the main class, due to node.js circular dependencies
 
 import { Login } from ".";
-import { LoginFields, LoginModel } from "../../models/login";
+import { LoginFields, LoginModel } from "../../../models/users/login";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
 

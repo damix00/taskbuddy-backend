@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { UserFields, UserModel } from "../database/models/user";
+import { UserFields, UserModel } from "../database/models/users/user";
 
 export type UserPayload = {
     id: number; // User ID

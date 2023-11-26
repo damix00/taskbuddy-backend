@@ -1,5 +1,5 @@
-import { executeQuery } from "../connection";
-import { KillswitchFields } from "../models/killswitch";
+import { executeQuery } from "../../connection";
+import { KillswitchFields } from "../../models/killswitch";
 
 /**
  * @param type The type of killswitch to check for

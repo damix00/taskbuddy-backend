@@ -4,7 +4,7 @@ import { ExtendedRequest } from "../../../types/request";
 import { requireMethod } from "../../../middleware/require_method";
 import * as validation from "../../../verification/validation";
 import { checkCaptcha } from "../../../verification/captcha";
-import { generateUUID } from "../../../database/accounts/users/queries/utils";
+import { generateUUID } from "../../../database/wrappers/accounts/users/queries/utils";
 import * as bcrypt from "../../../utils/bcrypt";
 import {
     getUserProfileResponse,
@@ -13,17 +13,17 @@ import {
 import {
     doesEmailExist,
     doesUsernameExist,
-} from "../../../database/accounts/users/queries/user_existence";
+} from "../../../database/wrappers/accounts/users/queries/user_existence";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
-import { User } from "../../../database/accounts/users";
+import { User } from "../../../database/wrappers/accounts/users";
 import FirebaseStorage from "../../../firebase/storage/files";
 import uniqueFilename from "unique-filename";
 import os from "os";
 import path from "path";
 import fs from "fs";
-import { UserWrites } from "../../../database/accounts/users/wrapper";
-import { ProfileWrites } from "../../../database/accounts/profiles/wrapper";
+import { UserWrites } from "../../../database/wrappers/accounts/users/wrapper";
+import { ProfileWrites } from "../../../database/wrappers/accounts/profiles/wrapper";
 
 async function validate(
     ip: string,

@@ -1,4 +1,4 @@
-import { UserFields, UserModel } from "../../models/user";
+import { UserFields, UserModel } from "../../../models/users/user";
 import { User } from "./index";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";

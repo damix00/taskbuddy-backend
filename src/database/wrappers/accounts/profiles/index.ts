@@ -1,11 +1,11 @@
 import fileUpload from "express-fileupload";
-import { DataModel } from "../../data_model";
-import { ProfileFields, ProfileModel } from "../../models/profile";
+import { DataModel } from "../../../data_model";
+import { ProfileFields, ProfileModel } from "../../../models/users/profile";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
 import uniqueFilename from "unique-filename";
 import path from "path";
-import FirebaseStorage from "../../../firebase/storage/files";
+import FirebaseStorage from "../../../../firebase/storage/files";
 import os from "os";
 import fs from "fs";
 

@@ -1,11 +1,9 @@
 import { NextFunction, Response } from "express";
 import { verifyToken } from "../verification/jwt";
 import { ExtendedRequest } from "../types/request";
-import { User } from "../database/accounts/users";
-import { UserModel } from "../database/models/user";
-import { Profile } from "../database/accounts/profiles";
-import { ProfileReads } from "../database/accounts/profiles/wrapper";
-import { LoginReads } from "../database/accounts/logins/wrapper";
+import { User } from "../database/wrappers/accounts/users";
+import { ProfileReads } from "../database/wrappers/accounts/profiles/wrapper";
+import { LoginReads } from "../database/wrappers/accounts/logins/wrapper";
 import * as killswitches from "../utils/global_killswitches";
 
 // Middleware to authorize a user

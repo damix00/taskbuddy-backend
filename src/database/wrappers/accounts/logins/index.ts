@@ -1,5 +1,5 @@
-import { DataModel } from "../../data_model";
-import { LoginFields, LoginModel } from "../../models/login";
+import { DataModel } from "../../../data_model";
+import { LoginFields, LoginModel } from "../../../models/users/login";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
 

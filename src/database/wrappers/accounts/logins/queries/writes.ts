@@ -1,5 +1,5 @@
-import { executeQuery } from "../../../connection";
-import { LoginModel } from "../../../models/login";
+import { executeQuery } from "../../../../connection";
+import { LoginModel } from "../../../../models/users/login";
 
 export namespace writes {
     export type PartialLogin = {

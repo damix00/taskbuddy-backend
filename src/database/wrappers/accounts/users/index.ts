@@ -1,9 +1,14 @@
-import { executeQuery } from "../../connection";
-import { LimitedAccess, Role, UserFields, UserModel } from "../../models/user";
-import * as bcrypt from "../../../utils/bcrypt";
+import { executeQuery } from "../../../connection";
+import {
+    LimitedAccess,
+    Role,
+    UserFields,
+    UserModel,
+} from "../../../models/users/user";
+import * as bcrypt from "../../../../utils/bcrypt";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
-import { DataModel } from "../../data_model";
+import { DataModel } from "../../../data_model";
 import { Login } from "../logins";
 import { LoginWrites } from "../logins/wrapper";
 

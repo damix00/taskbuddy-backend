@@ -1,5 +1,5 @@
-import { executeQuery } from "../../../connection";
-import { ProfileFields, ProfileModel } from "../../../models/profile";
+import { executeQuery } from "../../../../connection";
+import { ProfileFields, ProfileModel } from "../../../../models/users/profile";
 
 export namespace writes {
     export type PartialProfile = {
@@ -96,8 +96,8 @@ export namespace writes {
                 profile.following,
                 profile.posts,
                 profile.location_text,
-                profile.location_lat,
-                profile.location_lon,
+                profile.location_lat || null,
+                profile.location_lon || null,
                 profile.is_private,
                 profile.deleted,
                 profile.id,
