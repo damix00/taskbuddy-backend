@@ -1,7 +1,7 @@
 export interface PostTagFields {
-    id: number;
+    tag_id: number;
     category_id: number;
-    translations: [string, string][];
+    translations: { [key: string]: string };
     created_at: Date;
     updated_at: Date;
 }

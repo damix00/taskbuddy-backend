@@ -6,9 +6,7 @@ import { LoginFields, LoginModel } from "../../../models/users/login";
 import { reads } from "./queries/reads";
 import { writes } from "./queries/writes";
 
-async function toLogin(
-    login: LoginModel | LoginFields | null
-): Promise<Login | null> {
+function toLogin(login: LoginModel | LoginFields | null): Login | null {
     if (!login) return null;
 
     return new Login(login);
@@ -16,7 +14,7 @@ async function toLogin(
 
 export class LoginReads {
     static async getLoginById(id: number): Promise<Login | null> {
-        return await toLogin(await reads.getLoginById(id));
+        return toLogin(await reads.getLoginById(id));
     }
 
     static async getLoginsByUserId(user_id: number): Promise<Login[]> {
@@ -30,7 +28,7 @@ export class LoginReads {
 
 export class LoginWrites {
     static async addLogin(login: writes.PartialLogin): Promise<Login | null> {
-        return await toLogin(await writes.addLogin(login));
+        return toLogin(await writes.addLogin(login));
     }
 
     static async updateLogin(login: LoginModel): Promise<boolean> {

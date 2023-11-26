@@ -1,6 +1,6 @@
 export interface PostCategoryFields {
-    id: number;
-    translations: [string, string][];
+    category_id: number;
+    translations: { [key: string]: string };
     created_at: Date;
     updated_at: Date;
 }
