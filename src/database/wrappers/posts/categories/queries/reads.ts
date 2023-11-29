@@ -64,7 +64,22 @@ namespace reads {
 
             const result = await executeQuery<CategoryWithTags>(query);
 
-            return result;
+            let resp: CategoryWithTags[] = result
+                .map((category) => {
+                    // Map the result to the desired format
+                    return {
+                        category_id: parseInt(
+                            category.category_id as unknown as string
+                        ),
+                        translations: category.translations,
+                        tags: category.tags,
+                        created_at: category.created_at,
+                        updated_at: category.updated_at,
+                    };
+                })
+                .sort((a, b) => a.category_id - b.category_id); // Sort by category_id
+
+            return resp;
         } catch (err) {
             console.log(err);
 

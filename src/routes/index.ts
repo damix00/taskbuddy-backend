@@ -7,11 +7,19 @@ import callPhone from "./v1/accounts/verification/phone/call";
 import sendPhone from "./v1/accounts/verification/phone/send";
 import verifyPhone from "./v1/accounts/verification/phone/verify";
 import ping from "./v1/ping";
+import tags from "./v1/posts/tags";
 
 export type route = {
     path: string;
     handler: any;
 };
+
+const postRoutes: route[] = [
+    {
+        path: "/v1/posts/tags",
+        handler: tags,
+    },
+];
 
 const meRoutes: route[] = [
     {
@@ -58,6 +66,7 @@ const userRoutes: route[] = [
 
 const routes: route[] = [
     ...userRoutes,
+    ...postRoutes,
     {
         path: "/v1/ping",
         handler: ping,

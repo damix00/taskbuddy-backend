@@ -5,7 +5,6 @@ import _update from "./_update";
 import { CategoryReads } from "../../../../database/wrappers/posts/categories/wrapper";
 
 export default [
-    authorize(true),
     async (req: ExtendedRequest, res: Response) => {
         if (req.method.toUpperCase() === "GET") {
             const categories = await CategoryReads.fetchWithTags();
