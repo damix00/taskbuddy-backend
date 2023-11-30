@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS posts (
     reserved_by BIGSERIAL, -- User who reserved the post
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (reserved_by) REFERENCES users(id),
-    FOREIGN KEY (removals_id) REFERENCES post_removals(id)
-    FOREIGN KEY (post_location_id) REFERENCES post_location(id)
-    FOREIGN KEY (interactions_id) REFERENCES post_interactions(id)
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (reserved_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (removals_id) REFERENCES post_removals(id) ON DELETE CASCADE,
+    FOREIGN KEY (post_location_id) REFERENCES post_location(id) ON DELETE CASCADE,
+    FOREIGN KEY (interactions_id) REFERENCES post_interactions(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS post_interactions (
