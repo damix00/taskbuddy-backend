@@ -46,6 +46,8 @@ CREATE TABLE IF NOT EXISTS post_comments (
     user_id BIGSERIAL NOT NULL,
     comment TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    likes BIGINT NOT NULL DEFAULT 0,
+    reply_count BIGINT NOT NULL DEFAULT 0,
     is_reply BOOLEAN NOT NULL DEFAULT FALSE,
     reply_to BIGSERIAL,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
@@ -95,5 +97,15 @@ CREATE TABLE IF NOT EXISTS post_interaction_logs ( -- Likes on posts
     interaction_ip TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS comment_interaction_logs ( -- Likes on comments
+    user_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    interaction_type INTEGER NOT NULL, -- 0 - like, 1 - reply
+    interaction_ip TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (comment_id) REFERENCES post_comments(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

@@ -1,11 +1,14 @@
 import { UserFields } from "../users/user";
+import { PostComments } from "./comments";
 
+// Enum for different types of jobs
 export enum JobType {
     ONE_TIME = 0,
     PART_TIME = 1,
     FULL_TIME = 2,
 }
 
+// Enum for different statuses of a post
 export enum PostStatus {
     OPEN = 0,
     CLOSED = 1,
@@ -15,6 +18,13 @@ export enum PostStatus {
     EXPIRED = 5,
 }
 
+// Enum for different types of media
+export enum MediaType {
+    IMAGE = 0,
+    VIDEO = 1,
+}
+
+// Interface for the fields in a post record
 export interface PostFields {
     id: number;
     uuid: string;
@@ -35,13 +45,15 @@ export interface PostFields {
     updated_at: Date;
 }
 
+// Interface for media related to a post
 export interface PostMedia {
     id: number;
     post_id: number;
-    media_url: string;
+    media: string;
     media_type: number;
 }
 
+// Interface for interactions with a post
 export interface PostInteractions {
     id: number;
     likes: number;
@@ -51,16 +63,7 @@ export interface PostInteractions {
     impressions: number;
 }
 
-export interface PostComments {
-    id: number;
-    post_id: number;
-    user_id: number;
-    comment: string;
-    created_at: Date;
-    is_reply: boolean;
-    reply_to: number;
-}
-
+// Interface for removals of a post
 export interface PostRemovals {
     id: number;
     removed: boolean;
@@ -70,6 +73,7 @@ export interface PostRemovals {
     shadow_banned: boolean;
 }
 
+// Interface for location of a post
 export interface PostLocation {
     id: number;
     remote: boolean;
@@ -79,11 +83,13 @@ export interface PostLocation {
     location_name: string;
 }
 
+// Interface for tags of a post
 export interface PostTags {
     post_id: number;
     tag_id: number;
 }
 
+// Interface for a post with all its relations
 export interface PostWithRelations extends PostFields {
     user: UserFields;
     media: PostMedia[];
@@ -94,13 +100,14 @@ export interface PostWithRelations extends PostFields {
     tags: PostTags[];
 }
 
+// Interface for a post model with all its relations and methods for manipulating the post
 export interface PostWithRelationsModel extends PostWithRelations {
     update: (data: Partial<PostWithRelations>) => Promise<boolean>;
     deletePost: () => Promise<boolean>;
     refetch: () => Promise<void>;
     addMedia: (media: {
-        media_url: string;
-        media_type: string;
+        media: string;
+        media_type: MediaType;
     }) => Promise<boolean>;
     removeMedia: (media: PostMedia) => Promise<boolean>;
     addComment: (comment: {

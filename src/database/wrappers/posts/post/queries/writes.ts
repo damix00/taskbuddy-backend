@@ -22,8 +22,8 @@ namespace writes {
         start_date: Date;
         end_date: Date;
         media: {
-            media_url: string;
-            media_type: string;
+            media: string;
+            media_type: number;
         }[];
         location: {
             lat: number;
@@ -146,7 +146,7 @@ namespace writes {
                         `
                         INSERT INTO post_media (
                             post_id,
-                            media_url,
+                            media,
                             media_type
                         ) VALUES (
                             $1,
@@ -154,7 +154,7 @@ namespace writes {
                             $3
                         ) RETURNING *
                     `,
-                        [post[0].id, media.media_url, media.media_type]
+                        [post[0].id, media.media, media.media_type]
                     )
                 )
             );
@@ -193,6 +193,68 @@ namespace writes {
             await executeQuery("ROLLBACK");
 
             return null;
+        }
+    }
+
+    // Updates a post
+    export async function updatePost(
+        data: PostFields
+    ): Promise<PostFields | null> {
+        try {
+            const q = `
+                UPDATE posts SET
+                    title = $1,
+                    title_vector = $2,
+                    description = $3,
+                    job_type = $4,
+                    price = $5,
+                    start_date = $6,
+                    end_date = $7,
+                    status = $8,
+                    reserved_by = $9,
+                    updated_at = NOW()
+                WHERE id = $10
+                RETURNING *
+            `;
+
+            const post = await executeQuery<PostFields>(q, [
+                data.title,
+                data.title_vector,
+                data.description,
+                data.job_type,
+                data.price,
+                data.start_date,
+                data.end_date,
+                data.status,
+                data.reserved_by,
+                data.id,
+            ]);
+
+            if (!post || !post.length) return null;
+
+            return post[0];
+        } catch (e) {
+            console.error(e);
+
+            return null;
+        }
+    }
+
+    // Deletes a post
+    export async function deletePost(post_id: number): Promise<boolean> {
+        try {
+            const q = `
+                DELETE FROM posts
+                WHERE id = $1
+            `;
+
+            await executeQuery(q, [post_id]);
+
+            return true;
+        } catch (e) {
+            console.error(e);
+
+            return false;
         }
     }
 }

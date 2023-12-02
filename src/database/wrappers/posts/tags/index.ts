@@ -38,7 +38,7 @@ class Tag extends DataModel implements PostTagModel {
         );
 
         if (r) {
-            Object.assign(this, newTag);
+            super.setData(newTag);
         }
 
         return r;

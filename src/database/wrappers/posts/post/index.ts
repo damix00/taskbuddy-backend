@@ -1,7 +1,7 @@
 import { DataModel } from "../../../data_model";
 import {
     JobType,
-    PostComments,
+    MediaType,
     PostInteractions,
     PostLocation,
     PostMedia,
@@ -12,6 +12,11 @@ import {
     PostWithRelationsModel,
 } from "../../../models/posts/post";
 import { UserFields } from "../../../models/users/user";
+import { updatePostRelations } from "./relations/writes";
+import reads from "./queries/reads";
+import writes from "./queries/writes";
+import { PostComments } from "../../../models/posts/comments";
+import FirebaseStorage from "../../../../firebase/storage/files";
 
 class Post extends DataModel implements PostWithRelationsModel {
     user: UserFields;
@@ -49,13 +54,67 @@ class Post extends DataModel implements PostWithRelationsModel {
         this.refetchOnUpdate = refetchOnUpdate;
     }
 
-    update: (data: Partial<PostWithRelations>) => Promise<boolean>;
-    deletePost: () => Promise<boolean>;
-    addMedia: (media: {
-        media_url: string;
-        media_type: string;
-    }) => Promise<boolean>;
-    removeMedia: (media: PostMedia) => Promise<boolean>;
+    public override async refetch(): Promise<void> {
+        const result = await reads.getPostById(this.id);
+
+        if (!result) throw new Error("Post not found");
+
+        super.setData(result);
+    }
+
+    public async update(data: Partial<PostWithRelations>): Promise<boolean> {
+        this._refetch();
+
+        const newPost = { ...this, ...data };
+
+        const r = await updatePostRelations(newPost);
+
+        if (r) {
+            super.setData(newPost);
+            return true;
+        }
+
+        return false;
+    }
+
+    public async deletePost(): Promise<boolean> {
+        return await writes.deletePost(this.id);
+    }
+
+    public async addMedia(media: {
+        media: string;
+        media_type: MediaType;
+    }): Promise<boolean> {
+        try {
+            return this.update({
+                media: [
+                    ...this.media,
+                    {
+                        id: 0,
+                        post_id: this.id,
+                        media: media.media,
+                        media_type: media.media_type,
+                    },
+                ],
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async removeMedia(media: PostMedia): Promise<boolean> {
+        try {
+            await FirebaseStorage.deleteFile(media.media); // Delete the file from storage
+            return this.update({
+                media: this.media.filter((m) => m.id !== media.id), // Remove the media from the post
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
