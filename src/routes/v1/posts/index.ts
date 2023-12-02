@@ -4,6 +4,7 @@ import { Response } from "express";
 import { ExtendedRequest } from "../../../types/request";
 import { authorize } from "../../../middleware/authorization";
 import { requireMethod } from "../../../middleware/require_method";
+import { UploadedFile } from "express-fileupload";
 
 export default [
     authorize(false),
@@ -26,11 +27,33 @@ export default [
                 tags,
             } = req.body;
 
-            const media = req.files;
+            const media: UploadedFile[] = [];
 
-            console.log(media);
+            for (const key in req.files) {
+                media.push(req.files[key] as UploadedFile);
+            }
 
-            res.status(200).json({ message: "Post created" });
+            console.log(req.body);
+
+            if (
+                job_type === undefined ||
+                !title ||
+                !description ||
+                is_remote === undefined ||
+                is_urgent === undefined ||
+                !price ||
+                !suggestion_radius ||
+                !start_date ||
+                !end_date ||
+                !tags ||
+                !media ||
+                media.length < 3 ||
+                media.length > 20
+            ) {
+                return res
+                    .status(400)
+                    .json({ message: "Missing required fields" });
+            }
         } catch (err) {
             return res.status(400).json({ message: "Internal server error" });
         }
