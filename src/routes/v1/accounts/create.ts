@@ -24,6 +24,7 @@ import path from "path";
 import fs from "fs";
 import { UserWrites } from "../../../database/wrappers/accounts/users/wrapper";
 import { ProfileWrites } from "../../../database/wrappers/accounts/profiles/wrapper";
+import { executeQuery } from "../../../database/connection";
 
 async function validate(
     ip: string,
@@ -154,6 +155,9 @@ export default [
                 });
             }
 
+            // Begin transaction
+            await executeQuery("BEGIN");
+
             const uuid = await generateUUID();
             const passwordHash = await bcrypt.hashPassword(password);
 
@@ -216,10 +220,16 @@ export default [
                 });
             }
 
+            // Commit the transaction
+            await executeQuery("COMMIT");
+
             res.status(200).json(
                 getUserProfileResponse(result, login.id, profile)
             );
         } catch (e) {
+            // Rollback the transaction
+            await executeQuery("ROLLBACK");
+
             console.error(e);
 
             res.status(500).json({

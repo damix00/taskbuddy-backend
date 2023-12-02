@@ -44,7 +44,6 @@ export interface PostMedia {
 
 export interface PostInteractions {
     id: number;
-    post_id: number;
     likes: number;
     comments: number;
     shares: number;
@@ -64,7 +63,6 @@ export interface PostComments {
 
 export interface PostRemovals {
     id: number;
-    post_id: number;
     removed: boolean;
     removal_reason: string;
     flagged: boolean;
@@ -74,7 +72,6 @@ export interface PostRemovals {
 
 export interface PostLocation {
     id: number;
-    post_id: number;
     remote: boolean;
     lat: number;
     lon: number;

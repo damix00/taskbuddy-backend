@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS posts (
     id BIGSERIAL PRIMARY KEY, -- ID of post
-    uuid VARCHAR(255) NOT NULL UNIQUE, -- UUID of post
+    uuid VARCHAR(1024) NOT NULL UNIQUE, -- UUID of post
     user_id BIGSERIAL NOT NULL, -- User who posted
-    title VARCHAR(255) NOT NULL, -- Title of job
+    title VARCHAR(256) NOT NULL, -- Title of job
     title_vector vector NOT NULL, -- Vector representation of title for similarity search
     description TEXT NOT NULL, -- Description of job
     job_type INTEGER NOT NULL, -- 0 - one-time, 1 - part-time, 2 - full-time
@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS post_media (
 
 CREATE TABLE IF NOT EXISTS post_interactions (
     id BIGSERIAL PRIMARY KEY,
-    post_id BIGSERIAL NOT NULL,
     likes BIGINT NOT NULL DEFAULT 0, -- Number of likes
     comments BIGINT NOT NULL DEFAULT 0, -- Number of comments
     shares BIGINT NOT NULL DEFAULT 0, -- Number of times post has been shared
@@ -56,7 +55,6 @@ CREATE TABLE IF NOT EXISTS post_comments (
 
 CREATE TABLE IF NOT EXISTS post_removals (
     id BIGSERIAL PRIMARY KEY,
-    post_id BIGSERIAL NOT NULL,
     removed BOOLEAN NOT NULL DEFAULT FALSE, -- Removed by admin
     removal_reason TEXT, -- Reason for removal, set by admin
     flagged BOOLEAN NOT NULL DEFAULT FALSE, -- Flagged for review by algorithm
@@ -66,7 +64,6 @@ CREATE TABLE IF NOT EXISTS post_removals (
 
 CREATE TABLE IF NOT EXISTS post_location (
     id BIGSERIAL PRIMARY KEY,
-    post_id BIGSERIAL NOT NULL,
     remote BOOLEAN NOT NULL DEFAULT FALSE, -- Is the job remote?
     lat FLOAT, -- Location of post
     lon FLOAT, -- Location of post

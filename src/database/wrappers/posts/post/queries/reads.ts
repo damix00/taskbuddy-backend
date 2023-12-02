@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import { PostWithRelations } from "../../../../models/posts/post";
 
@@ -48,6 +49,26 @@ namespace reads {
         uuid: string
     ): Promise<PostWithRelations | null> {
         return await getPostByField("posts.uuid", uuid);
+    }
+
+    export async function generatePostUUID(): Promise<String | null> {
+        try {
+            do {
+                const uuid = v4();
+
+                const q = `
+                    SELECT uuid FROM posts WHERE uuid = $1
+                `;
+
+                const r = await executeQuery<{ uuid: string }>(q, [uuid]);
+
+                if (r.length === 0) return uuid;
+            } while (true);
+        } catch (e) {
+            console.error(e);
+
+            return null;
+        }
     }
 }
 
