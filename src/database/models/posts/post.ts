@@ -79,6 +79,8 @@ export interface PostLocation {
     remote: boolean;
     lat: number;
     lon: number;
+    approx_lat: number;
+    approx_lon: number;
     suggestion_radius: number;
     location_name: string;
 }

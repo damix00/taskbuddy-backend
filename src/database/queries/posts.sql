@@ -69,6 +69,8 @@ CREATE TABLE IF NOT EXISTS post_location (
     remote BOOLEAN NOT NULL DEFAULT FALSE, -- Is the job remote?
     lat FLOAT, -- Location of post
     lon FLOAT, -- Location of post
+    approx_lat FLOAT, -- Approximate location of post (for privacy)
+    approx_lon FLOAT,
     suggestion_radius FLOAT, -- Radius of suggestion
     location_name TEXT -- Name of location, if applicable
 );
