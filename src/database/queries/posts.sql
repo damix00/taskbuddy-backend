@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS posts (
     interactions_id BIGSERIAL NOT NULL,
     start_date TIMESTAMP NOT NULL, -- Start date of job
     end_date TIMESTAMP NOT NULL, -- End date of job
+    urgent BOOLEAN NOT NULL DEFAULT FALSE, -- Is the job urgent?
     status INTEGER NOT NULL, -- 0 - open, 1 - closed, 2 - reserved, 3 - completed, 4 - cancelled, 5 - expired
     reserved_by BIGSERIAL, -- User who reserved the post
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS post_location (
     location_name TEXT -- Name of location, if applicable
 );
 
-CREATE TABLE IF NOT EXISTS post_tags ( -- Many to many relationship
+CREATE TABLE IF NOT EXISTS post_tag_relationship ( -- Many to many relationship
     post_id INTEGER,
     tag_id INTEGER,
     FOREIGN KEY (post_id) REFERENCES posts(id),

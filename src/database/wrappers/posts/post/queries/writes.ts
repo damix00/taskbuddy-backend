@@ -15,12 +15,13 @@ namespace writes {
     export async function createPost(data: {
         user_id: number;
         title: string;
-        title_vector: string;
+        title_vector: any;
         description: string;
         job_type: JobType;
         price: number;
         start_date: Date;
         end_date: Date;
+        urgent: boolean;
         media: {
             media: string;
             media_type: number;
@@ -103,7 +104,8 @@ namespace writes {
                     interactions_id,
                     start_date,
                     end_date,
-                    status
+                    status,
+                    urgent
                 ) VALUES (
                     $1,
                     $2,
@@ -117,7 +119,8 @@ namespace writes {
                     $10,
                     $11,
                     $12,
-                    $13
+                    $13,
+                    $14
                 ) RETURNING *
             `,
                 [
@@ -134,6 +137,7 @@ namespace writes {
                     data.start_date,
                     data.end_date,
                     data.status || PostStatus.OPEN,
+                    data.urgent,
                 ]
             );
 

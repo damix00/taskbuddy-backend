@@ -8,13 +8,15 @@ namespace reads {
                 SELECT *
                 FROM post_tags
                 INNER JOIN post_categories ON post_tags.category_id = post_categories.category_id
-                WHERE id = $1
+                WHERE tag_id = $1
             `;
 
             const result = await executeQuery<PostTagModel>(query, [id]);
 
             return result.length > 0 ? result[0] : null;
         } catch (err) {
+            console.error(err);
+
             return null;
         }
     }

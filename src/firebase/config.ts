@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import path from "path";
 import FirebaseStorage from "./storage/files";
+import RemoteConfigData from "./remote_config";
 
 // Initialize Firebase Admin SDK
 export default function initFirebase() {
@@ -19,4 +20,9 @@ export default function initFirebase() {
     });
 
     FirebaseStorage.init();
+
+    // Set an interval to fetch remote config every minute
+    setInterval(async () => {
+        await RemoteConfigData.fetch();
+    }, 60 * 1000);
 }

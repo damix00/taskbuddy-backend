@@ -31,12 +31,13 @@ export class PostWrites {
     public static async createPost(data: {
         user_id: number;
         title: string;
-        title_vector: string;
+        title_vector: any;
         description: string;
         job_type: JobType;
         price: number;
         start_date: Date;
         end_date: Date;
+        urgent: boolean;
         media: {
             media: string;
             media_type: number;

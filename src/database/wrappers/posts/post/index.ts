@@ -53,6 +53,7 @@ class Post extends DataModel implements PostWithRelationsModel {
         Object.assign(this, post);
         this.refetchOnUpdate = refetchOnUpdate;
     }
+    urgent: boolean;
 
     public override async refetch(): Promise<void> {
         const result = await reads.getPostById(this.id);

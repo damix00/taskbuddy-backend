@@ -39,6 +39,7 @@ export interface PostFields {
     interactions_id: number;
     start_date: Date;
     end_date: Date;
+    urgent: boolean;
     status: PostStatus;
     reserved_by: number;
     created_at: Date;

@@ -12,6 +12,11 @@ import * as killswitches from "./utils/global_killswitches";
 import fileUpload from "express-fileupload";
 import FirebaseStorage from "./firebase/storage/files";
 import initFirebase from "./firebase/config";
+import {
+    CategoryReads,
+    CategoryWrites,
+} from "./database/wrappers/posts/categories/wrapper";
+import { TagWrites } from "./database/wrappers/posts/tags/wrapper";
 
 dotenv.config();
 
