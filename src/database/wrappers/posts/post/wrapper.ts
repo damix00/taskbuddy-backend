@@ -16,9 +16,8 @@ async function toPost(
 
     if (post instanceof Post) return post;
 
-    if ((post as PostWithRelations | null)?.user) {
-        return new Post(post as PostWithRelations);
-    }
+    // @ts-ignore
+    if (post?.media) return new Post(post as PostWithRelations);
 
     const find = await reads.getPostById(post!.id);
 
@@ -34,6 +33,16 @@ async function toPost(
     );
 
     return new Post(find);
+}
+
+export class PostReads {
+    public static async getPostById(id: number): Promise<Post | null> {
+        return await toPost(await reads.getPostById(id));
+    }
+
+    public static async getPostByUUUID(uuid: string): Promise<Post | null> {
+        return await toPost(await reads.getPostByUUID(uuid));
+    }
 }
 
 export class PostWrites {
@@ -61,17 +70,17 @@ export class PostWrites {
         tags: number[]; // Tag IDs
         status?: PostStatus;
     }): Promise<Post | null> {
-        return toPost(await writes.createPost(data));
+        return await toPost(await writes.createPost(data));
     }
 
     public static async updatePost(data: PostFields): Promise<Post | null> {
-        return toPost(await writes.updatePost(data));
+        return await toPost(await writes.updatePost(data));
     }
 
     public static async updateRelations(
         data: PostWithRelations
     ): Promise<Post | null> {
-        return toPost(await updatePostRelations(data));
+        return await toPost(await updatePostRelations(data));
     }
 
     public static async deletePost(post_id: number): Promise<boolean> {

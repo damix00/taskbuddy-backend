@@ -202,6 +202,8 @@ export default [
                     .json({ message: "Internal server error" });
             }
 
+            console.log(post);
+
             return res.status(200).json({ message: "Post created" });
         } catch (err) {
             return res.status(500).json({ message: "Internal server error" });

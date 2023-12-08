@@ -10,22 +10,20 @@ async function getPostByField(
         const q = `
             SELECT
                 posts.*,
-                users.*,
-                post_media.*,
                 post_interactions.*,
                 post_removals.*,
                 post_location.*,
-                post_tag_relationship.*,
-                post_comments.*
-            FROM posts
-            LEFT JOIN users ON users.id = posts.user_id
-            LEFT JOIN post_media ON post_media.post_id = posts.id
-            LEFT JOIN post_interactions ON post_interactions.id = posts.interactions_id
-            LEFT JOIN post_removals ON post_removals.id = posts.removals_id
-            LEFT JOIN post_location ON post_location.id = posts.post_location_id
-            LEFT JOIN post_tag_relationship ON post_tag_relationship.post_id = posts.id
-            LEFT JOIN post_comments ON post_comments.post_id = posts.id
+                COALESCE(json_agg(DISTINCT post_media) FILTER (WHERE post_media.id IS NOT NULL), '[]') AS media,
+                COALESCE(json_agg(DISTINCT post_tag_relationship) FILTER (WHERE post_tag_relationship.post_id IS NOT NULL), '[]') AS tags
+            FROM 
+                posts
+            INNER JOIN post_media ON posts.id = post_media.post_id
+            INNER JOIN post_tag_relationship ON posts.id = post_tag_relationship.post_id
+            LEFT JOIN post_location ON posts.post_location_id = post_location.id
+            LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
+            LEFT JOIN post_removals ON posts.removals_id = post_removals.id
             WHERE ${field} = $1
+            GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id
         `;
 
         const r = await executeQuery<PostWithRelations>(q, [value]);

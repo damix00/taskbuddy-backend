@@ -21,10 +21,6 @@ import FirebaseStorage from "../../../../firebase/storage/files";
 class Post extends DataModel implements PostWithRelationsModel {
     user: UserFields;
     media: PostMedia[];
-    comments: PostComments[];
-    interactions: PostInteractions;
-    removals: PostRemovals;
-    location: PostLocation;
     tags: PostTags[];
     id: number;
     uuid: string;
@@ -43,6 +39,24 @@ class Post extends DataModel implements PostWithRelationsModel {
     reserved_by: number;
     created_at: Date;
     updated_at: Date;
+    likes: number;
+    comments: number;
+    shares: number;
+    bookmarks: number;
+    impressions: number;
+    removed: boolean;
+    removal_reason: string;
+    flagged: boolean;
+    flagged_reason: string;
+    shadow_banned: boolean;
+    remote: boolean;
+    lat: number;
+    lon: number;
+    approx_lat: number;
+    approx_lon: number;
+    suggestion_radius: number;
+    location_name: string;
+    urgent: boolean;
 
     constructor(
         post: PostWithRelations | Post,
@@ -53,7 +67,6 @@ class Post extends DataModel implements PostWithRelationsModel {
         Object.assign(this, post);
         this.refetchOnUpdate = refetchOnUpdate;
     }
-    urgent: boolean;
 
     public override async refetch(): Promise<void> {
         const result = await reads.getPostById(this.id);

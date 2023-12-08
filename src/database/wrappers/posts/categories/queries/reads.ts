@@ -73,17 +73,16 @@ namespace reads {
             // ]
 
             const query = `
-            SELECT 
-            pc.category_id, 
-            pc.translations, 
-            COALESCE(json_agg(pt) FILTER (WHERE pt.tag_id IS NOT NULL), '[]') as tags
-        FROM 
-            post_categories pc
-        LEFT JOIN 
-            post_tags pt ON pc.category_id = pt.category_id
-        GROUP BY 
-            pc.category_id;
-        
+            SELECT
+                pc.category_id, 
+                pc.translations, 
+                COALESCE(json_agg(pt) FILTER (WHERE pt.tag_id IS NOT NULL), '[]') as tags
+            FROM
+                post_categories pc
+            LEFT JOIN
+                post_tags pt ON pc.category_id = pt.category_id
+            GROUP BY
+                pc.category_id;
             `;
 
             const result = await executeQuery<CategoryWithTags>(query);

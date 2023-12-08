@@ -23,12 +23,12 @@ export async function updatePostRelations(
             WHERE id = $6
         `,
             [
-                post.interactions.likes,
-                post.interactions.comments,
-                post.interactions.shares,
-                post.interactions.bookmarks,
-                post.interactions.impressions,
-                post.interactions.id,
+                post.likes,
+                post.comments,
+                post.shares,
+                post.bookmarks,
+                post.impressions,
+                post.interactions_id,
             ]
         );
 
@@ -45,12 +45,12 @@ export async function updatePostRelations(
             WHERE id = $6
         `,
             [
-                post.removals.removed,
-                post.removals.removal_reason,
-                post.removals.flagged,
-                post.removals.flagged_reason,
-                post.removals.shadow_banned,
-                post.removals.id,
+                post.removed,
+                post.removal_reason,
+                post.flagged,
+                post.flagged_reason,
+                post.shadow_banned,
+                post.removals_id,
             ]
         );
 
@@ -63,16 +63,20 @@ export async function updatePostRelations(
                 lon = $2,
                 location_name = $3,
                 suggestion_radius = $4,
-                remote = $5
-            WHERE id = $6
+                remote = $5,
+                approx_lat = $6,
+                approx_lon = $7
+            WHERE id = $8
         `,
             [
-                post.location.lat,
-                post.location.lon,
-                post.location.location_name,
-                post.location.suggestion_radius,
-                post.location.remote,
-                post.location.id,
+                post.lat,
+                post.lon,
+                post.location_name,
+                post.suggestion_radius,
+                post.remote,
+                post.approx_lat,
+                post.approx_lon,
+                post.post_location_id,
             ]
         );
 

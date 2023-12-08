@@ -93,13 +93,12 @@ export interface PostTags {
 }
 
 // Interface for a post with all its relations
-export interface PostWithRelations extends PostFields {
-    user: UserFields;
+export interface PostWithRelations
+    extends PostFields,
+        PostInteractions,
+        PostRemovals,
+        PostLocation {
     media: PostMedia[];
-    comments: PostComments[];
-    interactions: PostInteractions;
-    removals: PostRemovals;
-    location: PostLocation;
     tags: PostTags[];
 }
 
