@@ -10,7 +10,10 @@ class Tag extends DataModel implements PostTagModel {
     created_at: Date;
     updated_at: Date;
 
-    constructor(tag: PostTagModel | Tag, refetchOnUpdate: boolean = true) {
+    constructor(
+        tag: PostTagFields | PostTagModel | Tag,
+        refetchOnUpdate: boolean = true
+    ) {
         super(refetchOnUpdate);
 
         Object.assign(this, tag);

@@ -7,6 +7,8 @@ import writes from "./queries/writes";
 function toTag(tag: PostTagModel | Tag | null): Tag | null {
     if (!tag) return null;
 
+    tag.tag_id = parseInt(tag.tag_id as unknown as string); // Cast to number because it's a bigint in the database
+
     return new Tag(tag);
 }
 

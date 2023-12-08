@@ -16,7 +16,7 @@ import {
     CategoryReads,
     CategoryWrites,
 } from "./database/wrappers/posts/categories/wrapper";
-import { TagWrites } from "./database/wrappers/posts/tags/wrapper";
+import { TagReads, TagWrites } from "./database/wrappers/posts/tags/wrapper";
 
 dotenv.config();
 

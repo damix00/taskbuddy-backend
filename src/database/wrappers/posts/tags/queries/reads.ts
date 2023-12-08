@@ -20,6 +20,29 @@ namespace reads {
             return null;
         }
     }
+
+    export async function getTagsByCategory(
+        category_id: number
+    ): Promise<PostTagModel[]> {
+        try {
+            const query = `
+                SELECT *
+                FROM post_tags
+                INNER JOIN post_categories ON post_tags.category_id = post_categories.category_id
+                WHERE post_categories.category_id = $1
+            `;
+
+            const result = await executeQuery<PostTagModel>(query, [
+                category_id,
+            ]);
+
+            return result;
+        } catch (err) {
+            console.error(err);
+
+            return [];
+        }
+    }
 }
 
 export default reads;

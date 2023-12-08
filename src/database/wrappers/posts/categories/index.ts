@@ -3,6 +3,7 @@ import {
     PostCategoryFields,
     PostCategoryModel,
 } from "../../../models/posts/post_category";
+import Tag from "../tags";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
@@ -13,7 +14,7 @@ class Category extends DataModel implements PostCategoryModel {
     updated_at: Date;
 
     constructor(
-        category: PostCategoryModel | Category,
+        category: PostCategoryFields | PostCategoryModel | Category,
         refetchOnUpdate: boolean = true
     ) {
         super(refetchOnUpdate);
@@ -46,8 +47,31 @@ class Category extends DataModel implements PostCategoryModel {
         return r;
     }
 
-    deleteCategory(): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    public async deleteCategory(): Promise<boolean> {
+        try {
+            return await writes.deleteCategory(this.category_id);
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async deleteAllTags(): Promise<boolean> {
+        try {
+            const tags = await reads.fetchAllTagsByCategory(this.category_id);
+
+            if (!tags) {
+                return false;
+            }
+
+            for (const tag of tags) {
+                new Tag(tag).deleteTag();
+            }
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 
     addTranslation(language: string, translation: string): Promise<boolean> {

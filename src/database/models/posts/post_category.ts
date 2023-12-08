@@ -1,3 +1,5 @@
+import Category from "../../wrappers/posts/categories";
+import Tag from "../../wrappers/posts/tags";
 import { PostTagFields } from "./post_tag";
 
 export interface PostCategoryFields {
@@ -15,6 +17,11 @@ export interface CategoryWithTags {
     updated_at: Date;
 }
 
+export interface CategoryWithTagsModel {
+    category: Category;
+    tags: Tag[];
+}
+
 export interface PostCategoryModel extends PostCategoryFields {
     update(data: Partial<PostCategoryFields>): Promise<boolean>;
     deleteCategory(): Promise<boolean>;
@@ -23,4 +30,5 @@ export interface PostCategoryModel extends PostCategoryFields {
     removeTranslation(language: string): Promise<boolean>;
     getTranslation(language: string): string | null;
     getTranslations(): { [key: string]: string };
+    deleteAllTags(): Promise<boolean>;
 }

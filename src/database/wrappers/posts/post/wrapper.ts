@@ -24,6 +24,15 @@ async function toPost(
 
     if (!find) return null;
 
+    // Cast to int
+    find.user_id = parseInt(find.user_id as unknown as string);
+    find.id = parseInt(find.id as unknown as string);
+    find.removals_id = parseInt(find.removals_id as unknown as string);
+    find.interactions_id = parseInt(find.interactions_id as unknown as string);
+    find.post_location_id = parseInt(
+        find.post_location_id as unknown as string
+    );
+
     return new Post(find);
 }
 

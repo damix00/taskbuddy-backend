@@ -23,6 +23,10 @@ export default function initFirebase() {
 
     // Set an interval to fetch remote config every minute
     setInterval(async () => {
-        await RemoteConfigData.fetch();
+        try {
+            await RemoteConfigData.fetch();
+        } catch (e) {
+            console.error(e);
+        }
     }, 60 * 1000);
 }

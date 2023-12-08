@@ -7,15 +7,18 @@ import { requireMethod } from "../../../middleware/require_method";
 import { UploadedFile } from "express-fileupload";
 import { JobType, PostStatus } from "../../../database/models/posts/post";
 import RemoteConfigData from "../../../firebase/remote_config";
-import { boolParser, floatParser } from "../../../middleware/parsers";
+import {
+    boolParser,
+    floatParser,
+    intParser,
+} from "../../../middleware/parsers";
 import { PostWrites } from "../../../database/wrappers/posts/post/wrapper";
 import { TagReads } from "../../../database/wrappers/posts/tags/wrapper";
 
 export default [
     authorize(false),
-    floatParser({
-        ignore: ["start_date", "end_date", "tags"], // We don't want to parse these fields
-    }),
+    intParser(["job_type"]),
+    floatParser(["location_lat", "location_lon", "price", "suggestion_radius"]),
     boolParser(),
     requireMethod("POST"),
     async (req: ExtendedRequest, res: Response) => {

@@ -33,7 +33,7 @@ namespace writes {
             const query = `
                 UPDATE post_tags
                 SET category_id = $1, translations = $2, updated_at = NOW()
-                WHERE id = $3 RETURINNG *
+                WHERE tag_id = $3 RETURINNG *
             `;
 
             const result = await executeQuery(query, [
@@ -52,7 +52,7 @@ namespace writes {
         try {
             const query = `
                 DELETE FROM post_tags
-                WHERE id = $1
+                WHERE tag_id = $1
             `;
 
             await executeQuery(query, [id]);

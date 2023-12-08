@@ -6,7 +6,7 @@ namespace writes {
         [key: string]: string;
     }): Promise<PostCategoryModel | null> {
         try {
-            const query = `INSERT INTO post_categories (translations) VALUES ($1) RETURNING *`;
+            const query = `INSERT INTO post_categories (category_id, translations) VALUES (5, $1) RETURNING *`;
 
             const result = await executeQuery<PostCategoryModel>(query, [
                 JSON.stringify(translations),
@@ -53,6 +53,8 @@ namespace writes {
 
             return true;
         } catch (err) {
+            console.error(err);
+
             return false;
         }
     }
