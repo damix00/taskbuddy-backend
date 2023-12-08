@@ -1,62 +1,78 @@
 import { NextFunction, Response } from "express";
 import { ExtendedRequest } from "../types/request";
 
-export function intParser(fields: string[] = []) {
+function parser(
+    fields: string[],
+    canParse: (value: string) => boolean,
+    parser: (value: string) => any
+) {
     return (req: ExtendedRequest, res: Response, next: NextFunction) => {
         const { body } = req;
 
         for (const key in body) {
-            // Only parse a field if it's a string and in the list of fields
-            // we want to parse.
-            if (typeof body[key] === "string" && fields.includes(key)) {
-                const parsed = parseInt(body[key]);
-
-                // If the parsed value is not NaN, replace the value in the
-                // body with the parsed value.
-                if (!isNaN(parsed)) {
-                    body[key] = parsed;
-                }
+            if (
+                typeof body[key] === "string" &&
+                canParse(body[key]) &&
+                fields.includes(key)
+            ) {
+                body[key] = parser(body[key]);
             }
         }
 
         next();
     };
+}
+
+export function intParser(fields: string[] = []) {
+    return parser(
+        fields,
+        (value: string) => {
+            return !isNaN(parseInt(value));
+        },
+        parseInt
+    );
 }
 
 export function floatParser(fields: string[] = []) {
-    return (req: ExtendedRequest, res: Response, next: NextFunction) => {
-        const { body } = req;
-
-        for (const key in body) {
-            if (typeof body[key] === "string" && fields.includes(key)) {
-                const parsed = parseFloat(body[key]);
-
-                if (!isNaN(parsed)) {
-                    body[key] = parsed;
-                }
-            }
-        }
-
-        next();
-    };
+    return parser(
+        fields,
+        (value: string) => {
+            return !isNaN(parseFloat(value));
+        },
+        parseFloat
+    );
 }
 
 export function boolParser(fields: string[] = []) {
-    return (req: ExtendedRequest, res: Response, next: NextFunction) => {
-        const { body } = req;
+    return parser(
+        fields,
+        (value: string) => {
+            return value == "true" || value == "false";
+        },
+        (value: string) => {
+            if (value === "true") {
+                return true;
+            } else if (value === "false") {
+                return false;
+            }
 
-        for (const key in body) {
-            if (typeof body[key] === "string" && fields.includes(key)) {
-                // If the string value is "true", set the value to true.
-                // If the string value is "false", set the value to false.
-                if (body[key] == "true") {
-                    body[key] = true;
-                } else if (body[key] == "false") {
-                    body[key] = false;
-                }
+            return value;
+        }
+    );
+}
+
+export function listParser(fields: string[] = []) {
+    return parser(
+        fields,
+        (value: string) => {
+            return value.startsWith("[") && value.endsWith("]");
+        },
+        (value: string) => {
+            try {
+                return JSON.parse(value);
+            } catch (e) {
+                return value;
             }
         }
-
-        next();
-    };
+    );
 }

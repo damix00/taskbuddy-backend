@@ -155,9 +155,6 @@ export default [
                 });
             }
 
-            // Begin transaction
-            await executeQuery("BEGIN");
-
             const uuid = await generateUUID();
             const passwordHash = await bcrypt.hashPassword(password);
 
@@ -220,16 +217,10 @@ export default [
                 });
             }
 
-            // Commit the transaction
-            await executeQuery("COMMIT");
-
             res.status(200).json(
                 getUserProfileResponse(result, login.id, profile)
             );
         } catch (e) {
-            // Rollback the transaction
-            await executeQuery("ROLLBACK");
-
             console.error(e);
 
             res.status(500).json({

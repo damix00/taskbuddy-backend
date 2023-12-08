@@ -24,7 +24,7 @@ namespace writes {
         urgent: boolean;
         media: {
             media: string;
-            media_type: number;
+            media_type: string;
         }[];
         location: {
             lat: number;
@@ -38,7 +38,7 @@ namespace writes {
     }): Promise<PostFields | null> {
         try {
             // Start a transaction
-            await executeQuery("BEGIN");
+            // await executeQuery("BEGIN");
 
             // Create interactions row
             const interactions = await executeQuery<PostInteractions>(
@@ -48,6 +48,8 @@ namespace writes {
             if (!interactions || !interactions.length)
                 throw new Error("Failed to create interactions");
 
+            console.log(interactions);
+
             // Create removals row
             const removals = await executeQuery<PostRemovals>(
                 `INSERT INTO post_removals DEFAULT VALUES RETURNING *`
@@ -55,6 +57,8 @@ namespace writes {
 
             if (!removals || !removals.length)
                 throw new Error("Failed to create removals");
+
+            console.log(removals);
 
             // Create location row
             const location = await executeQuery<PostLocation>(
@@ -84,10 +88,29 @@ namespace writes {
             if (!location || !location.length)
                 throw new Error("Failed to create location");
 
+            console.log(location);
+
             // Create post row
-            const uuid = reads.generatePostUUID();
+            const uuid = await reads.generatePostUUID();
 
             if (!uuid) throw new Error("Failed to generate UUID");
+
+            const values = [
+                uuid,
+                data.user_id,
+                data.title,
+                data.title_vector,
+                data.description,
+                data.job_type,
+                data.price,
+                parseInt(removals[0].id as unknown as string),
+                parseInt(location[0].id as unknown as string),
+                parseInt(interactions[0].id as unknown as string),
+                data.start_date,
+                data.end_date,
+                data.status || PostStatus.OPEN,
+                data.urgent,
+            ];
 
             const post = await executeQuery<PostFields>(
                 `
@@ -123,25 +146,12 @@ namespace writes {
                     $14
                 ) RETURNING *
             `,
-                [
-                    uuid,
-                    data.user_id,
-                    data.title,
-                    data.title_vector,
-                    data.description,
-                    data.job_type,
-                    data.price,
-                    removals[0].id,
-                    location[0].id,
-                    interactions[0].id,
-                    data.start_date,
-                    data.end_date,
-                    data.status || PostStatus.OPEN,
-                    data.urgent,
-                ]
+                values
             );
 
             if (!post || !post.length) throw new Error("Failed to create post");
+
+            console.log(post);
 
             // Create post media rows
             const media = await Promise.all(
@@ -151,7 +161,7 @@ namespace writes {
                         INSERT INTO post_media (
                             post_id,
                             media,
-                            media_type
+                            type
                         ) VALUES (
                             $1,
                             $2,
@@ -171,7 +181,7 @@ namespace writes {
                 data.tags.map((tag) =>
                     executeQuery(
                         `
-                        INSERT INTO post_tags (
+                        INSERT INTO post_tag_relationship (
                             post_id,
                             tag_id
                         ) VALUES (
@@ -187,14 +197,14 @@ namespace writes {
             if (!tags || !tags.length) throw new Error("Failed to create tags");
 
             // Commit the transaction
-            await executeQuery("COMMIT");
+            // await executeQuery("COMMIT");
 
             return post[0];
         } catch (e) {
             console.error(e);
 
             // Rollback the transaction
-            await executeQuery("ROLLBACK");
+            // await executeQuery("ROLLBACK");
 
             return null;
         }

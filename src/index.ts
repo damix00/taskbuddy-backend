@@ -10,13 +10,7 @@ import userAgent from "./middleware/global/user_agent";
 import route_killswitch from "./middleware/global/route_killswitch";
 import * as killswitches from "./utils/global_killswitches";
 import fileUpload from "express-fileupload";
-import FirebaseStorage from "./firebase/storage/files";
 import initFirebase from "./firebase/config";
-import {
-    CategoryReads,
-    CategoryWrites,
-} from "./database/wrappers/posts/categories/wrapper";
-import { TagReads, TagWrites } from "./database/wrappers/posts/tags/wrapper";
 
 dotenv.config();
 
@@ -76,7 +70,11 @@ async function start() {
 }
 
 if (cluster.isMaster) {
-    for (let i = 0; i < os.cpus().length; i++) {
+    for (
+        let i = 0;
+        i < (process.env?.MODE == "prod" ? os.cpus().length : 1);
+        i++
+    ) {
         cluster.fork();
     }
 } else {

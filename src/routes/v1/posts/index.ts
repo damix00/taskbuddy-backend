@@ -11,15 +11,23 @@ import {
     boolParser,
     floatParser,
     intParser,
+    listParser,
 } from "../../../middleware/parsers";
 import { PostWrites } from "../../../database/wrappers/posts/post/wrapper";
 import { TagReads } from "../../../database/wrappers/posts/tags/wrapper";
+import { generateEmbedding } from "../../../classification/cohere";
+import fs from "fs";
+import FirebaseStorage from "../../../firebase/storage/files";
+import uniqueFilename from "unique-filename";
+import os from "os";
+import path from "path";
 
 export default [
     authorize(false),
     intParser(["job_type"]),
     floatParser(["location_lat", "location_lon", "price", "suggestion_radius"]),
-    boolParser(),
+    boolParser(["is_remote", "is_urgent"]),
+    listParser(["tags"]),
     requireMethod("POST"),
     async (req: ExtendedRequest, res: Response) => {
         try {
@@ -42,11 +50,8 @@ export default [
             const media: UploadedFile[] = [];
 
             for (const key in req.files) {
-                console.log(key);
                 media.push(req.files[key] as UploadedFile);
             }
-
-            console.log(req.body);
 
             if (
                 job_type === undefined ||
@@ -116,18 +121,61 @@ export default [
                     isNaN(parseInt(tag)) ||
                     (await TagReads.getTagById(parseInt(tag))) === null
                 ) {
-                    console.log(await TagReads.getTagById(parseInt(tag)));
                     return res.status(400).json({ message: "Invalid tags" });
                 }
             }
 
             const ip = req.ip || req.socket.remoteAddress;
 
+            // Upload media to firebase storage
+            const urls = await Promise.all(
+                media.map(async (file) => {
+                    const filename = uniqueFilename(
+                        os.tmpdir(),
+                        "post_media__"
+                    );
+                    const ext = path
+                        .extname(file.name)
+                        .toLowerCase()
+                        .replace(".", "");
+                    const mvfilename = `${filename}.${ext}`;
+
+                    // Temporarily save the file to the server
+                    await file.mv(mvfilename);
+
+                    const upload = await FirebaseStorage.uploadFile(
+                        mvfilename,
+                        `image/${ext.toLowerCase()}`,
+                        ext
+                    );
+
+                    // Delete the file from the server
+                    fs.rmSync(mvfilename);
+
+                    // Check if the upload was successful
+                    if (!upload) {
+                        return res
+                            .status(500)
+                            .json({ message: "Internal server error" });
+                    }
+
+                    // Get the URL
+                    let media = upload[0].metadata.mediaLink;
+
+                    return media;
+                })
+            );
+
+            const vector = await generateEmbedding(
+                `${title}\n\n${description}`,
+                false
+            );
+
             const post = await PostWrites.createPost({
                 user_id: req.user!.id,
                 job_type,
                 title,
-                title_vector: [],
+                title_vector: `[${vector}]`,
                 description,
                 location: {
                     lat: location_lat,
@@ -142,7 +190,10 @@ export default [
                 end_date,
                 tags,
                 status: PostStatus.OPEN,
-                media: [],
+                media: urls.map((url) => ({
+                    media: url,
+                    media_type: "image",
+                })),
             });
 
             if (!post) {

@@ -14,3 +14,4 @@ export const dbPassword = process.env.DB_PASSWORD || "root";
 export const dbPort = parseInt(process.env.DB_PORT || "5432");
 
 export const openAiKey = process.env.OPENAI_API_KEY as string;
+export const cohereToken = process.env.COHERE_TOKEN as string;

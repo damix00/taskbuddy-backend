@@ -1,44 +1,45 @@
 {
-  "dependencies": {
-    "@socket.io/postgres-adapter": "^0.3.1",
-    "bcrypt": "^5.1.0",
-    "cluster": "^0.7.7",
-    "colors": "^1.4.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
-    "firebase-admin": "^11.10.1",
-    "jsonwebtoken": "^9.0.1",
-    "openai": "^4.20.1",
-    "pg": "^8.11.1",
-    "socket.io": "^4.7.1",
-    "twilio": "^4.13.0",
-    "unique-filename": "^3.0.0",
-    "uuid": "^9.0.0",
-    "winston": "^3.10.0"
-  },
-  "devDependencies": {
-    "@types/bcrypt": "^5.0.0",
-    "@types/cors": "^2.8.13",
-    "@types/express": "^4.17.17",
-    "@types/express-fileupload": "^1.4.1",
-    "@types/jest": "^29.5.3",
-    "@types/jsonwebtoken": "^9.0.2",
-    "@types/pg": "^8.10.2",
-    "@types/uuid": "^9.0.2",
-    "jest": "^29.6.1",
-    "ts-jest": "^29.1.1"
-  },
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "Backend for TaskBuddy",
-  "main": "out/index.js",
-  "scripts": {
-    "dev": "concurrently \"tsc --watch\" \"tsc && nodemon out/src/index.js\"",
-    "start": "tsc && node out/src/index.js",
-    "test": "tsc && npx jest"
-  },
-  "author": "damix",
-  "license": "ISC"
+    "dependencies": {
+        "@socket.io/postgres-adapter": "^0.3.1",
+        "bcrypt": "^5.1.0",
+        "cluster": "^0.7.7",
+        "cohere-ai": "^7.5.1",
+        "colors": "^1.4.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "express-fileupload": "^1.4.0",
+        "firebase-admin": "^11.10.1",
+        "jsonwebtoken": "^9.0.1",
+        "openai": "^4.20.1",
+        "pg": "^8.11.1",
+        "socket.io": "^4.7.1",
+        "twilio": "^4.13.0",
+        "unique-filename": "^3.0.0",
+        "uuid": "^9.0.0",
+        "winston": "^3.10.0"
+    },
+    "devDependencies": {
+        "@types/bcrypt": "^5.0.0",
+        "@types/cors": "^2.8.13",
+        "@types/express": "^4.17.17",
+        "@types/express-fileupload": "^1.4.1",
+        "@types/jest": "^29.5.3",
+        "@types/jsonwebtoken": "^9.0.2",
+        "@types/pg": "^8.10.2",
+        "@types/uuid": "^9.0.2",
+        "jest": "^29.6.1",
+        "ts-jest": "^29.1.1"
+    },
+    "name": "backend",
+    "version": "1.0.0",
+    "description": "Backend for TaskBuddy",
+    "main": "out/index.js",
+    "scripts": {
+        "dev": "concurrently \"tsc --watch\" \"tsc && nodemon out/src/index.js\"",
+        "start": "tsc && MODE=prod node out/src/index.js",
+        "test": "tsc && npx jest"
+    },
+    "author": "damix",
+    "license": "ISC"
 }

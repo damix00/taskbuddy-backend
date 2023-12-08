@@ -49,7 +49,7 @@ export class PostWrites {
         urgent: boolean;
         media: {
             media: string;
-            media_type: number;
+            media_type: string;
         }[];
         location: {
             lat: number;

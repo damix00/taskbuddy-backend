@@ -15,15 +15,15 @@ async function getPostByField(
                 post_interactions.*,
                 post_removals.*,
                 post_location.*,
-                post_tags.*,
+                post_tag_relationship.*,
                 post_comments.*
             FROM posts
             LEFT JOIN users ON users.id = posts.user_id
             LEFT JOIN post_media ON post_media.post_id = posts.id
-            LEFT JOIN post_interactions ON post_interactions.post_id = posts.id
-            LEFT JOIN post_removals ON post_removals.post_id = posts.id
-            LEFT JOIN post_location ON post_location.post_id = posts.id
-            LEFT JOIN post_tags ON post_tags.post_id = posts.id
+            LEFT JOIN post_interactions ON post_interactions.id = posts.interactions_id
+            LEFT JOIN post_removals ON post_removals.id = posts.removals_id
+            LEFT JOIN post_location ON post_location.id = posts.post_location_id
+            LEFT JOIN post_tag_relationship ON post_tag_relationship.post_id = posts.id
             LEFT JOIN post_comments ON post_comments.post_id = posts.id
             WHERE ${field} = $1
         `;
