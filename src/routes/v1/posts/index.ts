@@ -21,6 +21,7 @@ import FirebaseStorage from "../../../firebase/storage/files";
 import uniqueFilename from "unique-filename";
 import os from "os";
 import path from "path";
+import { randomNearbyLocation } from "../../../utils/utils";
 
 export default [
     authorize(false),
@@ -171,6 +172,15 @@ export default [
                 false
             );
 
+            let loc = null;
+
+            if (!is_remote) {
+                loc = randomNearbyLocation(location_lat, location_lon, 500);
+
+                console.log(loc);
+                console.log({ location_lat, location_lon });
+            }
+
             const post = await PostWrites.createPost({
                 user_id: req.user!.id,
                 job_type,
@@ -183,6 +193,9 @@ export default [
                     location_name,
                     suggestion_radius,
                     remote: is_remote,
+                    // Generate approximate location for privacy reasons
+                    approx_lat: is_remote ? null : loc?.lat,
+                    approx_lon: is_remote ? null : loc?.lon,
                 },
                 urgent: is_urgent,
                 price,

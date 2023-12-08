@@ -27,11 +27,13 @@ namespace writes {
             media_type: string;
         }[];
         location: {
-            lat: number;
-            lon: number;
-            location_name: string;
+            lat?: number | null;
+            lon?: number | null;
+            location_name?: string | null;
             suggestion_radius: number;
             remote: boolean;
+            approx_lat?: number | null;
+            approx_lon?: number | null;
         };
         tags: number[]; // Tag IDs
         status?: PostStatus;
@@ -67,13 +69,17 @@ namespace writes {
                     lat,
                     lon,
                     suggestion_radius,
-                    location_name
+                    location_name,
+                    approx_lat,
+                    approx_lon
                 ) VALUES (
                     $1,
                     $2,
                     $3,
                     $4,
-                    $5
+                    $5,
+                    $6,
+                    $7
                 ) RETURNING *
             `,
                 [
@@ -82,6 +88,8 @@ namespace writes {
                     data.location.lon,
                     data.location.suggestion_radius,
                     data.location.location_name,
+                    data.location.approx_lat,
+                    data.location.approx_lon,
                 ]
             );
 

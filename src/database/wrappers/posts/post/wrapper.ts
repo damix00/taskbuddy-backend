@@ -61,11 +61,13 @@ export class PostWrites {
             media_type: string;
         }[];
         location: {
-            lat: number;
-            lon: number;
-            location_name: string;
+            lat?: number | null;
+            lon?: number | null;
+            location_name?: string | null;
             suggestion_radius: number;
             remote: boolean;
+            approx_lat?: number | null;
+            approx_lon?: number | null;
         };
         tags: number[]; // Tag IDs
         status?: PostStatus;
