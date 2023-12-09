@@ -1,6 +1,7 @@
 import { Profile } from "../../../database/wrappers/accounts/profiles";
 import { User } from "../../../database/wrappers/accounts/users";
 import Post from "../../../database/wrappers/posts/post";
+import { getProfileResponse } from "../accounts/responses";
 
 export function getPostResponse(
     post: Post,
@@ -23,6 +24,7 @@ export function getPostResponse(
             lat: isMe ? post.lat : null,
             lon: isMe ? post.lon : null,
         },
+        job_type: post.job_type,
         is_remote: post.remote,
         price: post.price,
         start_date: post.start_date,
@@ -48,9 +50,11 @@ export function getPostResponse(
             username: user.username,
             first_name: user.first_name,
             last_name: user.last_name,
-            profile_picture: profile.profile_picture,
             is_following: isFollowing,
             is_me: isMe,
+            has_premium: user.has_premium,
+            verified: user.verified,
+            profile: getProfileResponse(profile),
         },
     };
 }

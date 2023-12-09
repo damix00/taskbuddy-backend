@@ -62,6 +62,19 @@ class Post extends DataModel implements PostWithRelationsModel {
     ) {
         super(refetchOnUpdate);
 
+        post.likes = parseInt(post.likes.toString());
+        post.comments = parseInt(post.comments.toString());
+        post.shares = parseInt(post.shares.toString());
+        post.bookmarks = parseInt(post.bookmarks.toString());
+        post.impressions = parseInt(post.impressions.toString());
+        post.id = parseInt(post.id.toString());
+        post.user_id = parseInt(post.user_id.toString());
+        post.price = parseFloat(post.price.toString());
+        post.removals_id = parseInt(post.removals_id.toString());
+        post.post_location_id = parseInt(post.post_location_id.toString());
+        post.interactions_id = parseInt(post.interactions_id.toString());
+        post.reserved_by = parseInt(post.reserved_by.toString());
+
         Object.assign(this, post);
         this.refetchOnUpdate = refetchOnUpdate;
     }

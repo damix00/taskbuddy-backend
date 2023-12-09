@@ -13,7 +13,10 @@ import {
     intParser,
     listParser,
 } from "../../../middleware/parsers";
-import { PostWrites } from "../../../database/wrappers/posts/post/wrapper";
+import {
+    PostReads,
+    PostWrites,
+} from "../../../database/wrappers/posts/post/wrapper";
 import { TagReads } from "../../../database/wrappers/posts/tags/wrapper";
 import { generateEmbedding } from "../../../classification/cohere";
 import fs from "fs";
@@ -25,7 +28,7 @@ import { randomNearbyLocation } from "../../../utils/utils";
 import { getPostResponse } from "./responses";
 
 export default [
-    authorize(false),
+    authorize(true),
     intParser(["job_type"]),
     floatParser(["location_lat", "location_lon", "price", "suggestion_radius"]),
     boolParser(["is_remote", "is_urgent"]),
@@ -168,10 +171,10 @@ export default [
                 })
             );
 
-            const vector = await generateEmbedding(
-                `${title}\n\n${description}`,
-                false
-            );
+            // const vector = await generateEmbedding(
+            //     `${title}\n\n${description}`,
+            //     false
+            // );
 
             let loc = null;
 
@@ -183,7 +186,8 @@ export default [
                 user_id: req.user!.id,
                 job_type,
                 title,
-                title_vector: `[${vector}]`,
+                // title_vector: `[${vector}]`,
+                title_vector: (await PostReads.getPostById(22))?.title_vector,
                 description,
                 location: {
                     lat: location_lat,
@@ -224,6 +228,8 @@ export default [
                 ),
             });
         } catch (err) {
+            console.error(err);
+
             return res.status(500).json({ message: "Internal server error" });
         }
     },
