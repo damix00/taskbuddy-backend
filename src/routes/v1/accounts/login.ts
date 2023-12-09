@@ -4,7 +4,7 @@ import { Response } from "express";
 import { requireMethod } from "../../../middleware/require_method";
 import { sleep } from "../../../utils/utils";
 import { comparePassword } from "../../../utils/bcrypt";
-import { getUserProfileResponse } from "../../../utils/responses";
+import { getUserProfileResponse } from "./responses";
 import { ExtendedRequest } from "../../../types/request";
 import { checkCaptcha } from "../../../verification/captcha";
 import { User } from "../../../database/wrappers/accounts/users";

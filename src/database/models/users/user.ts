@@ -47,4 +47,5 @@ export interface UserModel extends UserFields {
     setPhoneNumberVerified: (verified: boolean) => Promise<boolean>;
     logOutOfAllDevices: () => Promise<boolean>;
     setVerified: (verified: boolean) => Promise<boolean>;
+    isFollowing: (user_id: number) => Promise<boolean>;
 }

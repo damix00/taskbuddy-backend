@@ -31,6 +31,13 @@ CREATE TABLE IF NOT EXISTS logins (
   last_updated_online TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS follows (
+  id BIGSERIAL PRIMARY KEY,
+  follower INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  following INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Creates indexes on the users table for faster queries
 CREATE INDEX idx_users_uuid ON users (uuid);
 CREATE INDEX idx_users_email ON users (email);

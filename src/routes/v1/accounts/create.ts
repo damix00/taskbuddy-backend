@@ -6,10 +6,7 @@ import * as validation from "../../../verification/validation";
 import { checkCaptcha } from "../../../verification/captcha";
 import { generateUUID } from "../../../database/wrappers/accounts/users/queries/utils";
 import * as bcrypt from "../../../utils/bcrypt";
-import {
-    getUserProfileResponse,
-    getUserResponse,
-} from "../../../utils/responses";
+import { getUserProfileResponse, getUserResponse } from "./responses";
 import {
     doesEmailExist,
     doesUsernameExist,

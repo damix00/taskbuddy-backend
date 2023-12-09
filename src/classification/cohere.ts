@@ -5,6 +5,9 @@ const cohere = new CohereClient({
     token: cohereToken,
 });
 
+// Generate embeddings for a given text
+// Enables us to compare the similarity between two texts
+// isSearching is true if the text is a search query
 export async function generateEmbedding(
     text: string,
     isSearching: boolean = false

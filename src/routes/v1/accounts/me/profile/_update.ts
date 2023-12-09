@@ -11,7 +11,7 @@
 
 import { Response } from "express";
 import { ExtendedRequest } from "../../../../../types/request";
-import { getUserProfileResponse } from "../../../../../utils/responses";
+import { getUserProfileResponse } from "../../responses";
 import * as validation from "../../../../../verification/validation";
 
 export default async (req: ExtendedRequest, res: Response) => {

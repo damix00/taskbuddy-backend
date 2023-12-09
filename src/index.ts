@@ -11,7 +11,6 @@ import route_killswitch from "./middleware/global/route_killswitch";
 import * as killswitches from "./utils/global_killswitches";
 import fileUpload from "express-fileupload";
 import initFirebase from "./firebase/config";
-import { geoDistance, randomNearbyLocation } from "./utils/utils";
 
 dotenv.config();
 

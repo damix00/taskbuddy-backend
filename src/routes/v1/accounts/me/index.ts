@@ -2,7 +2,7 @@
 
 import { Response } from "express";
 import { authorize } from "../../../../middleware/authorization";
-import { getUserProfileResponse } from "../../../../utils/responses";
+import { getUserProfileResponse } from "../responses";
 import { ExtendedRequest } from "../../../../types/request";
 
 export default [

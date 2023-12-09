@@ -11,7 +11,6 @@ import {
     PostWithRelations,
     PostWithRelationsModel,
 } from "../../../models/posts/post";
-import { UserFields } from "../../../models/users/user";
 import { updatePostRelations } from "./relations/writes";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
@@ -19,7 +18,6 @@ import { PostComments } from "../../../models/posts/comments";
 import FirebaseStorage from "../../../../firebase/storage/files";
 
 class Post extends DataModel implements PostWithRelationsModel {
-    user: UserFields;
     media: PostMedia[];
     tags: PostTags[];
     id: number;

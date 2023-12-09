@@ -22,6 +22,7 @@ import uniqueFilename from "unique-filename";
 import os from "os";
 import path from "path";
 import { randomNearbyLocation } from "../../../utils/utils";
+import { getPostResponse } from "./responses";
 
 export default [
     authorize(false),
@@ -212,7 +213,16 @@ export default [
                     .json({ message: "Internal server error" });
             }
 
-            return res.status(200).json({ message: "Post created" });
+            return res.status(200).json({
+                message: "Post created",
+                post: getPostResponse(
+                    post,
+                    req.user!,
+                    req.profile!,
+                    false,
+                    true
+                ),
+            });
         } catch (err) {
             return res.status(500).json({ message: "Internal server error" });
         }

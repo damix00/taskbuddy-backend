@@ -178,4 +178,9 @@ export class User extends DataModel implements UserModel {
     public async setVerified(verified: boolean): Promise<boolean> {
         return await this.update({ verified });
     }
+
+    // Checks if the user is following another user
+    public async isFollowing(user_id: number): Promise<boolean> {
+        return true;
+    }
 }
