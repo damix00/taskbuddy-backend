@@ -50,8 +50,6 @@ namespace writes {
             if (!interactions || !interactions.length)
                 throw new Error("Failed to create interactions");
 
-            console.log(interactions);
-
             // Create removals row
             const removals = await executeQuery<PostRemovals>(
                 `INSERT INTO post_removals DEFAULT VALUES RETURNING *`
@@ -59,8 +57,6 @@ namespace writes {
 
             if (!removals || !removals.length)
                 throw new Error("Failed to create removals");
-
-            console.log(removals);
 
             // Create location row
             const location = await executeQuery<PostLocation>(
@@ -95,8 +91,6 @@ namespace writes {
 
             if (!location || !location.length)
                 throw new Error("Failed to create location");
-
-            console.log(location);
 
             // Create post row
             const uuid = await reads.generatePostUUID();
@@ -158,8 +152,6 @@ namespace writes {
             );
 
             if (!post || !post.length) throw new Error("Failed to create post");
-
-            console.log(post);
 
             // Create post media rows
             const media = await Promise.all(

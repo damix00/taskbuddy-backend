@@ -176,9 +176,6 @@ export default [
 
             if (!is_remote) {
                 loc = randomNearbyLocation(location_lat, location_lon, 500);
-
-                console.log(loc);
-                console.log({ location_lat, location_lon });
             }
 
             const post = await PostWrites.createPost({
@@ -214,8 +211,6 @@ export default [
                     .status(500)
                     .json({ message: "Internal server error" });
             }
-
-            console.log(post);
 
             return res.status(200).json({ message: "Post created" });
         } catch (err) {
