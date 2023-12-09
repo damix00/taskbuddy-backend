@@ -130,11 +130,24 @@ export default [
                 }
             }
 
+            if (title.length < 1 || title.length > 100) {
+                return res.status(400).json({
+                    message: "Title must be between 1 and 100 characters",
+                });
+            }
+
+            if (description.length < 1 || description.length > 1024) {
+                return res.status(400).json({
+                    message:
+                        "Description must be between 1 and 1000 characters",
+                });
+            }
+
             const ip = req.ip || req.socket.remoteAddress;
 
             // Upload media to firebase storage
             const urls = await Promise.all(
-                media.map(async (file) => {
+                media.map(async (file, i) => {
                     const filename = uniqueFilename(
                         os.tmpdir(),
                         "post_media__"
@@ -167,9 +180,16 @@ export default [
                     // Get the URL
                     let media = upload[0].metadata.mediaLink;
 
-                    return media;
+                    return {
+                        url: media,
+                        index: i,
+                    };
                 })
             );
+
+            // Sort the URLs by index
+            // @ts-ignore
+            urls.sort((a, b) => a.index - b.index);
 
             // const vector = await generateEmbedding(
             //     `${title}\n\n${description}`,
@@ -206,7 +226,8 @@ export default [
                 tags,
                 status: PostStatus.OPEN,
                 media: urls.map((url) => ({
-                    media: url,
+                    // @ts-ignore
+                    media: url.url,
                     media_type: "image",
                 })),
             });
