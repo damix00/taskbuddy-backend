@@ -140,7 +140,10 @@ export class Profile extends DataModel implements ProfileModel {
         try {
             // Delete the file from firebase storage
             await FirebaseStorage.deleteFile(this.profile_picture);
-
+        } catch (e) {
+            console.error(e);
+        }
+        try {
             // Set the profile picture to null
             return await this.setProfilePicture(null);
         } catch (e) {

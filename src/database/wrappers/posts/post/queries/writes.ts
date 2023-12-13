@@ -154,10 +154,11 @@ namespace writes {
             if (!post || !post.length) throw new Error("Failed to create post");
 
             // Create post media rows
-            const media = await Promise.all(
-                data.media.map((media) =>
-                    executeQuery(
-                        `
+            const media = [];
+
+            for (const m of data.media) {
+                const res = await executeQuery(
+                    `
                         INSERT INTO post_media (
                             post_id,
                             media,
@@ -168,10 +169,14 @@ namespace writes {
                             $3
                         ) RETURNING *
                     `,
-                        [post[0].id, media.media, media.media_type]
-                    )
-                )
-            );
+                    [post[0].id, m.media, m.media_type]
+                );
+
+                if (!res || !res.length)
+                    throw new Error("Failed to create media");
+
+                media.push(res[0]);
+            }
 
             if (!media || !media.length)
                 throw new Error("Failed to create media");
@@ -201,6 +206,7 @@ namespace writes {
 
             return post[0];
         } catch (e) {
+            console.log("Error creating post");
             console.error(e);
 
             // Rollback the transaction

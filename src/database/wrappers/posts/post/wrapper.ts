@@ -17,7 +17,7 @@ async function toPost(
     if (post instanceof Post) return post;
 
     // @ts-ignore
-    if (post?.media) return new Post(post as PostWithRelations);
+    if (post?.username) return new Post(post as PostWithRelations);
 
     const find = await reads.getPostById(post!.id);
 
@@ -36,12 +36,35 @@ async function toPost(
 }
 
 export class PostReads {
-    public static async getPostById(id: number): Promise<Post | null> {
-        return await toPost(await reads.getPostById(id));
+    public static async getPostById(
+        id: number,
+        user_id: number | null = null
+    ): Promise<Post | null> {
+        return await toPost(await reads.getPostById(id, user_id));
     }
 
-    public static async getPostByUUUID(uuid: string): Promise<Post | null> {
-        return await toPost(await reads.getPostByUUID(uuid));
+    public static async getPostByUUID(
+        uuid: string,
+        user_id: number | null = null
+    ): Promise<Post | null> {
+        return await toPost(await reads.getPostByUUID(uuid, user_id));
+    }
+
+    public static async getPostsByUser(
+        user_id: number,
+        offset: number
+    ): Promise<Post[] | null> {
+        const posts = await reads.getPostsByUser(user_id, offset);
+
+        if (!posts) return null;
+
+        let res = [];
+
+        for (const post of posts) {
+            res.push((await toPost(post)) as Post);
+        }
+
+        return res;
     }
 }
 

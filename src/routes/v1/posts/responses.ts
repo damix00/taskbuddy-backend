@@ -8,12 +8,16 @@ export function getPostResponse(
     user: User,
     profile: Profile,
     isFollowing: boolean,
-    isMe: boolean
+    isMe: boolean,
+    liked: boolean,
+    bookmarked: boolean
 ) {
     return {
         uuid: post.uuid,
         title: post.title,
         description: post.description,
+        liked,
+        bookmarked,
         display_location: {
             lat: post.approx_lat,
             lon: post.approx_lon,
@@ -54,7 +58,7 @@ export function getPostResponse(
             is_me: isMe,
             has_premium: user.has_premium,
             verified: user.verified,
-            profile: getProfileResponse(profile),
+            ...getProfileResponse(profile),
         },
     };
 }

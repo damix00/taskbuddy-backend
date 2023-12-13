@@ -202,16 +202,18 @@ export default [
                 loc = randomNearbyLocation(location_lat, location_lon, 500);
             }
 
+            const testfetch = await PostReads.getPostById(22, req.user!.id);
+
             const post = await PostWrites.createPost({
                 user_id: req.user!.id,
                 job_type,
                 title,
                 // title_vector: `[${vector}]`,
-                title_vector: (await PostReads.getPostById(22))?.title_vector,
+                title_vector: testfetch?.title_vector,
                 description,
                 location: {
-                    lat: location_lat,
-                    lon: location_lon,
+                    lat: location_lat || null,
+                    lon: location_lon || null,
                     location_name,
                     suggestion_radius,
                     remote: is_remote,
@@ -244,8 +246,10 @@ export default [
                     post,
                     req.user!,
                     req.profile!,
-                    false,
-                    true
+                    post.following,
+                    post.user_id === req.user!.id,
+                    post.liked,
+                    post.bookmarked
                 ),
             });
         } catch (err) {

@@ -56,6 +56,15 @@ class Post extends DataModel implements PostWithRelationsModel {
     location_name: string;
     urgent: boolean;
 
+    // User relations
+    username: string;
+    first_name: string;
+    last_name: string;
+    profile_picture: string;
+    following: boolean;
+    liked: boolean;
+    bookmarked: boolean;
+
     constructor(
         post: PostWithRelations | Post,
         refetchOnUpdate: boolean = true
