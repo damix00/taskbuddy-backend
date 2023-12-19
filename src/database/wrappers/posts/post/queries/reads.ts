@@ -103,18 +103,27 @@ namespace reads {
                     post_interactions.*,
                     post_removals.*,
                     post_location.*,
+                    users.username,
+                    users.first_name,
+                    users.last_name,
+                    profiles.profile_picture,
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id) AS following,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
                     COALESCE(json_agg(DISTINCT post_media) FILTER (WHERE post_media.id IS NOT NULL), '[]') AS media,
                     COALESCE(json_agg(DISTINCT post_tag_relationship) FILTER (WHERE post_tag_relationship.post_id IS NOT NULL), '[]') AS tags
                 FROM 
                     posts
                 INNER JOIN post_media ON posts.id = post_media.post_id
                 INNER JOIN post_tag_relationship ON posts.id = post_tag_relationship.post_id
+                INNER JOIN users ON posts.user_id = users.id
+                INNER JOIN profiles ON posts.user_id = profiles.user_id
                 LEFT JOIN post_location ON posts.post_location_id = post_location.id
                 LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
                 LEFT JOIN post_removals ON posts.removals_id = post_removals.id
                 WHERE posts.user_id = $1
-                GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id
-                ORDER BY posts.id DESC
+                GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
+                ORDER BY posts.created_at DESC
                 LIMIT 10 OFFSET $2
             `;
 

@@ -77,12 +77,17 @@ export function authorize(fetchProfile: boolean = false) {
                 req.user = user;
                 req.login_id = decoded.login_id;
 
+                req.user.id = parseInt(req.user.id as unknown as string);
+
                 // If the profile is requested, fetch it
                 if (fetchProfile) {
                     const profile = await ProfileReads.getProfileByUid(user.id);
 
                     if (profile) {
                         req.profile = profile;
+                        req.profile.id = parseInt(
+                            req.user.id as unknown as string
+                        );
                     }
                 }
 

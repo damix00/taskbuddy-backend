@@ -61,9 +61,9 @@ class Post extends DataModel implements PostWithRelationsModel {
     first_name: string;
     last_name: string;
     profile_picture: string;
-    following: boolean;
-    liked: boolean;
-    bookmarked: boolean;
+    following: boolean = false;
+    liked: boolean = false;
+    bookmarked: boolean = false;
 
     constructor(
         post: PostWithRelations | Post,

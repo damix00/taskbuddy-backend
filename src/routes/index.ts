@@ -8,8 +8,9 @@ import sendPhone from "./v1/accounts/verification/phone/send";
 import verifyPhone from "./v1/accounts/verification/phone/verify";
 import ping from "./v1/ping";
 import posts from "./v1/posts";
-import post_slug from "./v1/posts/[uuid]";
 import tags from "./v1/posts/tags";
+import mePosts from "./v1/accounts/me/posts";
+import post_slug from "./v1/posts/[uuid]";
 
 export type route = {
     path: string;
@@ -32,6 +33,10 @@ const postRoutes: route[] = [
 ];
 
 const meRoutes: route[] = [
+    {
+        path: "/v1/accounts/me/posts",
+        handler: mePosts,
+    },
     {
         path: "/v1/accounts/me/profile",
         handler: profile,

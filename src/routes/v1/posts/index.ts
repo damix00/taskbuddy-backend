@@ -191,10 +191,10 @@ export default [
             // @ts-ignore
             urls.sort((a, b) => a.index - b.index);
 
-            // const vector = await generateEmbedding(
-            //     `${title}\n\n${description}`,
-            //     false
-            // );
+            const vector = await generateEmbedding(
+                `${title}\n\n${description}`,
+                false
+            );
 
             let loc = null;
 
@@ -202,14 +202,13 @@ export default [
                 loc = randomNearbyLocation(location_lat, location_lon, 500);
             }
 
-            const testfetch = await PostReads.getPostById(22, req.user!.id);
+            // const testfetch = await PostReads.getPostById(22, req.user!.id);
 
             const post = await PostWrites.createPost({
                 user_id: req.user!.id,
                 job_type,
                 title,
-                // title_vector: `[${vector}]`,
-                title_vector: testfetch?.title_vector,
+                title_vector: `[${vector}]`,
                 description,
                 location: {
                     lat: location_lat || null,
@@ -247,7 +246,7 @@ export default [
                     req.user!,
                     req.profile!,
                     post.following,
-                    post.user_id === req.user!.id,
+                    post.user_id == req.user!.id,
                     post.liked,
                     post.bookmarked
                 ),
