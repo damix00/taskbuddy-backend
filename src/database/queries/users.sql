@@ -38,6 +38,13 @@ CREATE TABLE IF NOT EXISTS follows (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS blocks (
+  id BIGSERIAL PRIMARY KEY,
+  blocker INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  blocked INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Creates indexes on the users table for faster queries
 CREATE INDEX idx_users_uuid ON users (uuid);
 CREATE INDEX idx_users_email ON users (email);
