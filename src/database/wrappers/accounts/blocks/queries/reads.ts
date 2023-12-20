@@ -28,33 +28,6 @@ namespace reads {
         }
     }
 
-    export async function hasUserBlocked(
-        blocker: number,
-        blocked: number
-    ): Promise<boolean> {
-        try {
-            const q = `
-                SELECT EXISTS (
-                    SELECT 1
-                    FROM blocks
-                    WHERE blocker = $1 AND blocked = $2
-                );
-            `;
-
-            const result = await executeQuery<{ exists: boolean }>(q, [
-                blocker,
-                blocked,
-            ]);
-
-            if (result.length === 0) return false;
-
-            return result[0].exists;
-        } catch (err) {
-            console.error(err);
-            return false;
-        }
-    }
-
     export async function isBlocked(
         user_id: number,
         other_user_id: number
@@ -65,11 +38,7 @@ namespace reads {
                     SELECT 1
                     FROM blocks
                     WHERE blocker = $1 AND blocked = $2
-                ) OR EXISTS (
-                    SELECT 1
-                    FROM blocks
-                    WHERE blocker = $2 AND blocked = $1
-                );
+                )
             `;
 
             const result = await executeQuery<{ exists: boolean }>(q, [

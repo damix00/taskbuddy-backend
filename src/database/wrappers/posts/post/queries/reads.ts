@@ -53,7 +53,15 @@ async function getPostByField(
             LEFT JOIN post_location ON posts.post_location_id = post_location.id
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
-            WHERE ${field} = $1
+            WHERE ${field} = $1 AND post_removals.removed = false
+            ${
+                // Check if the user is blocked by the author
+                user_id
+                    ? `
+                AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2)
+                `
+                    : ""
+            }
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
         `;
 
@@ -135,7 +143,15 @@ namespace reads {
                 LEFT JOIN post_location ON posts.post_location_id = post_location.id
                 LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
                 LEFT JOIN post_removals ON posts.removals_id = post_removals.id
-                WHERE posts.user_id = $1
+                WHERE posts.user_id = $1 AND post_removals.removed = false
+                ${
+                    // Check if the user is blocked by the author
+                    user_id
+                        ? `
+                    AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2)
+                    `
+                        : ""
+                }
                 GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
                 ORDER BY posts.created_at DESC
                 LIMIT 10 OFFSET $2
