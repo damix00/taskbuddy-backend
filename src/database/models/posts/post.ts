@@ -41,7 +41,7 @@ export interface PostFields {
     end_date: Date;
     urgent: boolean;
     status: PostStatus;
-    reserved_by: number;
+    reserved_by: number | null;
     created_at: Date;
     updated_at: Date;
 }

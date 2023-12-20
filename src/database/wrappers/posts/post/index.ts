@@ -38,7 +38,7 @@ class Post extends DataModel implements PostWithRelationsModel {
     start_date: Date;
     end_date: Date;
     status: PostStatus;
-    reserved_by: number;
+    reserved_by: number | null;
     created_at: Date;
     updated_at: Date;
     likes: number;
@@ -86,7 +86,9 @@ class Post extends DataModel implements PostWithRelationsModel {
         post.removals_id = parseInt(post.removals_id.toString());
         post.post_location_id = parseInt(post.post_location_id.toString());
         post.interactions_id = parseInt(post.interactions_id.toString());
-        post.reserved_by = parseInt(post.reserved_by.toString());
+        post.reserved_by = post.reserved_by
+            ? parseInt(post.reserved_by.toString())
+            : null;
 
         Object.assign(this, post);
         this.refetchOnUpdate = refetchOnUpdate;

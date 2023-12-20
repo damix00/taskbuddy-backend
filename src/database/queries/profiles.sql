@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS profiles (
     id BIGSERIAL PRIMARY KEY, -- unique id for each user
-    user_id BIGSERIAL NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user id
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user id
     created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
     updated_at TIMESTAMP NOT NULL DEFAULT NOW(), -- updated whenever a row is updated
     profile_picture TEXT, -- URL to profile picture

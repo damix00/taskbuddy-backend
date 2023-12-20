@@ -1,20 +1,20 @@
 CREATE TABLE IF NOT EXISTS posts (
     id BIGSERIAL PRIMARY KEY, -- ID of post
     uuid VARCHAR(1024) NOT NULL UNIQUE, -- UUID of post
-    user_id BIGSERIAL NOT NULL, -- User who posted
+    user_id BIGINT NOT NULL, -- User who posted
     title VARCHAR(256) NOT NULL, -- Title of job
     title_vector vector NOT NULL, -- Vector representation of title for similarity search
     description TEXT NOT NULL, -- Description of job
     job_type INTEGER NOT NULL, -- 0 - one-time, 1 - part-time, 2 - full-time
     price FLOAT NOT NULL, -- Price of job
-    removals_id BIGSERIAL NOT NULL,
-    post_location_id BIGSERIAL NOT NULL,
-    interactions_id BIGSERIAL NOT NULL,
+    removals_id BIGINT NOT NULL,
+    post_location_id BIGINT NOT NULL,
+    interactions_id BIGINT NOT NULL,
     start_date TIMESTAMP NOT NULL, -- Start date of job
     end_date TIMESTAMP NOT NULL, -- End date of job
     urgent BOOLEAN NOT NULL DEFAULT FALSE, -- Is the job urgent?
     status INTEGER NOT NULL, -- 0 - open, 1 - closed, 2 - reserved, 3 - completed, 4 - cancelled, 5 - expired
-    reserved_by BIGSERIAL, -- User who reserved the post
+    reserved_by BIGINT DEFAULT NULL, -- User who reserved the post
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE TABLE IF NOT EXISTS post_media (
     id BIGSERIAL PRIMARY KEY,
-    post_id BIGSERIAL NOT NULL,
+    post_id BIGINT NOT NULL,
     media TEXT NOT NULL,
     type TEXT NOT NULL,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
@@ -42,14 +42,14 @@ CREATE TABLE IF NOT EXISTS post_interactions (
 
 CREATE TABLE IF NOT EXISTS post_comments (
     id BIGSERIAL PRIMARY KEY,
-    post_id BIGSERIAL NOT NULL,
-    user_id BIGSERIAL NOT NULL,
+    post_id BIGINT NOT NULL,
+    user_id BIGINT NOT NULL,
     comment TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     likes BIGINT NOT NULL DEFAULT 0,
     reply_count BIGINT NOT NULL DEFAULT 0,
     is_reply BOOLEAN NOT NULL DEFAULT FALSE,
-    reply_to BIGSERIAL,
+    reply_to BIGINT,
     FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (reply_to) REFERENCES post_comments(id) ON DELETE CASCADE
