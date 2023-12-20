@@ -11,6 +11,8 @@ import { writes } from "./queries/writes";
 import { DataModel } from "../../../data_model";
 import { Login } from "../logins";
 import { LoginWrites } from "../logins/wrapper";
+import { ProfileReads } from "../profiles/wrapper";
+import { Profile } from "../profiles";
 
 export class User extends DataModel implements UserModel {
     id: number;
@@ -182,5 +184,10 @@ export class User extends DataModel implements UserModel {
     // Checks if the user is following another user
     public async isFollowing(user_id: number): Promise<boolean> {
         return true;
+    }
+
+    // Returns the user's profile
+    public async getProfile(): Promise<Profile | null> {
+        return await ProfileReads.getProfileByUid(this.id);
     }
 }

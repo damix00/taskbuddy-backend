@@ -16,6 +16,10 @@ import reads from "./queries/reads";
 import writes from "./queries/writes";
 import { PostComments } from "../../../models/posts/comments";
 import FirebaseStorage from "../../../../firebase/storage/files";
+import { UserReads } from "../../accounts/users/wrapper";
+import { User } from "../../accounts/users";
+import { Profile } from "../../accounts/profiles";
+import { ProfileReads } from "../../accounts/profiles/wrapper";
 
 class Post extends DataModel implements PostWithRelationsModel {
     media: PostMedia[];
@@ -147,6 +151,14 @@ class Post extends DataModel implements PostWithRelationsModel {
             console.error(e);
             return false;
         }
+    }
+
+    public async getUser(): Promise<User | null> {
+        return await UserReads.getUserById(this.user_id);
+    }
+
+    public async getProfile(): Promise<Profile | null> {
+        return await ProfileReads.getProfileByUid(this.user_id);
     }
 
     addComment: (comment: {
