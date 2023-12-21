@@ -211,9 +211,9 @@ export default [
                 title_vector: `[${vector}]`,
                 description,
                 location: {
-                    lat: location_lat || null,
-                    lon: location_lon || null,
-                    location_name,
+                    lat: is_remote ? null : location_lat || null,
+                    lon: is_remote ? null : location_lon || null,
+                    location_name: is_remote ? null : location_name,
                     suggestion_radius,
                     remote: is_remote,
                     // Generate approximate location for privacy reasons

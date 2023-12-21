@@ -12,16 +12,22 @@ export default async (req: ExtendedRequest, res: Response) => {
 
     if (!post) {
         return res.status(404).json({
-            error: "Post not found",
+            message: "Post not found",
         });
     }
 
     try {
+        if (post.user_id !== req.user!.id) {
+            return res.status(403).json({
+                message: "You do not own this post",
+            });
+        }
+
         let r = await post.deletePost();
 
         if (!r) {
             return res.status(500).json({
-                error: "Internal server error",
+                message: "Internal server error",
             });
         }
 
@@ -30,7 +36,7 @@ export default async (req: ExtendedRequest, res: Response) => {
         });
     } catch (e) {
         return res.status(500).json({
-            error: "Internal server error",
+            message: "Internal server error",
         });
     }
 };
