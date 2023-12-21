@@ -26,7 +26,7 @@ export class Profile extends DataModel implements ProfileModel {
     completed_employee: number;
     followers: number;
     following: number;
-    posts: number;
+    post_count: number;
     location_text: string;
     location_lat: number;
     location_lon: number;
@@ -58,7 +58,7 @@ export class Profile extends DataModel implements ProfileModel {
             completed_employee: this.completed_employee,
             followers: this.followers,
             following: this.following,
-            posts: this.posts,
+            post_count: this.post_count,
             location_text: this.location_text,
             location_lat: this.location_lat,
             location_lon: this.location_lon,

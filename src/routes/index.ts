@@ -11,6 +11,7 @@ import posts from "./v1/posts";
 import tags from "./v1/posts/tags";
 import mePosts from "./v1/accounts/me/posts";
 import post_slug from "./v1/posts/[uuid]";
+import search from "./v1/search";
 
 export type route = {
     path: string;
@@ -85,6 +86,10 @@ const routes: route[] = [
     {
         path: "/v1/ping",
         handler: ping,
+    },
+    {
+        path: "/v1/search",
+        handler: search,
     },
 ];
 

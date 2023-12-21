@@ -78,3 +78,22 @@ export function getUserProfileResponse(
         ...getProfileResponse(profile),
     };
 }
+
+export function getPublicUserProfileResponse(
+    user: UserFields,
+    profile: ProfileFields,
+    isFollowing: boolean,
+    isMe: boolean
+) {
+    return {
+        uuid: user.uuid,
+        username: user.username,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        is_following: isFollowing,
+        is_me: isMe,
+        has_premium: user.has_premium,
+        verified: user.verified,
+        ...getProfileResponse(profile),
+    };
+}

@@ -17,7 +17,7 @@ export interface ProfileFields {
     completed_employee: number;
     followers: number;
     following: number;
-    posts: number;
+    post_count: number;
     location_text: string;
     location_lat: number;
     location_lon: number;

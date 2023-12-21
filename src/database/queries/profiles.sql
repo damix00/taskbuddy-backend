@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS profiles (
     completed_employee INTEGER NOT NULL DEFAULT 0, -- Number of tasks completed as an employee
     followers BIGINT NOT NULL DEFAULT 0, -- Number of users following the user
     following BIGINT NOT NULL DEFAULT 0, -- Number of users the user is following
-    posts BIGINT NOT NULL DEFAULT 0, -- Number of posts the user has made
+    post_count BIGINT NOT NULL DEFAULT 0, -- Number of posts the user has made
     location_text TEXT, -- User specified location (town name)
     location_lat DECIMAL, -- Latitude of user location - user specified
     location_lon DECIMAL, -- Longitude of user location - user specified
