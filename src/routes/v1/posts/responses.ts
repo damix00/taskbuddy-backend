@@ -63,3 +63,61 @@ export function getPostResponse(
         },
     };
 }
+
+// This is for returning the post result from endpoints which return a list of posts
+// For performance reasons and less work for the server, we don't return the user's profile
+// as it's unlikely that the user will click on every single post
+export function getPostResultResponse(post: Post, user: User) {
+    return {
+        uuid: post.uuid,
+        title: post.title,
+        description: post.description,
+        liked: post.liked,
+        bookmarked: post.bookmarked,
+        display_location: {
+            lat: post.approx_lat,
+            lon: post.approx_lon,
+            location_name: post.location_name,
+        },
+        // If the user is the owner of the post, send the true location
+        true_location: {
+            lat: user.id == post.user_id ? post.lat : null,
+            lon: user.id == post.user_id ? post.lon : null,
+        },
+        job_type: post.job_type,
+        is_remote: post.remote,
+        price: post.price,
+        start_date: post.start_date,
+        end_date: post.end_date,
+        reserved: !!post.reserved_by,
+        tags: post.tags.map((tag) => tag.tag_id),
+        media: post.media.map((media) => ({
+            media: media.media,
+            media_type: media.media_type,
+        })),
+        is_urgent: post.urgent,
+        status: post.status,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        analytics: {
+            likes: post.likes,
+            impressions: post.impressions,
+            shares: post.shares,
+            bookmarks: post.bookmarks,
+            comments: post.comments,
+        },
+        user: {
+            uuid: user.uuid,
+            username: user.username,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            is_following: post.following,
+            is_me: user.id == post.user_id,
+            has_premium: user.has_premium,
+            verified: user.verified,
+            profile: {
+                profile_picture: post.profile_picture,
+            },
+        },
+    };
+}

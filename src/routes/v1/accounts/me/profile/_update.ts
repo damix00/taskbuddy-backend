@@ -85,13 +85,19 @@ export default async (req: ExtendedRequest, res: Response) => {
 
         const _isPrivate = is_private === true || is_private === "true";
 
-        await req.profile.update({
+        const success = await req.profile.update({
             bio: bio,
             location_lat: location_lat,
             location_lon: location_lon,
             location_text: location_text,
             is_private: _isPrivate,
         });
+
+        if (!success) {
+            return res.status(500).json({
+                message: "Internal server error",
+            });
+        }
 
         const _removeProfilePicture =
             remove_profile_picture === true ||
@@ -104,10 +110,7 @@ export default async (req: ExtendedRequest, res: Response) => {
             } catch (e) {}
             // Upload new profile picture
             await req.profile.uploadProfilePicture(profile_picture);
-        } else if (
-            _removeProfilePicture &&
-            req.profile.profile_picture.length > 0
-        ) {
+        } else if (_removeProfilePicture) {
             await req.profile.removeProfilePicture();
         }
 

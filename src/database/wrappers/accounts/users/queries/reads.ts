@@ -101,7 +101,7 @@ export namespace reads {
         { user: UserModel; following: false; profile: Partial<ProfileModel> }[]
     > {
         try {
-            const params = [`%${query}%`, offset];
+            const params = [`%${query}%`, user_id, offset];
             const users = await executeQuery<any>(
                 `
                 SELECT
@@ -123,12 +123,11 @@ export namespace reads {
                     profiles.location_lat,
                     profiles.location_lon,
                     profiles.is_private,
-                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id) AS following
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = users.id) AS following
                 FROM users AS users
                 INNER JOIN profiles ON users.id = profiles.user_id
                 WHERE users.username LIKE $1
-                AND id != $2 AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2)
-                GROUP BY users.id, profiles.id
+                AND users.id != $2 AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2)
                 ORDER BY users.username ASC
                 LIMIT 10
                 OFFSET $3

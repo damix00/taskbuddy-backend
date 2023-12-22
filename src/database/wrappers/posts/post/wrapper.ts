@@ -66,6 +66,24 @@ export class PostReads {
 
         return res;
     }
+
+    public static async searchPosts(
+        user_id: number,
+        query_vector: any,
+        offset: number
+    ) {
+        const posts = await reads.searchPosts(user_id, query_vector, offset);
+
+        if (!posts) return null;
+
+        let res = [];
+
+        for (const post of posts) {
+            res.push((await toPost(post)) as Post);
+        }
+
+        return res;
+    }
 }
 
 export class PostWrites {

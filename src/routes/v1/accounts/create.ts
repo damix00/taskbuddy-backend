@@ -200,10 +200,12 @@ export default [
                 });
             }
 
-            try {
-                profile.uploadProfilePicture(profile_picture);
-            } catch (e) {
-                console.error(e); // We don't have to care if this fails, because the user can upload a profile picture later
+            if (profile_picture) {
+                try {
+                    profile.uploadProfilePicture(profile_picture);
+                } catch (e) {
+                    console.error(e); // We don't have to care if this fails, because the user can upload a profile picture later
+                }
             }
 
             const login = await result.addLogin(req.ip, req.userAgent);

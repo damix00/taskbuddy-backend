@@ -59,7 +59,7 @@ export function getProfileResponse(profile: ProfileFields) {
             ),
             followers: parseInt(profile.followers as unknown as string),
             following: parseInt(profile.following as unknown as string),
-            posts: parseInt(profile.posts as unknown as string),
+            posts: parseInt(profile.post_count as unknown as string),
             location_text: profile.location_text,
             location_lat: parseFloat(profile.location_lat as unknown as string),
             location_lon: parseFloat(profile.location_lon as unknown as string),
