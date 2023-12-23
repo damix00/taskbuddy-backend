@@ -266,12 +266,31 @@ namespace writes {
     // Deletes a post
     export async function deletePost(post_id: number): Promise<boolean> {
         try {
-            const q = `
+            // Delete post media
+            await executeQuery(
+                `
+            DELETE FROM post_media
+            WHERE post_id = $1
+            `,
+                [post_id]
+            );
+
+            // Delete post tags
+            await executeQuery(
+                `
+            DELETE FROM post_tag_relationship
+            WHERE post_id = $1
+            `,
+                [post_id]
+            );
+
+            await executeQuery(
+                `
                 DELETE FROM posts
                 WHERE id = $1
-            `;
-
-            await executeQuery(q, [post_id]);
+            `,
+                [post_id]
+            );
 
             return true;
         } catch (e) {

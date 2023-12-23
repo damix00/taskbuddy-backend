@@ -84,6 +84,25 @@ export class PostReads {
 
         return res;
     }
+
+    public static async getNearbyPosts(
+        user_id: number,
+        lat: number,
+        lon: number,
+        offset: number
+    ): Promise<Post[] | null> {
+        const posts = await reads.getNearbyPosts(user_id, lat, lon, offset);
+
+        if (!posts) return null;
+
+        let res = [];
+
+        for (const post of posts) {
+            res.push((await toPost(post)) as Post);
+        }
+
+        return res;
+    }
 }
 
 export class PostWrites {

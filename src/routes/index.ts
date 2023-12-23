@@ -12,6 +12,7 @@ import tags from "./v1/posts/tags";
 import mePosts from "./v1/accounts/me/posts";
 import post_slug from "./v1/posts/[uuid]";
 import search from "./v1/search";
+import nearby from "./v1/posts/nearby";
 
 export type route = {
     path: string;
@@ -22,6 +23,10 @@ const postRoutes: route[] = [
     {
         path: "/v1/posts/tags",
         handler: tags,
+    },
+    {
+        path: "/v1/posts/nearby",
+        handler: nearby,
     },
     {
         path: "/v1/posts/:uuid",
