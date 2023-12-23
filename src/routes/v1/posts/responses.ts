@@ -4,9 +4,9 @@ import Post from "../../../database/wrappers/posts/post";
 import { getProfileResponse } from "../accounts/responses";
 
 export function getPostResponse(
-    post: Post,
-    user: User,
-    profile: Profile,
+    post: Post, // Post to return
+    user: User, // User who posted
+    profile: Profile, // Profile of the user who posted
     isFollowing: boolean,
     isMe: boolean,
     liked: boolean,
@@ -51,7 +51,7 @@ export function getPostResponse(
             comments: post.comments,
         },
         user: {
-            uuid: user.uuid,
+            uuid: post.user_uuid,
             username: user.username,
             first_name: user.first_name,
             last_name: user.last_name,
@@ -67,6 +67,12 @@ export function getPostResponse(
 // This is for returning the post result from endpoints which return a list of posts
 // For performance reasons and less work for the server, we don't return the user's profile
 // as it's unlikely that the user will click on every single post
+
+/**
+ * @param post Post to return
+ * @param user User who requested the post
+ * @returns Post result response
+ */
 export function getPostResultResponse(post: Post, user: User) {
     return {
         uuid: post.uuid,
@@ -107,14 +113,14 @@ export function getPostResultResponse(post: Post, user: User) {
             comments: post.comments,
         },
         user: {
-            uuid: user.uuid,
-            username: user.username,
-            first_name: user.first_name,
-            last_name: user.last_name,
+            uuid: post.user_uuid,
+            username: post.username,
+            first_name: post.first_name,
+            last_name: post.last_name,
             is_following: post.following,
             is_me: user.id == post.user_id,
-            has_premium: user.has_premium,
-            verified: user.verified,
+            has_premium: post.has_premium,
+            verified: post.verified,
             profile: {
                 profile_picture: post.profile_picture,
             },

@@ -21,6 +21,8 @@ export default [
                 isNaN(parseFloat(lon as string)) ||
                 isNaN(parseInt(offset as string))
             ) {
+                console.log({ lat, lon, offset });
+
                 return res.status(400).json({
                     error: "Invalid parameters",
                 });
@@ -31,12 +33,16 @@ export default [
 
             // Check if latitude and longitude are valid
             if (latitude < -90 || latitude > 90) {
+                console.log({ longitude });
+
                 return res.status(400).json({
                     error: "Invalid latitude",
                 });
             }
 
             if (longitude < -180 || longitude > 180) {
+                console.log({ longitude });
+
                 return res.status(400).json({
                     error: "Invalid longitude",
                 });
@@ -47,6 +53,7 @@ export default [
 
             // Check if offset is valid
             if (offsetInt < 0) {
+                console.log({ offsetInt });
                 return res.status(400).json({
                     error: "Invalid offset",
                 });
