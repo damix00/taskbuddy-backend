@@ -6,7 +6,10 @@ import { authorize } from "../../../../middleware/authorization";
 import { ExtendedRequest } from "../../../../types/request";
 import { requireMethods } from "../../../../middleware/require_method";
 import { UserReads } from "../../../../database/wrappers/accounts/users/wrapper";
-import { FollowWrites } from "../../../../database/wrappers/accounts/follows/wrapper";
+import {
+    FollowReads,
+    FollowWrites,
+} from "../../../../database/wrappers/accounts/follows/wrapper";
 
 export default [
     authorize(true),
@@ -35,10 +38,34 @@ export default [
                 });
             }
 
+            const profile = await user?.getProfile();
+
+            if (!profile) {
+                return res.status(404).json({
+                    message: "User not found",
+                });
+            }
+
             if (req.method == "PUT") {
+                if (await FollowReads.isFollowing(req.user!.id, user.id)) {
+                    return res.status(400).json({
+                        message: "You are already following this user",
+                    });
+                }
+
                 await FollowWrites.follow(req.user!.id, user.id);
+                await profile.setFollowers(profile.followers + 1);
+                await req.profile!.setFollowing(req.profile!.following + 1);
             } else {
+                if (!(await FollowReads.isFollowing(req.user!.id, user.id))) {
+                    return res.status(400).json({
+                        message: "You are not following this user",
+                    });
+                }
+
                 await FollowWrites.unfollow(req.user!.id, user.id);
+                await profile.setFollowers(profile.followers - 1);
+                await req.profile!.setFollowing(req.profile!.following - 1);
             }
 
             return res.status(200).json({

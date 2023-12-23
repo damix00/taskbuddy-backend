@@ -239,6 +239,8 @@ export default [
                     .json({ message: "Internal server error" });
             }
 
+            await req.profile!.setPosts(req.profile!.post_count + 1);
+
             return res.status(200).json({
                 message: "Post created",
                 post: getPostResponse(
