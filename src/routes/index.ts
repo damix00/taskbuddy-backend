@@ -13,6 +13,7 @@ import mePosts from "./v1/accounts/me/posts";
 import post_slug from "./v1/posts/[uuid]";
 import search from "./v1/search";
 import nearby from "./v1/posts/nearby";
+import follow from "./v1/accounts/[uuid]/follow";
 
 export type route = {
     path: string;
@@ -82,6 +83,10 @@ const userRoutes: route[] = [
     {
         path: "/v1/accounts/check-existence",
         handler: checkExistence,
+    },
+    {
+        path: "/v1/accounts/:uuid/follow",
+        handler: follow,
     },
 ];
 

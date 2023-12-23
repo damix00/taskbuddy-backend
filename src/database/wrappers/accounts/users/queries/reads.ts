@@ -123,7 +123,7 @@ export namespace reads {
                     profiles.location_lat,
                     profiles.location_lon,
                     profiles.is_private,
-                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = users.id) AS following
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = users.id) AS is_following
                 FROM users AS users
                 INNER JOIN profiles ON users.id = profiles.user_id
                 WHERE users.username LIKE $1
@@ -137,7 +137,7 @@ export namespace reads {
 
             return users.map((user) => ({
                 user: user,
-                following: user.following,
+                following: user.is_following,
                 profile: {
                     profile_picture: user.profile_picture,
                     bio: user.bio,
