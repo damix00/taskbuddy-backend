@@ -17,11 +17,20 @@ export namespace reads {
      * */
     async function getUser(
         field: string,
-        value: any
+        value: any,
+        requested_by_id?: number
     ): Promise<UserModel | null> {
         try {
-            const query = `SELECT * FROM users WHERE ${field} = $1`;
+            const query = `
+                SELECT * FROM users WHERE ${field} = $1
+                ${
+                    requested_by_id
+                        ? `AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = users.id) OR NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2))`
+                        : ""
+                }
+            `;
             const params = [value];
+            if (requested_by_id) params.push(requested_by_id);
             const users = await executeQuery<UserModel>(query, params);
 
             return users.length > 0 ? users[0] : null;
@@ -49,9 +58,10 @@ export namespace reads {
      * @returns {Promise<User | null>} the user if it exists, null if it does not
      * */
     export async function getUserByUUID(
-        uuid: string
+        uuid: string,
+        requested_by_id?: number
     ): Promise<UserModel | null> {
-        return await getUser("uuid", uuid);
+        return await getUser("uuid", uuid, requested_by_id);
     }
 
     /**

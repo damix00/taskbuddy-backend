@@ -13,6 +13,7 @@ import { Login } from "../logins";
 import { LoginWrites } from "../logins/wrapper";
 import { ProfileReads } from "../profiles/wrapper";
 import { Profile } from "../profiles";
+import { FollowReads } from "../follows/wrapper";
 
 export class User extends DataModel implements UserModel {
     id: number;
@@ -183,7 +184,7 @@ export class User extends DataModel implements UserModel {
 
     // Checks if the user is following another user
     public async isFollowing(user_id: number): Promise<boolean> {
-        return true;
+        return FollowReads.isFollowing(this.id, user_id);
     }
 
     // Returns the user's profile

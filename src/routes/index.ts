@@ -14,6 +14,7 @@ import post_slug from "./v1/posts/[uuid]";
 import search from "./v1/search";
 import nearby from "./v1/posts/nearby";
 import follow from "./v1/accounts/[uuid]/follow";
+import accounts from "./v1/accounts/[uuid]";
 
 export type route = {
     path: string;
@@ -87,6 +88,10 @@ const userRoutes: route[] = [
     {
         path: "/v1/accounts/:uuid/follow",
         handler: follow,
+    },
+    {
+        path: "/v1/accounts/:uuid",
+        handler: accounts,
     },
 ];
 

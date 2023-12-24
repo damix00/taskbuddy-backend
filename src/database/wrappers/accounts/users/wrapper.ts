@@ -17,8 +17,11 @@ export class UserReads {
         return toUser(await reads.getUserById(id));
     }
 
-    static async getUserByUUID(uuid: string): Promise<User | null> {
-        return toUser(await reads.getUserByUUID(uuid));
+    static async getUserByUUID(
+        uuid: string,
+        requested_by_id?: number
+    ): Promise<User | null> {
+        return toUser(await reads.getUserByUUID(uuid, requested_by_id));
     }
 
     static async getUserByEmail(email: string): Promise<User | null> {
