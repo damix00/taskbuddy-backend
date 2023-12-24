@@ -119,23 +119,47 @@ namespace reads {
 
     export async function getPostsByUser(
         user_id: number,
-        offset: number
+        offset: number,
+        requester_user_id: number | null = null
     ): Promise<PostWithRelations[] | null> {
         try {
             const q = `
                 SELECT
                     posts.*,
-                    post_interactions.*,
-                    post_removals.*,
-                    post_location.*,
+                    post_interactions.likes,
+                    post_interactions.comments,
+                    post_interactions.shares,
+                    post_interactions.bookmarks,
+                    post_interactions.impressions,
+                    post_removals.removed,
+                    post_removals.removal_reason,
+                    post_removals.flagged,
+                    post_removals.flagged_reason,
+                    post_removals.shadow_banned,
+                    post_location.remote,
+                    post_location.lat,
+                    post_location.lon,
+                    post_location.approx_lat,
+                    post_location.approx_lon,
+                    post_location.suggestion_radius,
+                    post_location.location_name,
+                    users.uuid AS user_uuid,
+                    users.has_premium AS has_premium,
+                    users.verified AS verified,
                     users.username,
                     users.first_name,
                     users.last_name,
-                    users.uuid AS user_uuid,
                     profiles.profile_picture,
-                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id) AS following,
-                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
-                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
+                    ${
+                        // Select if the user is following the author, if it's liked and bookmarked
+                        requester_user_id
+                            ? `
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $3 AND follows.following = posts.user_id) AS following,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $3 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $3 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
+                    `
+                            : ""
+                    }
                     COALESCE(json_agg(DISTINCT post_media) FILTER (WHERE post_media.id IS NOT NULL), '[]') AS media,
                     COALESCE(json_agg(DISTINCT post_tag_relationship) FILTER (WHERE post_tag_relationship.post_id IS NOT NULL), '[]') AS tags
                 FROM 
@@ -150,21 +174,21 @@ namespace reads {
                 WHERE posts.user_id = $1 AND post_removals.removed = false
                 ${
                     // Check if the user is blocked by the author
-                    user_id
+                    requester_user_id
                         ? `
-                    AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2)
+                    AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $3) OR NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $3 AND blocks.blocked = posts.user_id))
                     `
                         : ""
                 }
                 GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
-                ORDER BY posts.created_at DESC
                 LIMIT 10 OFFSET $2
             `;
 
-            const r = await executeQuery<PostWithRelations>(q, [
-                user_id,
-                offset,
-            ]);
+            const p = [user_id, offset];
+
+            if (requester_user_id) p.push(requester_user_id);
+
+            const r = await executeQuery<PostWithRelations>(q, p);
 
             return r;
         } catch (e) {

@@ -14,7 +14,8 @@ export default [
     requireMethod("GET"),
     async (req: ExtendedRequest, res: Response) => {
         try {
-            const { uuid, offset } = req.params;
+            const { uuid } = req.params;
+            const { offset } = req.query;
 
             if (!uuid) {
                 return res.status(400).json({
@@ -22,7 +23,7 @@ export default [
                 });
             }
 
-            if (isNaN(parseInt(offset))) {
+            if (isNaN(parseInt(offset as string))) {
                 return res.status(400).json({
                     message: "Invalid offset",
                 });
@@ -44,7 +45,8 @@ export default [
 
             const posts = await PostReads.getPostsByUser(
                 user.id,
-                parseInt(offset)
+                parseInt(offset as string),
+                req.user!.id
             );
 
             if (!posts) {
@@ -52,6 +54,13 @@ export default [
                     message: "No posts found",
                 });
             }
+
+            return res.status(200).json({
+                message: "Successfully retrieved posts",
+                posts: posts.map((post) =>
+                    getPostResultResponse(post, req.user!)
+                ),
+            });
         } catch (error) {
             return res.status(500).json({
                 message: "Internal server error",

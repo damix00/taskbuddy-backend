@@ -52,9 +52,14 @@ export class PostReads {
 
     public static async getPostsByUser(
         user_id: number,
-        offset: number
+        offset: number,
+        requester_user_id: number | null = null
     ): Promise<Post[] | null> {
-        const posts = await reads.getPostsByUser(user_id, offset);
+        const posts = await reads.getPostsByUser(
+            user_id,
+            offset,
+            requester_user_id
+        );
 
         if (!posts) return null;
 
