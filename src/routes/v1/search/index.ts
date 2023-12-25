@@ -101,7 +101,7 @@ export default [
                 }
 
                 // Return the posts
-                return res.status(200).json({
+                res.status(200).json({
                     message: "Successfully retrieved posts",
                     posts: results.map((post) => {
                         try {
@@ -110,6 +110,10 @@ export default [
                             return null;
                         }
                     }),
+                });
+
+                results.forEach(async (post) => {
+                    await post.addImpression();
                 });
             }
         } catch (e) {

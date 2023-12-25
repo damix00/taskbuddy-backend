@@ -122,6 +122,7 @@ export interface PostWithRelationsModel extends PostWithRelations {
     removeBookmark: (user_id: number) => Promise<boolean>;
     addShare: () => Promise<boolean>;
     addTag: (tag_id: number) => Promise<boolean>;
+    addImpression: () => Promise<boolean>;
     removeTag: (tag_id: number) => Promise<boolean>;
     addFlag: (flag: {
         removal_reason: string;

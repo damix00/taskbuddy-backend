@@ -278,6 +278,17 @@ class Post extends DataModel implements PostWithRelationsModel {
         }
     }
 
+    public async addImpression(): Promise<boolean> {
+        try {
+            return await this.updateInteractions({
+                impressions: this.impressions + 1,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;

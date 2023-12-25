@@ -75,10 +75,14 @@ export default [
             }
 
             // Return posts
-            return res.status(200).json({
+            res.status(200).json({
                 posts: posts.map((post) =>
                     getPostResultResponse(post, req.user!)
                 ),
+            });
+
+            posts.forEach(async (post) => {
+                await post.addImpression();
             });
         } catch (err) {
             return res.status(500).json({

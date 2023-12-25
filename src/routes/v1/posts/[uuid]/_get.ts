@@ -7,28 +7,27 @@ import { PostReads } from "../../../../database/wrappers/posts/post/wrapper";
 import { getPostResponse } from "../responses";
 
 export default async (req: ExtendedRequest, res: Response) => {
-    const { uuid } = req.params;
+    try {
+        const { uuid } = req.params;
 
-    const post = await PostReads.getPostByUUID(uuid, req.user!.id);
+        const post = await PostReads.getPostByUUID(uuid, req.user!.id);
 
-    if (!post) {
-        return res.status(404).json({
-            error: "Post not found",
-        });
-    }
+        if (!post) {
+            return res.status(404).json({
+                error: "Post not found",
+            });
+        }
 
-    const user = await post.getUser();
-    const profile = await user?.getProfile();
+        const user = await post.getUser();
+        const profile = await user?.getProfile();
 
-    if (!user || !profile) {
-        return res.status(404).json({
-            error: "User not found",
-        });
-    }
+        if (!user || !profile) {
+            return res.status(404).json({
+                error: "User not found",
+            });
+        }
 
-    return res
-        .status(200)
-        .json(
+        res.status(200).json(
             getPostResponse(
                 post,
                 user,
@@ -39,4 +38,12 @@ export default async (req: ExtendedRequest, res: Response) => {
                 post.bookmarked
             )
         );
+
+        await post.addImpression();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({
+            error: "Internal server error",
+        });
+    }
 };
