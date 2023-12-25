@@ -11,7 +11,10 @@ import {
     PostWithRelations,
     PostWithRelationsModel,
 } from "../../../models/posts/post";
-import { updatePostRelations } from "./relations/writes";
+import {
+    updatePostInteractions,
+    updatePostRelations,
+} from "./relations/writes";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 import { PostComments } from "../../../models/posts/comments";
@@ -121,6 +124,23 @@ class Post extends DataModel implements PostWithRelationsModel {
         return false;
     }
 
+    public async updateInteractions(
+        data: Partial<PostWithRelations>
+    ): Promise<boolean> {
+        this._refetch();
+
+        const newPost = { ...this, ...data };
+
+        const r = await updatePostInteractions(newPost);
+
+        if (r) {
+            super.setData(newPost);
+            return true;
+        }
+
+        return false;
+    }
+
     public async deletePost(): Promise<boolean> {
         return await writes.deletePost(this.id);
     }
@@ -179,7 +199,7 @@ class Post extends DataModel implements PostWithRelationsModel {
                 return false;
             }
 
-            this.update({ likes: this.likes + 1 });
+            this.updateInteractions({ likes: this.likes + 1 });
 
             return true;
         } catch (e) {
@@ -200,7 +220,7 @@ class Post extends DataModel implements PostWithRelationsModel {
                 return false;
             }
 
-            this.update({ likes: this.likes - 1 });
+            this.updateInteractions({ likes: this.likes - 1 });
 
             return true;
         } catch (e) {

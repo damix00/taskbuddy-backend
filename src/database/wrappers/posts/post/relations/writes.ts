@@ -126,3 +126,36 @@ export async function updatePostRelations(
         return null;
     }
 }
+
+export async function updatePostInteractions(
+    post: PostWithRelations
+): Promise<boolean> {
+    try {
+        await executeQuery(
+            `
+            UPDATE post_interactions
+            SET
+                likes = $1,
+                comments = $2,
+                shares = $3,
+                bookmarks = $4,
+                impressions = $5
+            WHERE id = $6
+        `,
+            [
+                post.likes,
+                post.comments,
+                post.shares,
+                post.bookmarks,
+                post.impressions,
+                post.interactions_id,
+            ]
+        );
+
+        return true;
+    } catch (err) {
+        console.error(err);
+
+        return false;
+    }
+}
