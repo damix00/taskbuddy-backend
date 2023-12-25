@@ -37,7 +37,7 @@ export function getPostResponse(
         tags: post.tags.map((tag) => tag.tag_id),
         media: post.media.map((media) => ({
             media: media.media,
-            media_type: media.media_type,
+            media_type: media.type,
         })),
         is_urgent: post.urgent,
         status: post.status,
@@ -99,7 +99,7 @@ export function getPostResultResponse(post: Post, user: User) {
         tags: post.tags.map((tag) => tag.tag_id),
         media: post.media.map((media) => ({
             media: media.media,
-            media_type: media.media_type,
+            media_type: media.type,
         })),
         is_urgent: post.urgent,
         status: post.status,

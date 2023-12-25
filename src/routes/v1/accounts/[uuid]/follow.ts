@@ -1,4 +1,4 @@
-// PUT/DELETE /v1/accounts/:uuid/follow\
+// PUT/DELETE /v1/accounts/:uuid/follow
 // Follow or unfollow a user
 
 import { Response } from "express";

@@ -12,7 +12,11 @@ export default [
         try {
             const offset = parseInt(req.query.offset as string) || 0;
 
-            const posts = await PostReads.getPostsByUser(req.user!.id, offset);
+            const posts = await PostReads.getPostsByUser(
+                req.user!.id,
+                offset,
+                req.user!.id
+            );
 
             if (!posts) {
                 return res.status(404).json({

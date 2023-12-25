@@ -46,3 +46,5 @@ class Comment extends DataModel implements PostCommentsModel {
         return true;
     }
 }
+
+export default Comment;

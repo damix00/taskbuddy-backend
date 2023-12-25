@@ -5,7 +5,7 @@ export function requireMethod(method: string) {
         // Check if the method is allowed
         if (req.method !== method) {
             res.status(405).json({
-                message: `Method ${req.method} not allowed`
+                message: `Method ${req.method} not allowed`,
             });
             return;
         }
@@ -20,7 +20,7 @@ export function requireMethods(methods: string[]) {
         // Check if the method is allowed
         if (!methods.includes(req.method)) {
             res.status(405).json({
-                message: `Method ${req.method} not allowed`
+                message: `Method ${req.method} not allowed`,
             });
             return;
         }

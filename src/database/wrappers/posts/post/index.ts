@@ -20,6 +20,7 @@ import { UserReads } from "../../accounts/users/wrapper";
 import { User } from "../../accounts/users";
 import { Profile } from "../../accounts/profiles";
 import { ProfileReads } from "../../accounts/profiles/wrapper";
+import { Interactions } from "../interactions";
 
 class Post extends DataModel implements PostWithRelationsModel {
     media: PostMedia[];
@@ -126,7 +127,7 @@ class Post extends DataModel implements PostWithRelationsModel {
 
     public async addMedia(media: {
         media: string;
-        media_type: MediaType;
+        type: MediaType;
     }): Promise<boolean> {
         try {
             return this.update({
@@ -136,7 +137,7 @@ class Post extends DataModel implements PostWithRelationsModel {
                         id: 0,
                         post_id: this.id,
                         media: media.media,
-                        media_type: media.media_type,
+                        type: media.type,
                     },
                 ],
             });
@@ -166,6 +167,48 @@ class Post extends DataModel implements PostWithRelationsModel {
         return await ProfileReads.getProfileByUid(this.user_id);
     }
 
+    public async addLike(user_id: number, ip?: string): Promise<boolean> {
+        try {
+            if (await Interactions.isLiked(user_id, this.id)) {
+                return false;
+            }
+
+            const result = await Interactions.likePost(user_id, this.id);
+
+            if (!result) {
+                return false;
+            }
+
+            this.update({ likes: this.likes + 1 });
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async removeLike(user_id: number): Promise<boolean> {
+        try {
+            if (!(await Interactions.isLiked(user_id, this.id))) {
+                return false;
+            }
+
+            const result = await Interactions.unlikePost(user_id, this.id);
+
+            if (!result) {
+                return false;
+            }
+
+            this.update({ likes: this.likes - 1 });
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
@@ -173,8 +216,6 @@ class Post extends DataModel implements PostWithRelationsModel {
         reply_to: number;
     }) => Promise<boolean>;
     removeComment: (comment_id: number) => Promise<boolean>;
-    addLike: (user_id: number) => Promise<boolean>;
-    removeLike: (user_id: number) => Promise<boolean>;
     addBookmark: (user_id: number) => Promise<boolean>;
     removeBookmark: (user_id: number) => Promise<boolean>;
     addShare: (user_id: number) => Promise<boolean>;

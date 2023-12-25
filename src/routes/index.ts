@@ -16,6 +16,7 @@ import nearby from "./v1/posts/nearby";
 import follow from "./v1/accounts/[uuid]/follow";
 import accounts from "./v1/accounts/[uuid]";
 import getAccountPosts from "./v1/accounts/[uuid]/posts";
+import like from "./v1/posts/[uuid]/interactions/like";
 
 export type route = {
     path: string;
@@ -30,6 +31,10 @@ const postRoutes: route[] = [
     {
         path: "/v1/posts/nearby",
         handler: nearby,
+    },
+    {
+        path: "/v1/posts/:uuid/interactions/like",
+        handler: like,
     },
     {
         path: "/v1/posts/:uuid",

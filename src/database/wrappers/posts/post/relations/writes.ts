@@ -7,9 +7,6 @@ export async function updatePostRelations(
     post: PostWithRelations
 ): Promise<PostWithRelations | null> {
     try {
-        // Start a transaction
-        await executeQuery("BEGIN");
-
         // Update interactions
         await executeQuery(
             `
@@ -57,7 +54,7 @@ export async function updatePostRelations(
         // Update location
         await executeQuery(
             `
-            UPDATE post_locations
+            UPDATE post_location
             SET
                 lat = $1,
                 lon = $2,
@@ -90,8 +87,8 @@ export async function updatePostRelations(
         const media = await Promise.all(
             post.media.map((media) =>
                 executeQuery(
-                    `INSERT INTO post_media (post_id, media, media_type) VALUES ($1, $2, $3)`,
-                    [post.id, media.media, media.media_type]
+                    `INSERT INTO post_media (post_id, media, type) VALUES ($1, $2, $3)`,
+                    [post.id, media.media, media.type]
                 )
             )
         );
@@ -101,14 +98,15 @@ export async function updatePostRelations(
         // Update tags
 
         // Delete all tags
-        await executeQuery(`DELETE FROM post_tags WHERE post_id = $1`, [
-            post.id,
-        ]);
+        await executeQuery(
+            `DELETE FROM post_tag_relationship WHERE post_id = $1`,
+            [post.id]
+        );
 
         const tags = await Promise.all(
             post.tags.map((tag) =>
                 executeQuery(
-                    `INSERT INTO post_tags (post_id, tag_id) VALUES ($1, $2)`,
+                    `INSERT INTO post_tag_relationship (post_id, tag_id) VALUES ($1, $2)`,
                     [post.id, tag.tag_id]
                 )
             )
@@ -121,15 +119,9 @@ export async function updatePostRelations(
 
         if (!result) throw new Error("Failed to update post");
 
-        // Commit the transaction
-        await executeQuery("COMMIT");
-
         return await reads.getPostById(post.id);
     } catch (err) {
         console.error(err);
-
-        // Rollback the transaction
-        await executeQuery("ROLLBACK");
 
         return null;
     }

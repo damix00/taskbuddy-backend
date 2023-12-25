@@ -51,7 +51,7 @@ export interface PostMedia {
     id: number;
     post_id: number;
     media: string;
-    media_type: number;
+    type: number;
 }
 
 // Interface for interactions with a post
@@ -107,10 +107,7 @@ export interface PostWithRelationsModel extends PostWithRelations {
     update: (data: Partial<PostWithRelations>) => Promise<boolean>;
     deletePost: () => Promise<boolean>;
     refetch: () => Promise<void>;
-    addMedia: (media: {
-        media: string;
-        media_type: MediaType;
-    }) => Promise<boolean>;
+    addMedia: (media: { media: string; type: MediaType }) => Promise<boolean>;
     removeMedia: (media: PostMedia) => Promise<boolean>;
     addComment: (comment: {
         user_id: number;

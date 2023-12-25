@@ -18,12 +18,6 @@ export default [
                 });
             }
 
-            if (uuid == req.user!.uuid) {
-                return res.status(403).json({
-                    message: "UUID cannot be your own",
-                });
-            }
-
             const account = await UserReads.getUserByUUID(uuid, req.user!.id);
 
             if (!account) {
