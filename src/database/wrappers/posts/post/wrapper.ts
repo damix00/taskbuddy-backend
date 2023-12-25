@@ -108,6 +108,23 @@ export class PostReads {
 
         return res;
     }
+
+    public static async getUserBookmarks(
+        user_id: number,
+        offset: number
+    ): Promise<Post[] | null> {
+        const posts = await reads.getUserBookmarks(user_id, offset);
+
+        if (!posts) return null;
+
+        let res = [];
+
+        for (const post of posts) {
+            res.push((await toPost(post)) as Post);
+        }
+
+        return res;
+    }
 }
 
 export class PostWrites {

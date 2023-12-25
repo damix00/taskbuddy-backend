@@ -2,6 +2,32 @@ import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import { PostWithRelations } from "../../../../models/posts/post";
 
+const postFields = `posts.*,
+post_interactions.likes,
+post_interactions.comments,
+post_interactions.shares,
+post_interactions.bookmarks,
+post_interactions.impressions,
+post_removals.removed,
+post_removals.removal_reason,
+post_removals.flagged,
+post_removals.flagged_reason,
+post_removals.shadow_banned,
+post_location.remote,
+post_location.lat,
+post_location.lon,
+post_location.approx_lat,
+post_location.approx_lon,
+post_location.suggestion_radius,
+post_location.location_name,
+users.uuid AS user_uuid,
+users.has_premium AS has_premium,
+users.verified AS verified,
+users.username,
+users.first_name,
+users.last_name,
+profiles.profile_picture`;
+
 async function getPostByField(
     field: string,
     value: string,
@@ -10,31 +36,7 @@ async function getPostByField(
     try {
         const q = `
             SELECT
-                posts.*,
-                post_interactions.likes,
-                post_interactions.comments,
-                post_interactions.shares,
-                post_interactions.bookmarks,
-                post_interactions.impressions,
-                post_removals.removed,
-                post_removals.removal_reason,
-                post_removals.flagged,
-                post_removals.flagged_reason,
-                post_removals.shadow_banned,
-                post_location.remote,
-                post_location.lat,
-                post_location.lon,
-                post_location.approx_lat,
-                post_location.approx_lon,
-                post_location.suggestion_radius,
-                post_location.location_name,
-                users.uuid AS user_uuid,
-                users.has_premium AS has_premium,
-                users.verified AS verified,
-                users.username,
-                users.first_name,
-                users.last_name,
-                profiles.profile_picture,
+                ${postFields},
                 ${
                     // Select if the user is following the author, if it's liked and bookmarked
                     user_id
@@ -125,31 +127,7 @@ namespace reads {
         try {
             const q = `
                 SELECT
-                    posts.*,
-                    post_interactions.likes,
-                    post_interactions.comments,
-                    post_interactions.shares,
-                    post_interactions.bookmarks,
-                    post_interactions.impressions,
-                    post_removals.removed,
-                    post_removals.removal_reason,
-                    post_removals.flagged,
-                    post_removals.flagged_reason,
-                    post_removals.shadow_banned,
-                    post_location.remote,
-                    post_location.lat,
-                    post_location.lon,
-                    post_location.approx_lat,
-                    post_location.approx_lon,
-                    post_location.suggestion_radius,
-                    post_location.location_name,
-                    users.uuid AS user_uuid,
-                    users.has_premium AS has_premium,
-                    users.verified AS verified,
-                    users.username,
-                    users.first_name,
-                    users.last_name,
-                    profiles.profile_picture,
+                    ${postFields},
                     ${
                         // Select if the user is following the author, if it's liked and bookmarked
                         requester_user_id
@@ -212,29 +190,7 @@ namespace reads {
         try {
             const q = `
             SELECT
-                posts.*,
-                post_interactions.likes,
-                post_interactions.comments,
-                post_interactions.shares,
-                post_interactions.bookmarks,
-                post_interactions.impressions,
-                post_removals.removed,
-                post_removals.removal_reason,
-                post_removals.flagged,
-                post_removals.flagged_reason,
-                post_removals.shadow_banned,
-                post_location.remote,
-                post_location.lat,
-                post_location.lon,
-                post_location.approx_lat,
-                post_location.approx_lon,
-                post_location.suggestion_radius,
-                post_location.location_name,
-                users.uuid AS user_uuid,
-                users.username,
-                users.first_name,
-                users.last_name,
-                profiles.profile_picture,
+                ${postFields},
                 EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id) AS following,
                 EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
                 EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
@@ -286,29 +242,7 @@ namespace reads {
         try {
             const q = `
             SELECT
-                posts.*,
-                post_interactions.likes,
-                post_interactions.comments,
-                post_interactions.shares,
-                post_interactions.bookmarks,
-                post_interactions.impressions,
-                post_removals.removed,
-                post_removals.removal_reason,
-                post_removals.flagged,
-                post_removals.flagged_reason,
-                post_removals.shadow_banned,
-                post_location.remote,
-                post_location.lat,
-                post_location.lon,
-                post_location.approx_lat,
-                post_location.approx_lon,
-                post_location.suggestion_radius,
-                post_location.location_name,
-                users.uuid AS user_uuid,
-                users.username,
-                users.first_name,
-                users.last_name,
-                profiles.profile_picture,
+                ${postFields},
                 ST_DistanceSphere(ST_MakePoint($3, $2), ST_MakePoint(post_location.lon, post_location.lat)),
                 EXISTS(SELECT 1 FROM follows WHERE follows.follower = $1 AND follows.following = posts.user_id) AS following,
                 EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $1 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
@@ -337,6 +271,48 @@ namespace reads {
                 user_id,
                 lat,
                 lon,
+                offset,
+            ]);
+
+            return r;
+        } catch (e) {
+            console.error(e);
+
+            return null;
+        }
+    }
+
+    export async function getUserBookmarks(
+        user_id: number,
+        offset: number
+    ): Promise<PostWithRelations[] | null> {
+        try {
+            const q = `
+                SELECT
+                    ${postFields},
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id) AS following,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $1 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $1 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
+                    COALESCE(json_agg(DISTINCT post_media) FILTER (WHERE post_media.id IS NOT NULL), '[]') AS media,
+                    COALESCE(json_agg(DISTINCT post_tag_relationship) FILTER (WHERE post_tag_relationship.post_id IS NOT NULL), '[]') AS tags
+                FROM 
+                    posts
+                INNER JOIN post_media ON posts.id = post_media.post_id
+                INNER JOIN post_tag_relationship ON posts.id = post_tag_relationship.post_id
+                INNER JOIN users ON posts.user_id = users.id
+                INNER JOIN profiles ON posts.user_id = profiles.user_id
+                LEFT JOIN post_location ON posts.post_location_id = post_location.id
+                LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
+                LEFT JOIN post_removals ON posts.removals_id = post_removals.id
+                WHERE posts.id IN (SELECT post_id FROM post_interaction_logs WHERE user_id = $1 AND interaction_type = 3) AND post_removals.removed = false
+                GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
+                -- Order by when the post was bookmarked
+                ORDER BY (SELECT created_at FROM post_interaction_logs WHERE post_interaction_logs.user_id = $1 AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) DESC
+                LIMIT 10 OFFSET $2
+            `;
+
+            const r = await executeQuery<PostWithRelations>(q, [
+                user_id,
                 offset,
             ]);
 

@@ -1,10 +1,10 @@
 // GET /v1/accounts/me/posts - Get all posts of the current user
 
 import { Response } from "express";
-import { authorize } from "../../../../middleware/authorization";
-import { ExtendedRequest } from "../../../../types/request";
-import { PostReads } from "../../../../database/wrappers/posts/post/wrapper";
-import { getPostResponse } from "../../posts/responses";
+import { authorize } from "../../../../../middleware/authorization";
+import { ExtendedRequest } from "../../../../../types/request";
+import { PostReads } from "../../../../../database/wrappers/posts/post/wrapper";
+import { getPostResponse } from "../../../posts/responses";
 
 export default [
     authorize(true),

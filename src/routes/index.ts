@@ -18,6 +18,7 @@ import accounts from "./v1/accounts/[uuid]";
 import getAccountPosts from "./v1/accounts/[uuid]/posts";
 import like from "./v1/posts/[uuid]/interactions/like";
 import bookmark from "./v1/posts/[uuid]/interactions/bookmark";
+import meBookmarks from "./v1/accounts/me/posts/bookmarks";
 
 export type route = {
     path: string;
@@ -52,6 +53,10 @@ const postRoutes: route[] = [
 ];
 
 const meRoutes: route[] = [
+    {
+        path: "/v1/accounts/me/posts/bookmarks",
+        handler: meBookmarks,
+    },
     {
         path: "/v1/accounts/me/posts",
         handler: mePosts,
