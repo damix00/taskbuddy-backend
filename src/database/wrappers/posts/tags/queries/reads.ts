@@ -44,41 +44,11 @@ namespace reads {
         }
     }
 
-    type TagCount = {
+    export type TagCount = {
         tag_id: number;
-        tag_name: string;
+        tag_translations: { [key: string]: string };
         tag_count: number;
     };
-
-    export async function getTrendingTags(limit: number): Promise<TagCount[]> {
-        try {
-            const q = `
-                SELECT
-                    pt.tag_id,
-                    t.tag_name,
-                    COUNT(*) AS tag_count
-                FROM
-                    post_tag_relationship pt
-                JOIN
-                    post_tags t ON pt.tag_id = t.tag_id
-                WHERE
-                    pt.created_at >= NOW() - INTERVAL '24 hours'
-                GROUP BY
-                    pt.tag_id, t.tag_name
-                ORDER BY
-                    tag_count DESC
-                LIMIT $1
-            `;
-
-            const result = await executeQuery<TagCount>(q, [limit]);
-
-            return result;
-        } catch (err) {
-            console.error(err);
-
-            return [];
-        }
-    }
 }
 
 export default reads;

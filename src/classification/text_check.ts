@@ -18,8 +18,6 @@ export async function checkText(text: string): Promise<boolean> {
         categories["self-harm/instructions"] ||
         categories["self-harm/intent"] ||
         categories.sexual ||
-        categories["sexual/minors"] ||
-        categories.violence ||
-        categories["violence/graphic"]
+        categories["sexual/minors"]
     );
 }

@@ -220,9 +220,7 @@ class Post extends DataModel implements PostWithRelationsModel {
                 return false;
             }
 
-            this.updateInteractions({ likes: this.likes - 1 });
-
-            return true;
+            return await this.updateInteractions({ likes: this.likes - 1 });
         } catch (e) {
             console.error(e);
             return false;
@@ -241,9 +239,9 @@ class Post extends DataModel implements PostWithRelationsModel {
                 return false;
             }
 
-            this.updateInteractions({ bookmarks: this.bookmarks + 1 });
-
-            return true;
+            return await this.updateInteractions({
+                bookmarks: this.bookmarks + 1,
+            });
         } catch (e) {
             console.error(e);
             return false;
@@ -271,6 +269,15 @@ class Post extends DataModel implements PostWithRelationsModel {
         }
     }
 
+    public async addShare(): Promise<boolean> {
+        try {
+            return await this.updateInteractions({ shares: this.shares + 1 });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
@@ -278,8 +285,6 @@ class Post extends DataModel implements PostWithRelationsModel {
         reply_to: number;
     }) => Promise<boolean>;
     removeComment: (comment_id: number) => Promise<boolean>;
-    addShare: (user_id: number) => Promise<boolean>;
-    removeShare: (user_id: number) => Promise<boolean>;
     addTag: (tag_id: number) => Promise<boolean>;
     removeTag: (tag_id: number) => Promise<boolean>;
     addFlag: (flag: {

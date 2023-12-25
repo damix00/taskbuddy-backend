@@ -19,6 +19,7 @@ import getAccountPosts from "./v1/accounts/[uuid]/posts";
 import like from "./v1/posts/[uuid]/interactions/like";
 import bookmark from "./v1/posts/[uuid]/interactions/bookmark";
 import meBookmarks from "./v1/accounts/me/posts/bookmarks";
+import share from "./v1/posts/[uuid]/interactions/share";
 
 export type route = {
     path: string;
@@ -41,6 +42,10 @@ const postRoutes: route[] = [
     {
         path: "/v1/posts/:uuid/interactions/bookmark",
         handler: bookmark,
+    },
+    {
+        path: "/v1/posts/:uuid/interactions/share",
+        handler: share,
     },
     {
         path: "/v1/posts/:uuid",
