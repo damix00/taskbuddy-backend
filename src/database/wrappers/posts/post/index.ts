@@ -229,6 +229,48 @@ class Post extends DataModel implements PostWithRelationsModel {
         }
     }
 
+    public async addBookmark(user_id: number): Promise<boolean> {
+        try {
+            if (await Interactions.isBookmarked(user_id, this.id)) {
+                return false;
+            }
+
+            const result = await Interactions.bookmarkPost(user_id, this.id);
+
+            if (!result) {
+                return false;
+            }
+
+            this.updateInteractions({ bookmarks: this.bookmarks + 1 });
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async removeBookmark(user_id: number): Promise<boolean> {
+        try {
+            if (!(await Interactions.isBookmarked(user_id, this.id))) {
+                return false;
+            }
+
+            const result = await Interactions.unbookmarkPost(user_id, this.id);
+
+            if (!result) {
+                return false;
+            }
+
+            this.updateInteractions({ bookmarks: this.bookmarks - 1 });
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
@@ -236,8 +278,6 @@ class Post extends DataModel implements PostWithRelationsModel {
         reply_to: number;
     }) => Promise<boolean>;
     removeComment: (comment_id: number) => Promise<boolean>;
-    addBookmark: (user_id: number) => Promise<boolean>;
-    removeBookmark: (user_id: number) => Promise<boolean>;
     addShare: (user_id: number) => Promise<boolean>;
     removeShare: (user_id: number) => Promise<boolean>;
     addTag: (tag_id: number) => Promise<boolean>;
