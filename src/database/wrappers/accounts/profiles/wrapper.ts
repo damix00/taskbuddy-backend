@@ -8,6 +8,18 @@ function toProfile(
 ): Profile | null {
     if (!profile) return null;
 
+    profile.id = parseInt(profile.id as unknown as string);
+    profile.user_id = parseInt(profile.user_id as unknown as string);
+    profile.followers = parseInt(profile.followers as unknown as string);
+    profile.following = parseInt(profile.following as unknown as string);
+    profile.post_count = parseInt(profile.post_count as unknown as string);
+    profile.completed_employee = parseInt(
+        profile.completed_employee as unknown as string
+    );
+    profile.completed_employer = parseInt(
+        profile.completed_employer as unknown as string
+    );
+
     return new Profile(profile);
 }
 

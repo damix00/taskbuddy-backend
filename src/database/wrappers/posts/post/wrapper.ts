@@ -16,6 +16,16 @@ async function toPost(
 
     if (post instanceof Post) return post;
 
+    post.id = parseInt(post.id as unknown as string);
+    post.user_id = parseInt(post.user_id as unknown as string);
+
+    // @ts-ignore
+    post?.likes = parseInt(post?.likes as unknown as string);
+    // @ts-ignore
+    post?.comments = parseInt(post?.comments as unknown as string);
+    // @ts-ignore
+    post?.bookmarks = parseInt(post?.bookmarks as unknown as string);
+
     // @ts-ignore
     if (post?.username) return new Post(post as PostWithRelations);
 

@@ -1,4 +1,3 @@
-import { executeQuery } from "../../../connection";
 import {
     LimitedAccess,
     Role,
@@ -14,6 +13,8 @@ import { LoginWrites } from "../logins/wrapper";
 import { ProfileReads } from "../profiles/wrapper";
 import { Profile } from "../profiles";
 import { FollowReads } from "../follows/wrapper";
+import * as fcm from "../../../../firebase/notifications";
+import { NotificationReads } from "../notifications/wraper";
 
 export class User extends DataModel implements UserModel {
     id: number;
@@ -190,5 +191,23 @@ export class User extends DataModel implements UserModel {
     // Returns the user's profile
     public async getProfile(): Promise<Profile | null> {
         return await ProfileReads.getProfileByUid(this.id);
+    }
+
+    /**
+     * Send a notification to the user's devices
+     */
+    public async sendNotification(
+        notification: fcm.Notification
+    ): Promise<boolean> {
+        const tokens = await NotificationReads.getUserTokens(this.id);
+
+        if (!tokens) return false;
+
+        const res = await fcm.sendNotification(
+            notification,
+            tokens.map((t) => t.token)
+        );
+
+        return res.success;
     }
 }
