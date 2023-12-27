@@ -8,8 +8,8 @@ import { ExtendedRequest } from "../../../../types/request";
 import { NotificationWrites } from "../../../../database/wrappers/accounts/notifications/wraper";
 
 export default [
-    authorize(true),
     requireMethod("PATCH"),
+    authorize(true),
     async (req: ExtendedRequest, res: Response) => {
         try {
             const { fcm_token } = req.body;

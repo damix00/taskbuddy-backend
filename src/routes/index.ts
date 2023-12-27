@@ -21,6 +21,7 @@ import bookmark from "./v1/posts/[uuid]/interactions/bookmark";
 import meBookmarks from "./v1/accounts/me/posts/bookmarks";
 import share from "./v1/posts/[uuid]/interactions/share";
 import fcm from "./v1/accounts/me/fcm";
+import test_fcm from "./v1/accounts/me/test_fcm";
 
 export type route = {
     path: string;
@@ -74,6 +75,10 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/fcm",
         handler: fcm,
+    },
+    {
+        path: "/v1/accounts/me/test_fcm",
+        handler: test_fcm,
     },
 ];
 

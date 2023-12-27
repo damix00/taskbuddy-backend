@@ -17,12 +17,15 @@ export async function sendNotification(
     tokens: string[]
 ): Promise<NotificationResponse> {
     try {
-        const r = await getMessaging().sendMulticast({
+        const r = await getMessaging().sendEachForMulticast({
             data: notification.data,
             notification: {
                 title: notification.title,
                 body: notification.body,
                 imageUrl: notification.imageUrl,
+            },
+            android: {
+                priority: "high",
             },
             tokens,
         });
