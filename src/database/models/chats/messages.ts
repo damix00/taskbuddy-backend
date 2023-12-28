@@ -1,5 +1,4 @@
-import { UserModel } from "../users/user";
-import { ChannelModel } from "./channels";
+import { User } from "../../wrappers/accounts/users";
 
 export enum AttachmentType {
     IMAGE = 0,
@@ -57,8 +56,7 @@ export interface RequestMessageFields {
 }
 
 export interface MessageWithRelations extends MessageFields {
-    channel: ChannelModel;
-    sender: UserModel;
+    sender: User;
     attachments: MessageAttachmentFields[];
     request: RequestMessageFields | null;
 }

@@ -130,9 +130,12 @@ const userRoutes: route[] = [
     },
 ];
 
+const messageRoutes: route[] = [];
+
 const routes: route[] = [
     ...userRoutes,
     ...postRoutes,
+    ...messageRoutes,
     {
         path: "/v1/ping",
         handler: ping,
