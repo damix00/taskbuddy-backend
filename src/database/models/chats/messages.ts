@@ -41,7 +41,7 @@ export interface MessageAttachmentFields {
     id: number;
     message_id: number;
     attachment_type: AttachmentType;
-    attachment: string;
+    attachment_url: string;
     created_at: Date;
     updated_at: Date;
 }

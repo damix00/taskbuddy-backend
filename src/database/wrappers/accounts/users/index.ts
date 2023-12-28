@@ -201,7 +201,10 @@ export class User extends DataModel implements UserModel {
     ): Promise<boolean> {
         const tokens = await NotificationReads.getUserTokens(this.id);
 
-        if (!tokens) return false;
+        if (!tokens) {
+            console.error(`No tokens found for user ${this.username}`);
+            return false;
+        }
 
         const res = await fcm.sendNotification(
             notification,

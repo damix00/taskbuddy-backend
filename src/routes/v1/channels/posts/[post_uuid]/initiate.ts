@@ -82,6 +82,7 @@ export default [
             }
 
             // TODO: Add message to channel
+
             user.sendNotification({
                 title: "New post request",
                 body: `You have a new post request from @${
