@@ -14,27 +14,44 @@ namespace reads {
                 SELECT channels.*,
                     TO_JSON(creator_data.*) AS created_by,
                     TO_JSON(recipient_data.*) AS recipient,
-                    TO_JSON(creator_profile.*) AS created_by_profile,
+                    TO_JSON(creator_profile.*) AS creator_profile,
                     TO_JSON(recipient_profile.*) AS recipient_profile,
                     TO_JSON(posts.*) AS post,
                     EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = creator_data.id) AS recipient_following,
                     EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = recipient_data.id) AS creator_following,
-                    -- Last message
-                    COALESCE(json_agg(DISTINCT messages) FILTER (WHERE messages.channel_id IS NOT NULL), '[]') AS last_messages
+
+                    -- Last messages
+                    COALESCE(json_agg(DISTINCT messages) FILTER (WHERE messages.channel_id IS NOT NULL), '[]') AS last_messages,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
+                    EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2  AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
+
+                    COALESCE(json_agg(DISTINCT post_media) FILTER (WHERE post_media.id IS NOT NULL), '[]') AS media,
+                    COALESCE(json_agg(DISTINCT post_tag_relationship) FILTER (WHERE post_tag_relationship.post_id IS NOT NULL), '[]') AS tags,
+
+                    TO_JSON(post_location.*) AS post_location,
+                    TO_JSON(post_interactions.*) AS post_interactions,
+                    TO_JSON(post_removals.*) AS post_removals
                 FROM channels
+
                 LEFT JOIN users AS creator_data ON channels.created_by_id = creator_data.id
                 LEFT JOIN users AS recipient_data ON channels.recipient_id = recipient_data.id
                 LEFT JOIN profiles AS creator_profile ON channels.created_by_id = creator_profile.user_id
                 LEFT JOIN profiles AS recipient_profile ON channels.recipient_id = recipient_profile.user_id
                 LEFT JOIN posts ON channels.post_id = posts.id
-                LEFT JOIN messages ON messages.channel_id = channels.id
-                LEFT JOIN (
-                    SELECT sender_id, message, deleted, created_at FROM messages
-                    WHERE messages.channel_id = channels.id
-                    ORDER BY messages.created_at DESC
-                    LIMIT 1
-                ) AS last_message_data ON TRUE
+                LEFT JOIN messages ON channels.id = messages.channel_id
+
+                LEFT JOIN post_media ON posts.id = post_media.post_id
+                LEFT JOIN post_tag_relationship ON posts.id = post_tag_relationship.post_id
+                LEFT JOIN post_location ON posts.post_location_id = post_location.id
+                LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
+                LEFT JOIN post_removals ON posts.removals_id = post_removals.id
+
                 WHERE ${field} = $1 AND (channels.created_by_id = $2 OR channels.recipient_id = $2)
+                GROUP BY channels.id, creator_data.id,
+                    recipient_data.id, creator_profile.id,
+                    recipient_profile.id, posts.id,
+                    post_location.id, post_interactions.id,
+                    post_removals.id 
                 ORDER BY channels.last_message_time DESC
                 ${fetchMany ? `OFFSET $3 LIMIT 20` : ""}
             `;

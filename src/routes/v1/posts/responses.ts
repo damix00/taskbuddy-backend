@@ -34,11 +34,12 @@ export function getPostResponse(
         start_date: post.start_date,
         end_date: post.end_date,
         reserved: !!post.reserved_by,
-        tags: post.tags.map((tag) => tag.tag_id),
-        media: post.media.map((media) => ({
-            media: media.media,
-            media_type: media.type,
-        })),
+        tags: post?.tags.map((tag) => tag.tag_id) || [],
+        media:
+            post?.media.map((media) => ({
+                media: media.media,
+                media_type: media.type,
+            })) || [],
         is_urgent: post.urgent,
         status: post.status,
         created_at: post.created_at,
@@ -124,6 +125,43 @@ export function getPostResultResponse(post: Post, user: User) {
             profile: {
                 profile_picture: post.profile_picture,
             },
+        },
+    };
+}
+
+export function getPostOnlyResponse(post: Post) {
+    return {
+        uuid: post.uuid,
+        title: post.title,
+        description: post.description,
+        liked: post.liked,
+        bookmarked: post.bookmarked,
+        display_location: {
+            lat: post.approx_lat,
+            lon: post.approx_lon,
+            location_name: post.location_name,
+        },
+        job_type: post.job_type,
+        is_remote: post.remote,
+        price: post.price,
+        start_date: post.start_date,
+        end_date: post.end_date,
+        reserved: !!post.reserved_by,
+        tags: post.tags.map((tag) => tag.tag_id),
+        media: post.media.map((media) => ({
+            media: media.media,
+            media_type: media.type,
+        })),
+        is_urgent: post.urgent,
+        status: post.status,
+        created_at: post.created_at,
+        updated_at: post.updated_at,
+        analytics: {
+            likes: post.likes,
+            impressions: post.impressions,
+            shares: post.shares,
+            bookmarks: post.bookmarks,
+            comments: post.comments,
         },
     };
 }

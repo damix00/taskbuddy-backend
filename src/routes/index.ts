@@ -22,6 +22,8 @@ import meBookmarks from "./v1/accounts/me/posts/bookmarks";
 import share from "./v1/posts/[uuid]/interactions/share";
 import fcm from "./v1/accounts/me/fcm";
 import test_fcm from "./v1/accounts/me/test_fcm";
+import initiate from "./v1/channels/posts/[post_uuid]/initiate";
+import post_channel from "./v1/channels/posts/[post_uuid]";
 
 export type route = {
     path: string;
@@ -132,10 +134,22 @@ const userRoutes: route[] = [
 
 const messageRoutes: route[] = [];
 
+const channelRoutes: route[] = [
+    {
+        path: "/v1/channels/posts/:post_uuid/initiate",
+        handler: initiate,
+    },
+    {
+        path: "/v1/channels/posts/:post_uuid",
+        handler: post_channel,
+    },
+];
+
 const routes: route[] = [
+    ...messageRoutes,
+    ...channelRoutes,
     ...userRoutes,
     ...postRoutes,
-    ...messageRoutes,
     {
         path: "/v1/ping",
         handler: ping,

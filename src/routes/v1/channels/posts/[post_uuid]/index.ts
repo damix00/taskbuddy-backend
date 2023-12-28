@@ -5,6 +5,8 @@ import { Response } from "express";
 import { authorize } from "../../../../../middleware/authorization";
 import { ExtendedRequest } from "../../../../../types/request";
 import { ChannelReads } from "../../../../../database/wrappers/chats/channels/wrapper";
+import { PostReads } from "../../../../../database/wrappers/posts/post/wrapper";
+import { getChannelResponse } from "../../responses";
 
 export default [
     authorize(true),
@@ -18,8 +20,16 @@ export default [
                 });
             }
 
+            const post = await PostReads.getPostByUUID(post_uuid as any);
+
+            if (!post) {
+                return res.status(404).json({
+                    message: "Post not found",
+                });
+            }
+
             const exists = await ChannelReads.getChannelByPostId(
-                post_uuid as any,
+                post.id,
                 req.user!.id
             );
 
@@ -28,6 +38,11 @@ export default [
                     message: "Channel not found",
                 });
             }
+
+            res.status(200).json({
+                message: "Success",
+                channel: getChannelResponse(exists, req.user!),
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({
