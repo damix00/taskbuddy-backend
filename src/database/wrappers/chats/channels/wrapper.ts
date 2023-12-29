@@ -3,12 +3,45 @@ import {
     ChannelFields,
     ChannelWithRelations,
 } from "../../../models/chats/channels";
+import { PostMedia, PostTags } from "../../../models/posts/post";
+import { User } from "../../accounts/users";
 import Post from "../../posts/post";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
+interface DatabaseChannel extends ChannelWithRelations {
+    media: PostMedia[];
+    tags: PostTags[];
+    post_interactions: {
+        likes: number;
+        comments: number;
+        shares: number;
+        bookmarks: number;
+        impressions: number;
+    };
+    post_removals: {
+        removed: boolean;
+        removal_reason: string;
+        flagged: boolean;
+        flagged_reason: string;
+        shadow_banned: boolean;
+    };
+    post_location: {
+        remote: boolean;
+        lat: number;
+        lon: number;
+        approx_lat: number;
+        approx_lon: number;
+        suggestion_radius: number;
+        location_name: string;
+    };
+    last_message_senders: User[];
+}
+
 function toChannel(channel: ChannelWithRelations | null) {
     if (!channel) return null;
+
+    const _channel: DatabaseChannel = channel as DatabaseChannel;
 
     channel.id = parseInt(channel.id as any);
     channel.post_id = parseInt(channel.post_id as any);
@@ -17,50 +50,47 @@ function toChannel(channel: ChannelWithRelations | null) {
     channel.recipient_id = parseInt(channel.recipient_id as any);
     channel.created_by_id = parseInt(channel.created_by_id as any);
 
+    channel.created_by = new User(channel.created_by, false);
+    channel.recipient = new User(channel.recipient, false);
+
     channel.post = new Post(
         {
             ...channel.post,
-            // @ts-ignore
-            media: channel.media,
-            // @ts-ignore
-            tags: channel.tags,
-            // @ts-ignore
-            likes: channel.post_interactions.likes,
-            // @ts-ignore
-            comments: channel.post_interactions.comments,
-            // @ts-ignore
-            shares: channel.post_interactions.shares,
-            // @ts-ignore
-            bookmarks: channel.post_interactions.bookmarks,
-            // @ts-ignore
-            impressions: channel.post_interactions.impressions,
-            // @ts-ignore
-            removed: channel.post_removals.removed,
-            // @ts-ignore
-            removal_reason: channel.post_removals.removal_reason,
-            // @ts-ignore
-            flagged: channel.post_removals.flagged,
-            // @ts-ignore
-            flagged_reason: channel.post_removals.flagged_reason,
-            // @ts-ignore
-            shadow_banned: channel.post_removals.shadow_banned,
-            // @ts-ignore
-            remote: channel.post_location.remote,
-            // @ts-ignore
-            lat: channel.post_location.lat,
-            // @ts-ignore
-            lon: channel.post_location.lon,
-            // @ts-ignore
-            approx_lat: channel.post_location.approx_lat,
-            // @ts-ignore
-            approx_lon: channel.post_location.approx_lon,
-            // @ts-ignore
-            suggestion_radius: channel.post_location.suggestion_radius,
-            // @ts-ignore
-            location_name: channel.post_location.location_name,
+            media: _channel.media,
+            tags: _channel.tags,
+            likes: _channel.post_interactions.likes,
+            comments: _channel.post_interactions.comments,
+            shares: _channel.post_interactions.shares,
+            bookmarks: _channel.post_interactions.bookmarks,
+            impressions: _channel.post_interactions.impressions,
+            removed: _channel.post_removals.removed,
+            removal_reason: _channel.post_removals.removal_reason,
+            flagged: _channel.post_removals.flagged,
+            flagged_reason: _channel.post_removals.flagged_reason,
+            shadow_banned: _channel.post_removals.shadow_banned,
+            remote: _channel.post_location.remote,
+            lat: _channel.post_location.lat,
+            lon: _channel.post_location.lon,
+            approx_lat: _channel.post_location.approx_lat,
+            approx_lon: _channel.post_location.approx_lon,
+            suggestion_radius: _channel.post_location.suggestion_radius,
+            location_name: _channel.post_location.location_name,
         },
         false
     );
+
+    channel.last_messages.map((message, i) => {
+        message.id = parseInt(message.id as any);
+        message.channel_id = parseInt(message.channel_id as any);
+        message.sender_id = parseInt(message.sender_id as any);
+        message.created_at = new Date(message.created_at as any);
+        message.updated_at = new Date(message.updated_at as any);
+
+        const sender = _channel.last_message_senders[i];
+
+        sender.id = parseInt(sender.id as any);
+        message.sender = new User(sender, false);
+    });
 
     return new Channel(channel);
 }

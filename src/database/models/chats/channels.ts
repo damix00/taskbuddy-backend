@@ -2,6 +2,7 @@ import { Profile } from "../../wrappers/accounts/profiles";
 import { User } from "../../wrappers/accounts/users";
 import Message from "../../wrappers/chats/messages";
 import Post from "../../wrappers/posts/post";
+import { CreateMessageFields } from "./messages";
 
 export enum ChannelStatus {
     PENDING = 0,
@@ -48,4 +49,9 @@ export interface ChannelModel extends ChannelWithRelations {
     setNegotiatedDate: (date: Date) => Promise<boolean>;
     setSharingLocation: (sharing: boolean) => Promise<boolean>;
     setLastMessageTime: (date: Date) => Promise<boolean>;
+    sendMessage: (
+        message: CreateMessageFields,
+        sender: User,
+        profile_picture: string
+    ) => Promise<Message | null>;
 }

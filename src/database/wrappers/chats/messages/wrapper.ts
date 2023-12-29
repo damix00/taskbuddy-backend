@@ -1,5 +1,6 @@
 import Message from ".";
 import {
+    CreateMessageFields,
     MessageFields,
     MessageWithRelations,
     RequestMessageFields,
@@ -17,6 +18,7 @@ function toMessage(message: MessageWithRelations | null): Message | null {
     message.created_at = new Date(message.created_at as any);
     message.updated_at = new Date(message.updated_at as any);
 
+    message.sender.id = parseInt(message.sender.id as any);
     message.sender = new User(message.sender);
 
     return new Message(message);
@@ -45,10 +47,13 @@ export class MessageReads {
 
 export class MessageWrites {
     public static async createMessage(
-        data: writes.CreateMessageFields,
-        sender: User
+        data: CreateMessageFields,
+        sender: User,
+        profile_picture: string = ""
     ): Promise<Message | null> {
-        return toMessage(await writes.createMessage(data, sender));
+        return toMessage(
+            await writes.createMessage(data, sender, profile_picture)
+        );
     }
 
     public static async updateMessageRelations(

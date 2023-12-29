@@ -1,5 +1,6 @@
 import { User } from "../../../database/wrappers/accounts/users";
 import Channel from "../../../database/wrappers/chats/channels";
+import Message from "../../../database/wrappers/chats/messages";
 import { getPublicUserProfileResponse } from "../accounts/responses";
 import { getPostOnlyResponse } from "../posts/responses";
 
@@ -25,5 +26,31 @@ export function getChannelResponse(channel: Channel, requester: User) {
         ),
         last_message_time: channel.last_message_time,
         created_at: channel.created_at,
+        last_messages: channel.last_messages.map((message) =>
+            getMessageResponse(message, requester)
+        ),
+    };
+}
+
+export function getMessageResponse(message: Message, requester: User) {
+    return {
+        uuid: message.uuid,
+        deleted: message.deleted,
+        message: message.deleted ? "" : message.message,
+        sender: {
+            uuid: message.sender.uuid,
+            username: message.sender.username,
+            first_name: message.sender.first_name,
+            last_name: message.sender.last_name,
+            profile_picture: message.profile_picture,
+            is_sender: message.sender.id == requester.id,
+        },
+        attachments: message.attachments,
+        request: message.request,
+        created_at: message.created_at,
+        edited: message.edited,
+        edited_at: message.edited_at,
+        seen: message.seen,
+        seen_at: message.seen_at,
     };
 }

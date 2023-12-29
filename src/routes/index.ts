@@ -24,6 +24,9 @@ import fcm from "./v1/accounts/me/fcm";
 import test_fcm from "./v1/accounts/me/test_fcm";
 import initiate from "./v1/channels/posts/[post_uuid]/initiate";
 import post_channel from "./v1/channels/posts/[post_uuid]";
+import get_channel from "./v1/channels/[uuid]";
+import get_channel_messages from "./v1/channels/[uuid]/messages";
+import send_message from "./v1/channels/[uuid]/messages/send";
 
 export type route = {
     path: string;
@@ -132,7 +135,16 @@ const userRoutes: route[] = [
     },
 ];
 
-const messageRoutes: route[] = [];
+const messageRoutes: route[] = [
+    {
+        path: "/v1/channels/:uuid/messages/send",
+        handler: send_message,
+    },
+    {
+        path: "/v1/channels/:uuid/messages",
+        handler: get_channel_messages,
+    },
+];
 
 const channelRoutes: route[] = [
     {
@@ -142,6 +154,10 @@ const channelRoutes: route[] = [
     {
         path: "/v1/channels/posts/:post_uuid",
         handler: post_channel,
+    },
+    {
+        path: "/v1/channels/:uuid",
+        handler: get_channel,
     },
 ];
 

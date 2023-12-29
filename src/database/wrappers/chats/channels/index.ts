@@ -5,10 +5,12 @@ import {
     ChannelStatus,
     ChannelWithRelations,
 } from "../../../models/chats/channels";
+import { CreateMessageFields } from "../../../models/chats/messages";
 import { Profile } from "../../accounts/profiles";
 import { User } from "../../accounts/users";
 import Post from "../../posts/post";
 import Message from "../messages";
+import { MessageWrites } from "../messages/wrapper";
 
 class Channel extends DataModel implements ChannelModel {
     // Database fields
@@ -71,6 +73,24 @@ class Channel extends DataModel implements ChannelModel {
             return false;
         }
     }
+
+    public async sendMessage(
+        message: CreateMessageFields,
+        sender: User,
+        profile_picture: string = ""
+    ): Promise<Message | null> {
+        try {
+            return await MessageWrites.createMessage(
+                message,
+                sender,
+                profile_picture
+            );
+        } catch (err) {
+            console.error(err);
+            return null;
+        }
+    }
+
     setStatus: (status: ChannelStatus) => Promise<boolean>;
     complete: () => Promise<boolean>;
     cancel: () => Promise<boolean>;

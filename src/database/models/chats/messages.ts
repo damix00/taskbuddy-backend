@@ -1,5 +1,19 @@
 import { User } from "../../wrappers/accounts/users";
 
+export type CreateMessageFields = {
+    channel_id: number;
+    sender_id?: number;
+    system_message: boolean;
+    message: string;
+    attachments?: {
+        attachment_type: AttachmentType;
+        attachment_url: string;
+    }[];
+    request?: {
+        request_type: RequestMessageType;
+    };
+};
+
 export enum AttachmentType {
     IMAGE = 0,
     VIDEO = 1,
@@ -57,6 +71,7 @@ export interface RequestMessageFields {
 
 export interface MessageWithRelations extends MessageFields {
     sender: User;
+    profile_picture: string;
     attachments: MessageAttachmentFields[];
     request: RequestMessageFields | null;
 }

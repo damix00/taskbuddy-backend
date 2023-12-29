@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import {
     AttachmentType,
+    CreateMessageFields,
     MessageAttachmentFields,
     MessageFields,
     MessageWithRelations,
@@ -30,23 +31,10 @@ namespace writes {
         }
     }
 
-    export type CreateMessageFields = {
-        channel_id: number;
-        sender_id?: number;
-        system_message: boolean;
-        message: string;
-        attachments?: {
-            attachment_type: AttachmentType;
-            attachment_url: string;
-        }[];
-        request?: {
-            request_type: RequestMessageType;
-        };
-    };
-
     export async function createMessage(
         data: CreateMessageFields,
-        sender: User
+        sender: User,
+        profile_picture: string
     ): Promise<MessageWithRelations | null> {
         try {
             const uuid = await generateUUID();
@@ -143,6 +131,7 @@ namespace writes {
                 attachments,
                 request,
                 ...message,
+                profile_picture,
             };
         } catch (err) {
             console.error(err);

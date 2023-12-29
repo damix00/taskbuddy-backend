@@ -25,6 +25,7 @@ class Message extends DataModel implements MessageModel {
 
     // Relations
     sender: User;
+    profile_picture: string;
     attachments: MessageAttachmentFields[];
     request: RequestMessageFields | null;
 
