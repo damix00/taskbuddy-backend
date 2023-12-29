@@ -27,6 +27,8 @@ import post_channel from "./v1/channels/posts/[post_uuid]";
 import get_channel from "./v1/channels/[uuid]";
 import get_channel_messages from "./v1/channels/[uuid]/messages";
 import send_message from "./v1/channels/[uuid]/messages/send";
+import incoming from "./v1/channels/incoming";
+import outgoing from "./v1/channels/outgoing";
 
 export type route = {
     path: string;
@@ -154,6 +156,14 @@ const channelRoutes: route[] = [
     {
         path: "/v1/channels/posts/:post_uuid",
         handler: post_channel,
+    },
+    {
+        path: "/v1/channels/incoming",
+        handler: incoming,
+    },
+    {
+        path: "/v1/channels/outgoing",
+        handler: outgoing,
     },
     {
         path: "/v1/channels/:uuid",

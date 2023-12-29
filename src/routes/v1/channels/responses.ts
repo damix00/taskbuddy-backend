@@ -45,8 +45,12 @@ export function getMessageResponse(message: Message, requester: User) {
             profile_picture: message.profile_picture,
             is_sender: message.sender.id == requester.id,
         },
+        request: message.request
+            ? {
+                  status: message.request.status,
+              }
+            : null,
         attachments: message.attachments,
-        request: message.request,
         created_at: message.created_at,
         edited: message.edited,
         edited_at: message.edited_at,
