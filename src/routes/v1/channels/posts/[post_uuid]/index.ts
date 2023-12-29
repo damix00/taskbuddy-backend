@@ -33,7 +33,7 @@ export default [
                 req.user!.id
             );
 
-            if (!exists) {
+            if (!exists || exists.created_by_id != req.user!.id) {
                 return res.status(404).json({
                     message: "Channel not found",
                 });

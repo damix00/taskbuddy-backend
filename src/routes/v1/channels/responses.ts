@@ -29,6 +29,9 @@ export function getChannelResponse(channel: Channel, requester: User) {
         last_messages: channel.last_messages.map((message) =>
             getMessageResponse(message, requester)
         ),
+        other_user: isUserCreator ? "recipient" : "creator",
+        negotiated_price: channel.negotiated_price,
+        negotiated_date: channel.negotiated_date,
     };
 }
 
@@ -43,14 +46,17 @@ export function getMessageResponse(message: Message, requester: User) {
             first_name: message.sender.first_name,
             last_name: message.sender.last_name,
             profile_picture: message.profile_picture,
-            is_sender: message.sender.id == requester.id,
+            is_me: message.sender.id == requester.id,
         },
         request: message.request
             ? {
                   status: message.request.status,
               }
             : null,
-        attachments: message.attachments,
+        attachments: message.attachments.map((attachment) => ({
+            type: attachment.attachment_type,
+            url: attachment.attachment_url,
+        })),
         created_at: message.created_at,
         edited: message.edited,
         edited_at: message.edited_at,
