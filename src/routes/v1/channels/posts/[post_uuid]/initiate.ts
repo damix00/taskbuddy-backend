@@ -81,7 +81,17 @@ export default [
                 });
             }
 
-            // TODO: Add message to channel
+            // Send message
+            await newChannel.sendMessage(
+                {
+                    channel_id: newChannel.id,
+                    sender_id: req.user!.id,
+                    system_message: false,
+                    message,
+                    attachments: [],
+                },
+                req.user!
+            );
 
             user.sendNotification({
                 title: "New post request",

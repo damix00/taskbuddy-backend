@@ -53,10 +53,11 @@ export function getMessageResponse(message: Message, requester: User) {
                   status: message.request.status,
               }
             : null,
-        attachments: message.attachments.map((attachment) => ({
-            type: attachment.attachment_type,
-            url: attachment.attachment_url,
-        })),
+        attachments:
+            message.attachments?.map((attachment) => ({
+                type: attachment.attachment_type,
+                url: attachment.attachment_url,
+            })) ?? [],
         created_at: message.created_at,
         edited: message.edited,
         edited_at: message.edited_at,
