@@ -3,6 +3,7 @@ import {
     MessageAttachmentFields,
     MessageFields,
     MessageModel,
+    MessageWithRelations,
     RequestMessageFields,
 } from "../../../models/chats/messages";
 import { User } from "../../accounts/users";
@@ -26,6 +27,17 @@ class Message extends DataModel implements MessageModel {
     sender: User;
     attachments: MessageAttachmentFields[];
     request: RequestMessageFields | null;
+
+    constructor(
+        message: MessageWithRelations,
+        refetchOnUpdate: boolean = true
+    ) {
+        super(refetchOnUpdate);
+
+        // Set data
+        Object.assign(this, message);
+        this.refetchOnUpdate = refetchOnUpdate;
+    }
 
     update: (fields: Partial<MessageFields>) => Promise<boolean>;
     setSeen: (seen: boolean) => Promise<boolean>;

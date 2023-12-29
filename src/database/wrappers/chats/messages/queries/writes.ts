@@ -2,10 +2,14 @@ import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import {
     AttachmentType,
+    MessageAttachmentFields,
+    MessageFields,
     MessageWithRelations,
+    RequestMessageFields,
     RequestMessageType,
 } from "../../../../models/chats/messages";
 import reads from "./reads";
+import { User } from "../../../accounts/users";
 
 namespace writes {
     async function generateUUID(): Promise<string | null> {
@@ -41,7 +45,8 @@ namespace writes {
     };
 
     export async function createMessage(
-        data: CreateMessageFields
+        data: CreateMessageFields,
+        sender: User
     ): Promise<MessageWithRelations | null> {
         try {
             const uuid = await generateUUID();
@@ -69,7 +74,7 @@ namespace writes {
                 data.message,
             ];
 
-            const result = await executeQuery<MessageWithRelations>(
+            const result = await executeQuery<MessageFields>(
                 createMessageQuery,
                 createMessageParams
             );
@@ -77,6 +82,8 @@ namespace writes {
             if (result.length == 0) return null;
 
             const message = result[0];
+
+            let attachments: MessageAttachmentFields[] = [];
 
             if (data.attachments) {
                 for (const attachment of data.attachments) {
@@ -96,12 +103,17 @@ namespace writes {
                         attachment.attachment_url,
                     ];
 
-                    await executeQuery(
+                    const r = await executeQuery(
                         createAttachmentQuery,
                         createAttachmentParams
                     );
+
+                    if (r.length > 0)
+                        attachments.push(r[0] as MessageAttachmentFields);
                 }
             }
+
+            let request: RequestMessageFields | null = null;
 
             if (data.request) {
                 const createRequestQuery = `
@@ -118,23 +130,28 @@ namespace writes {
                     data.request.request_type,
                 ];
 
-                await executeQuery(createRequestQuery, createRequestParams);
+                const r = await executeQuery(
+                    createRequestQuery,
+                    createRequestParams
+                );
+
+                if (r.length > 0) request = r[0] as RequestMessageFields;
             }
 
-            const withRelations = await reads.getMessageById(message.id);
-
-            if (!withRelations) return null;
-
-            return withRelations;
+            return {
+                sender,
+                attachments,
+                request,
+                ...message,
+            };
         } catch (err) {
             console.error(err);
             return null;
         }
     }
 
-    export async function updateMessage(
-        id: number,
-        data: Partial<MessageWithRelations>
+    export async function updateMessageRelations(
+        data: MessageWithRelations
     ): Promise<boolean> {
         try {
             const updateMessageQuery = `
@@ -161,7 +178,7 @@ namespace writes {
                 data.edited,
                 data.edited_at,
                 data.deleted,
-                id,
+                data.id,
             ];
 
             await executeQuery(updateMessageQuery, updateMessageParams);
@@ -173,7 +190,7 @@ namespace writes {
                     DELETE FROM message_attachments WHERE message_id = $1
                 `;
 
-                const deleteAttachmentsParams = [id];
+                const deleteAttachmentsParams = [data.id];
 
                 await executeQuery(
                     deleteAttachmentsQuery,
@@ -192,7 +209,7 @@ namespace writes {
                     `;
 
                     const createAttachmentParams = [
-                        id,
+                        data.id,
                         attachment.attachment_type,
                         attachment.attachment_url,
                     ];
@@ -204,16 +221,14 @@ namespace writes {
                 }
             }
 
+            // Delete request
+            await executeQuery(
+                "DELETE FROM request_messages WHERE message_id = $1",
+                [data.id]
+            );
+
             // Update request
             if (data.request) {
-                const deleteRequestQuery = `
-                    DELETE FROM request_messages WHERE message_id = $1
-                `;
-
-                const deleteRequestParams = [id];
-
-                await executeQuery(deleteRequestQuery, deleteRequestParams);
-
                 const createRequestQuery = `
                     INSERT INTO request_messages (
                         message_id,
@@ -223,10 +238,96 @@ namespace writes {
                     )
                 `;
 
-                const createRequestParams = [id, data.request.request_type];
+                const createRequestParams = [
+                    data.id,
+                    data.request.request_type,
+                ];
 
                 await executeQuery(createRequestQuery, createRequestParams);
             }
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    export async function updateMessage(data: MessageFields): Promise<boolean> {
+        try {
+            const q = `
+            UPDATE messages
+            SET
+                uuid = $1,
+                channel_id = $2,
+                sender_id = $3,
+                system_message = $4,
+                message = $5,
+                seen = $6,
+                seen_at = $7,
+                edited = $8,
+                edited_at = $9,
+                deleted = $10
+            WHERE id = $11 RETURNING *
+            `;
+
+            const p = [
+                data.uuid,
+                data.channel_id,
+                data.sender_id,
+                data.system_message,
+                data.message,
+                data.seen,
+                data.seen_at,
+                data.edited,
+                data.edited_at,
+                data.deleted,
+                data.id,
+            ];
+
+            const res = await executeQuery(q, p);
+
+            return res.length > 0;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    export async function updateRequestMessage(
+        data: RequestMessageFields
+    ): Promise<boolean> {
+        try {
+            const q = `
+            UPDATE request_messages
+            SET
+                message_id = $1,
+                status = $2,
+                request_type = $3,
+                updated_at = NOW()
+            `;
+
+            const p = [data.message_id, data.status, data.request_type];
+
+            const res = await executeQuery(q, p);
+
+            return res.length > 0;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    export async function deleteMessage(id: number): Promise<boolean> {
+        try {
+            await executeQuery(
+                `UPDATE messages
+                SET
+                    deleted = TRUE,
+                    updated_at = NOW()
+                WHERE id = $1`,
+                [id]
+            );
 
             return true;
         } catch (err) {

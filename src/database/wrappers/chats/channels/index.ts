@@ -3,6 +3,7 @@ import {
     ChannelFields,
     ChannelModel,
     ChannelStatus,
+    ChannelWithRelations,
 } from "../../../models/chats/channels";
 import { Profile } from "../../accounts/profiles";
 import { User } from "../../accounts/users";
@@ -34,7 +35,10 @@ class Channel extends DataModel implements ChannelModel {
     creator_following: boolean;
     recipient_following: boolean;
 
-    constructor(channel: ChannelFields, refetchOnUpdate: boolean = false) {
+    constructor(
+        channel: ChannelWithRelations,
+        refetchOnUpdate: boolean = false
+    ) {
         super(refetchOnUpdate);
 
         // Set data
