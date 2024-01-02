@@ -91,7 +91,13 @@ function toChannel(channel: ChannelWithRelations | null) {
                 ? channel.created_by
                 : channel.recipient;
 
+        const senderProfile =
+            message.sender_id == channel.created_by_id
+                ? channel.creator_profile
+                : channel.recipient_profile;
+
         sender.id = parseInt(sender.id as any);
+        message.profile_picture = senderProfile?.profile_picture ?? null;
         message.sender = new User(sender, false);
     });
 
