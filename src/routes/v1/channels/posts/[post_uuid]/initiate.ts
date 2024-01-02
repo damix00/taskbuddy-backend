@@ -82,7 +82,7 @@ export default [
             }
 
             // Send message
-            await newChannel.sendMessage(
+            const messageResult = await newChannel.sendMessage(
                 {
                     channel_id: newChannel.id,
                     sender_id: req.user!.id,
@@ -93,12 +93,21 @@ export default [
                 req.user!
             );
 
+            if (!messageResult) {
+                return res.status(500).json({
+                    message: "Internal server error",
+                });
+            }
+
+            // Send notification
             user.sendNotification({
                 title: "New post request",
                 body: `You have a new post request from @${
                     req.user!.username
                 }!`,
             });
+
+            newChannel.last_messages.push(messageResult);
 
             // Return channel
             return res.status(200).json({

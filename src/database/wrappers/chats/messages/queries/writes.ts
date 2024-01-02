@@ -48,9 +48,10 @@ namespace writes {
                     channel_id,
                     sender_id,
                     system_message,
-                    message
+                    message,
+                    created_at
                 ) VALUES (
-                    $1, $2, $3, $4, $5
+                    $1, $2, $3, $4, $5, $6
                 ) RETURNING *
             `;
 
@@ -60,6 +61,7 @@ namespace writes {
                 data.sender_id,
                 data.system_message,
                 data.message,
+                new Date().toUTCString(),
             ];
 
             const result = await executeQuery<MessageFields>(
@@ -316,6 +318,27 @@ namespace writes {
                     updated_at = NOW()
                 WHERE id = $1`,
                 [id]
+            );
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    export async function markAsSeen(
+        channel_id: number,
+        user_id: number
+    ): Promise<boolean> {
+        try {
+            await executeQuery(
+                `UPDATE messages
+                SET
+                    seen = TRUE,
+                    seen_at = NOW()
+                WHERE channel_id = $1 AND sender_id != $2`,
+                [channel_id, user_id]
             );
 
             return true;

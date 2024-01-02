@@ -75,4 +75,11 @@ export class MessageWrites {
     public static async deleteMessage(id: number): Promise<boolean> {
         return await writes.deleteMessage(id);
     }
+
+    public static async markAsSeen(
+        channel_id: number,
+        user_id: number
+    ): Promise<boolean> {
+        return await writes.markAsSeen(channel_id, user_id);
+    }
 }

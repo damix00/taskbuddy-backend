@@ -10,18 +10,37 @@ class RemoteConfigData {
     static minMedia: number = 1;
     static maxMedia: number = 25;
 
+    static recentMessagesCount: number = 10;
+
     static async fetch() {
         const template = await remoteConfig().getTemplate();
         const params = template.parameters;
 
-        this.minPrice = Number(params["min_price"].defaultValue || 1);
-        this.maxPrice = Number(params["max_price"].defaultValue || 10000);
+        // Set the default values
 
-        this.minRadius = Number(params["min_radius"].defaultValue || 5);
-        this.maxRadius = Number(params["max_radius"].defaultValue || 100);
+        // @ts-ignore
+        this.minPrice = parseInt(params["min_price"].defaultValue.value || 1);
+        this.maxPrice = parseInt(
+            // @ts-ignore
+            params["max_price"].defaultValue.value || 10000
+        );
 
-        this.minMedia = Number(params["min_media"].defaultValue || 1);
-        this.maxMedia = Number(params["max_media"].defaultValue || 25);
+        // @ts-ignore
+        this.minRadius = parseInt(params["min_radius"].defaultValue.value || 5);
+        this.maxRadius = parseInt(
+            // @ts-ignore
+            params["max_radius"].defaultValue.value || 100
+        );
+
+        // @ts-ignore
+        this.minMedia = parseInt(params["min_media"].defaultValue.value || 1);
+        // @ts-ignore
+        this.maxMedia = parseInt(params["max_media"].defaultValue.value || 25);
+
+        this.recentMessagesCount = Number(
+            // @ts-ignore
+            params["recent_messages_cnt"].defaultValue.value || 10
+        );
     }
 }
 

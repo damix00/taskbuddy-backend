@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS killswitches (
   description VARCHAR(512) NOT NULL, -- Description of the killswitch
   enabled BOOLEAN NOT NULL DEFAULT TRUE, -- Whether the killswitch is enabled
   added_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- User who added the killswitch
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+  updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 -- Creates indexes on the killswitches table for faster queries

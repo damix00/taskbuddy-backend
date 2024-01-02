@@ -86,7 +86,10 @@ function toChannel(channel: ChannelWithRelations | null) {
         message.created_at = new Date(message.created_at as any);
         message.updated_at = new Date(message.updated_at as any);
 
-        const sender = _channel.last_message_senders[i];
+        const sender =
+            message.sender_id == channel.created_by_id
+                ? channel.created_by
+                : channel.recipient;
 
         sender.id = parseInt(sender.id as any);
         message.sender = new User(sender, false);

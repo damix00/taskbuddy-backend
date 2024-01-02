@@ -7,7 +7,8 @@ namespace reads {
         value: any,
         requested_by_id: number,
         fetchMany: boolean = false,
-        offset: number = 0
+        offset: number = 0,
+        message_count: number = 10
     ): Promise<ChannelWithRelations[] | ChannelWithRelations | null> {
         try {
             const q = `
@@ -22,8 +23,6 @@ namespace reads {
 
                     -- Last messages
                     COALESCE(json_agg(DISTINCT messages) FILTER (WHERE messages.channel_id IS NOT NULL), '[]') AS last_messages,
-                    -- Message senders
-                    COALESCE(json_agg(senders) FILTER (WHERE senders.id IS NOT NULL), '[]') AS last_message_senders,
 
                     EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2 AND post_interaction_logs.post_id = posts.id AND interaction_type = 0) AS liked,
                     EXISTS(SELECT 1 FROM post_interaction_logs WHERE post_interaction_logs.user_id = $2  AND post_interaction_logs.post_id = posts.id AND interaction_type = 3) AS bookmarked,
@@ -41,8 +40,11 @@ namespace reads {
                 LEFT JOIN profiles AS creator_profile ON channels.created_by_id = creator_profile.user_id
                 LEFT JOIN profiles AS recipient_profile ON channels.recipient_id = recipient_profile.user_id
                 LEFT JOIN posts ON channels.post_id = posts.id
-                LEFT JOIN messages ON channels.id = messages.channel_id
-                LEFT JOIN users AS senders ON messages.sender_id = senders.id
+                LEFT JOIN (
+                    SELECT * FROM messages
+                    ORDER BY created_at DESC
+                    LIMIT 10
+                ) AS messages ON channels.id = messages.channel_id
 
                 LEFT JOIN post_media ON posts.id = post_media.post_id
                 LEFT JOIN post_tag_relationship ON posts.id = post_tag_relationship.post_id

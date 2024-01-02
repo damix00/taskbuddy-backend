@@ -8,9 +8,9 @@ CREATE TABLE IF NOT EXISTS channels (
     negotiated_price FLOAT NOT NULL, -- Price that the user has negotiated
     negotiated_date TIMESTAMP NOT NULL, -- Date that the user has negotiated
     sharing_location BOOLEAN NOT NULL DEFAULT FALSE, -- Whether the post creator is sharing the location of the post
-    last_message_time TIMESTAMP NOT NULL DEFAULT NOW(), -- Last time a message was sent in the channel, used for sorting
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    last_message_time TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- Last time a message was sent in the channel, used for sorting
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS messages (
     seen_at TIMESTAMP, -- When the recipient has seen the message
     edited BOOLEAN NOT NULL DEFAULT FALSE, -- Whether the message has been edited
     edited_at TIMESTAMP, -- When the message has been edited
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
@@ -34,8 +34,8 @@ CREATE TABLE IF NOT EXISTS message_attachments (
     message_id BIGINT NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
     attachment_type INT NOT NULL, -- 0 = image, 1 = video, 2 = audio, 3 = document
     attachment_url VARCHAR(1024) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 -- This is for when a user creates a request message, for example request to negotiate or to confirm a deal
@@ -45,6 +45,6 @@ CREATE TABLE IF NOT EXISTS request_messages (
     message_id BIGINT NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
     status INT NOT NULL DEFAULT 0, -- 0 = pending, 1 = accepted, 2 = rejected
     request_type INT NOT NULL, -- 0 = location, 1 = price, 2 = date, 3 = phone number
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );

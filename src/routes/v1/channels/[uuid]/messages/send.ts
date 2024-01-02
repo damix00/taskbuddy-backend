@@ -14,12 +14,11 @@ export default [
     withChannel,
     async (req: ChannelRequest, res: Response) => {
         try {
-            const { uuid } = req.params;
             const { content, request_type } = req.body;
 
             const attachments = req.files;
 
-            if (!content) {
+            if (!content || content.length == 0 || content.length > 2000) {
                 res.status(400).json({
                     error: "Missing content",
                 });

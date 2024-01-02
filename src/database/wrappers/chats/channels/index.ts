@@ -11,6 +11,7 @@ import { User } from "../../accounts/users";
 import Post from "../../posts/post";
 import Message from "../messages";
 import { MessageWrites } from "../messages/wrapper";
+import writes from "./queries/writes";
 
 class Channel extends DataModel implements ChannelModel {
     // Database fields
@@ -88,6 +89,15 @@ class Channel extends DataModel implements ChannelModel {
         } catch (err) {
             console.error(err);
             return null;
+        }
+    }
+
+    public async markAsSeen(user_id: number): Promise<boolean> {
+        try {
+            return await MessageWrites.markAsSeen(this.id, user_id);
+        } catch (err) {
+            console.error(err);
+            return false;
         }
     }
 

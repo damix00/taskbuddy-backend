@@ -24,14 +24,14 @@ export function getChannelResponse(channel: Channel, requester: User) {
             isUserCreator ? channel.creator_following : false,
             !isUserCreator
         ),
-        last_message_time: channel.last_message_time,
+        last_message_time: channel.last_message_time.toISOString(),
         created_at: channel.created_at,
         last_messages: channel.last_messages.map((message) =>
             getMessageResponse(message, requester)
         ),
         other_user: isUserCreator ? "recipient" : "creator",
         negotiated_price: channel.negotiated_price,
-        negotiated_date: channel.negotiated_date,
+        negotiated_date: channel.negotiated_date.toISOString(),
     };
 }
 

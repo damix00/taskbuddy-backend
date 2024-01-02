@@ -4,7 +4,7 @@ import FirebaseStorage from "./storage/files";
 import RemoteConfigData from "./remote_config";
 
 // Initialize Firebase Admin SDK
-export default function initFirebase() {
+export default async function initFirebase() {
     admin.initializeApp({
         credential: admin.credential.cert(
             path.join(
@@ -20,6 +20,9 @@ export default function initFirebase() {
     });
 
     FirebaseStorage.init();
+
+    // Fetch remote config
+    await RemoteConfigData.fetch();
 
     // Set an interval to fetch remote config every minute
     setInterval(async () => {

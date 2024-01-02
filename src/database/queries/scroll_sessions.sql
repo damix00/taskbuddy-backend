@@ -7,16 +7,16 @@ CREATE TABLE IF NOT EXISTS scroll_sessions (
     ip_address VARCHAR(512) NOT NULL,
     lat FLOAT NOT NULL,
     lon FLOAT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
 );
 
 CREATE TABLE IF NOT EXISTS session_posts (
     id BIGSERIAL PRIMARY KEY,
     scroll_session_id BIGINT NOT NULL,
     post_id BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     FOREIGN KEY (scroll_session_id) REFERENCES scroll_sessions(id),
     FOREIGN KEY (post_id) REFERENCES posts(id)
 );

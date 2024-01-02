@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS profiles (
     id BIGSERIAL PRIMARY KEY, -- unique id for each user
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE, -- user id
-    created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
-    updated_at TIMESTAMP NOT NULL DEFAULT NOW(), -- updated whenever a row is updated
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- created whenever a row is created
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- updated whenever a row is updated
     profile_picture TEXT, -- URL to profile picture
     bio TEXT NOT NULL, -- User specified biography
     rating_employer DECIMAL NOT NULL DEFAULT 0, -- Rating as an employer

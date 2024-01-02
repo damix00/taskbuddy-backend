@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS users (
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
   password_hash TEXT NOT NULL, -- bcrypt hash of the user's password
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(), -- created whenever a row is created
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW(), -- updated whenever a row is updated
-  last_login TIMESTAMP NOT NULL DEFAULT NOW(), -- last time the user logged in
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- created whenever a row is created
+  updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- updated whenever a row is updated
+  last_login TIMESTAMP NOT NULL DEFAULT timezone('utc', now()), -- last time the user logged in
   role VARCHAR(255) NOT NULL DEFAULT 'user', -- is the user an admin (for admin dashboard)
   token_version BIGINT DEFAULT 1, -- increment to invalidate all tokens for a user
   auth_provider VARCHAR(255) NOT NULL DEFAULT 'taskbuddy', -- google, apple, etc.
@@ -24,11 +24,11 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS logins (
   id BIGSERIAL PRIMARY KEY,
   user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
   ip_address VARCHAR(512) NOT NULL,
   user_agent VARCHAR(1024) NOT NULL,
   is_online BOOLEAN NOT NULL DEFAULT TRUE,
-  last_updated_online TIMESTAMP NOT NULL DEFAULT NOW()
+  last_updated_online TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 CREATE TABLE IF NOT EXISTS notification_tokens (
@@ -36,22 +36,22 @@ CREATE TABLE IF NOT EXISTS notification_tokens (
   user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   login_id BIGINT NOT NULL REFERENCES logins(id) ON DELETE CASCADE,
   token VARCHAR(2048) NOT NULL, -- Firebase Cloud Messaging token
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+  updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 CREATE TABLE IF NOT EXISTS follows (
   id BIGSERIAL PRIMARY KEY,
   follower BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   following BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 CREATE TABLE IF NOT EXISTS blocks (
   id BIGSERIAL PRIMARY KEY,
   blocker BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   blocked BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 -- Creates indexes on the users table for faster queries
