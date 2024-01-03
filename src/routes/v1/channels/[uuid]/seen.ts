@@ -22,6 +22,23 @@ export default [
             res.status(200).json({
                 message: "Success",
             });
+
+            const socketData = {
+                channel_uuid: req.channel!.uuid,
+                user_id: req.user!.id,
+            };
+
+            if (req.channel!.recipient_id === req.user!.id) {
+                req.channel!.created_by.sendSocketEvent(
+                    "channel_seen",
+                    socketData
+                );
+            } else if (req.channel!.created_by_id === req.user!.id) {
+                req.channel!.recipient.sendSocketEvent(
+                    "channel_seen",
+                    socketData
+                );
+            }
         } catch (err) {
             console.error(err);
             res.status(500).json({

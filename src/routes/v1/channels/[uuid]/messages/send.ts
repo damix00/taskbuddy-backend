@@ -71,7 +71,11 @@ export default [
 
             // Send response
             res.status(200).json({
-                message: getMessageResponse(result, req.user!),
+                message: getMessageResponse(
+                    result,
+                    req.user!,
+                    req.channel!.uuid
+                ),
             });
 
             // Send push notification
@@ -81,8 +85,14 @@ export default [
             });
 
             otherUser.sendSocketEvent("chat", {
-                message: getMessageResponse(result, otherUser),
+                message: getMessageResponse(
+                    result,
+                    otherUser,
+                    req.channel!.uuid
+                ),
             });
+
+            req.channel!.setLastMessageTime(new Date());
         } catch (err) {
             console.error(err);
             res.status(500).json({

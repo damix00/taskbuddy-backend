@@ -40,8 +40,9 @@ namespace reads {
                 LEFT JOIN profiles AS creator_profile ON channels.created_by_id = creator_profile.user_id
                 LEFT JOIN profiles AS recipient_profile ON channels.recipient_id = recipient_profile.user_id
                 LEFT JOIN posts ON channels.post_id = posts.id
-                LEFT JOIN (
+                LEFT JOIN LATERAL (
                     SELECT * FROM messages
+                    WHERE messages.channel_id = channels.id
                     ORDER BY created_at DESC
                     LIMIT 10
                 ) AS messages ON channels.id = messages.channel_id

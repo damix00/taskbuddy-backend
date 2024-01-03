@@ -107,6 +107,7 @@ export default [
                 }!`,
             });
 
+            newChannel.last_message_time = new Date();
             newChannel.last_messages.push(messageResult);
 
             // Return channel
@@ -114,6 +115,8 @@ export default [
                 message: "Channel created",
                 channel: getChannelResponse(newChannel, req.user!),
             });
+
+            newChannel.setLastMessageTime(new Date());
 
             user.sendSocketEvent("new_channel", {
                 channel: getChannelResponse(newChannel, user),

@@ -61,7 +61,7 @@ class Channel extends DataModel implements ChannelModel {
 
             const newData = { ...this, ...data };
 
-            const r = true;
+            const r = await writes.updateChannel(newData);
 
             if (r) {
                 this.setData(newData);
@@ -101,6 +101,10 @@ class Channel extends DataModel implements ChannelModel {
         }
     }
 
+    public async setLastMessageTime(date: Date): Promise<boolean> {
+        return await this.update({ last_message_time: date });
+    }
+
     setStatus: (status: ChannelStatus) => Promise<boolean>;
     complete: () => Promise<boolean>;
     cancel: () => Promise<boolean>;
@@ -109,7 +113,6 @@ class Channel extends DataModel implements ChannelModel {
     setNegotiatedPrice: (price: number) => Promise<boolean>;
     setNegotiatedDate: (date: Date) => Promise<boolean>;
     setSharingLocation: (sharing: boolean) => Promise<boolean>;
-    setLastMessageTime: (date: Date) => Promise<boolean>;
 }
 
 export default Channel;

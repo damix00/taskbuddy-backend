@@ -47,7 +47,7 @@ namespace writes {
                     negotiated_date
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6
-                ) RETURNING *;
+                ) RETURNING *
             `;
 
             const result = await executeQuery<ChannelFields>(q, [
@@ -71,7 +71,7 @@ namespace writes {
     export async function updateChannel(data: ChannelFields): Promise<boolean> {
         try {
             const q = `
-                UPDATE channels SET (
+                UPDATE channels SET
                     uuid = $1,
                     created_by_id = $2,
                     recipient_id = $3,
@@ -82,7 +82,8 @@ namespace writes {
                     sharing_location = $8,
                     last_message_time = $9,
                     updated_at = NOW()
-                ) WHERE id = $10;
+                WHERE id = $10
+                RETURNING *
             `;
 
             const result = await executeQuery<ChannelFields>(q, [

@@ -30,6 +30,7 @@ export async function initSocketServer(server: any) {
             socket.disconnect(true);
         }
 
+        console.log(`User ${user!.username} connected`);
         socket.join(user!.uuid);
 
         socket.on("disconnect", () => {

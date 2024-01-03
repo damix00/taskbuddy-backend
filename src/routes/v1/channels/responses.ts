@@ -27,7 +27,7 @@ export function getChannelResponse(channel: Channel, requester: User) {
         last_message_time: channel.last_message_time.toISOString(),
         created_at: channel.created_at,
         last_messages: channel.last_messages.map((message) =>
-            getMessageResponse(message, requester)
+            getMessageResponse(message, requester, channel.uuid)
         ),
         other_user: isUserCreator ? "recipient" : "creator",
         negotiated_price: channel.negotiated_price,
@@ -35,9 +35,14 @@ export function getChannelResponse(channel: Channel, requester: User) {
     };
 }
 
-export function getMessageResponse(message: Message, requester: User) {
+export function getMessageResponse(
+    message: Message,
+    requester: User,
+    channel_uuid: string
+) {
     return {
         uuid: message.uuid,
+        channel_uuid: channel_uuid,
         deleted: message.deleted,
         message: message.deleted ? "" : message.message,
         sender: {
