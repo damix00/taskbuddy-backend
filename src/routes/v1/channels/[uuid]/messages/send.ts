@@ -79,6 +79,10 @@ export default [
                 title: "New message",
                 body: `${req.user!.username} sent you a message`,
             });
+
+            otherUser.sendSocketEvent("chat", {
+                message: getMessageResponse(result, otherUser),
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({

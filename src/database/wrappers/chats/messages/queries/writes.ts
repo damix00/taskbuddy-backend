@@ -337,7 +337,7 @@ namespace writes {
                 SET
                     seen = TRUE,
                     seen_at = NOW()
-                WHERE channel_id = $1 AND sender_id != $2`,
+                WHERE channel_id = $1 AND sender_id != $2 AND seen = FALSE`,
                 [channel_id, user_id]
             );
 

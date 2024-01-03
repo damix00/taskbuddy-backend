@@ -110,9 +110,13 @@ export default [
             newChannel.last_messages.push(messageResult);
 
             // Return channel
-            return res.status(200).json({
+            res.status(200).json({
                 message: "Channel created",
                 channel: getChannelResponse(newChannel, req.user!),
+            });
+
+            user.sendSocketEvent("new_channel", {
+                channel: getChannelResponse(newChannel, user),
             });
         } catch (err) {
             console.error(err);

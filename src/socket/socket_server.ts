@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { createAdapter } from "@socket.io/postgres-adapter";
 import { executeQuery, getPool } from "../database/connection";
+import authorizeSocket from "./authorization";
 
 let io: Server;
 
@@ -14,7 +15,7 @@ export async function initSocketServer(server: any) {
     io = new Server(server);
     io.adapter(createAdapter(getPool()));
 
-    io.on("connection", (socket) => {
+    io.on("connection", async (socket) => {
         console.log("Socket connected");
 
         const headers = socket.handshake.headers;
@@ -23,12 +24,20 @@ export async function initSocketServer(server: any) {
             socket.disconnect(true);
         }
 
+        const user = await authorizeSocket(headers.authorization!);
+
+        if (!user) {
+            socket.disconnect(true);
+        }
+
+        socket.join(user!.uuid);
+
         socket.on("disconnect", () => {
             console.log("Socket disconnected");
         });
-
-        setInterval(() => {
-            socket.emit("test", { message: "Hello" });
-        }, 1000);
     });
+}
+
+export function emitToUser(uuid: string, event: string, ...args: any[]) {
+    io.to(uuid).emit(event, ...args);
 }

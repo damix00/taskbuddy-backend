@@ -15,6 +15,7 @@ import { Profile } from "../profiles";
 import { FollowReads } from "../follows/wrapper";
 import * as fcm from "../../../../firebase/notifications";
 import { NotificationReads } from "../notifications/wraper";
+import { emitToUser } from "../../../../socket/socket_server";
 
 export class User extends DataModel implements UserModel {
     id: number;
@@ -212,5 +213,9 @@ export class User extends DataModel implements UserModel {
         );
 
         return res.success;
+    }
+
+    public sendSocketEvent(event: string, ...args: any[]) {
+        emitToUser(this.uuid, event, ...args);
     }
 }

@@ -23,6 +23,16 @@ export default [
                 offset
             );
 
+            for (const msg of messages) {
+                if (msg.sender.id == req.channel!.created_by_id) {
+                    msg.profile_picture =
+                        req.channel!.creator_profile.profile_picture;
+                } else if (msg.sender.id == req.channel!.recipient_id) {
+                    msg.profile_picture =
+                        req.channel!.recipient_profile.profile_picture;
+                }
+            }
+
             res.status(200).json({
                 messages: messages.map((message) =>
                     getMessageResponse(message, req.user!)
