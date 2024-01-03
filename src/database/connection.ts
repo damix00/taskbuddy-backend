@@ -11,6 +11,10 @@ const pool = new Pool({
     port: dbPort,
 });
 
+export function getPool() {
+    return pool;
+}
+
 /**
  * Connect to the database
  */

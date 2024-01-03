@@ -11,10 +11,13 @@ import route_killswitch from "./middleware/global/route_killswitch";
 import * as killswitches from "./utils/global_killswitches";
 import fileUpload from "express-fileupload";
 import initFirebase from "./firebase/config";
+import { createServer } from "http";
+import { initSocketServer } from "./socket/socket_server";
 
 dotenv.config();
 
 const app = express();
+const server = createServer(app);
 
 const PORT = process.env.PORT || 9500;
 
@@ -64,7 +67,9 @@ async function start() {
     await connection.connect();
     console.log("Connected to database");
 
-    app.listen(PORT, () => {
+    await initSocketServer(server);
+
+    server.listen(PORT, () => {
         console.log(`Server is running in http://localhost:${PORT}`);
     });
 }
@@ -72,7 +77,10 @@ async function start() {
 if (cluster.isMaster) {
     for (
         let i = 0;
-        i < (process.env?.MODE == "prod" ? os.cpus().length : 1);
+        i <
+        (process.env?.PRODUCTION_MODE?.toLowerCase() == "true"
+            ? os.cpus().length
+            : 1);
         i++
     ) {
         cluster.fork();
