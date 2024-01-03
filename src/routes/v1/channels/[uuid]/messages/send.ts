@@ -80,8 +80,19 @@ export default [
 
             // Send push notification
             await otherUser.sendNotification({
-                title: "New message",
-                body: `${req.user!.username} sent you a message`,
+                title: `${req.user!.first_name} ${req.user!.last_name}`,
+                body:
+                    content.length > 50
+                        ? content.slice(0, 50) + "..."
+                        : content,
+                imageUrl:
+                    req.profile!.profile_picture?.length > 0
+                        ? req.profile!.profile_picture
+                        : undefined,
+                data: {
+                    type: "message",
+                    channel_uuid: req.channel!.uuid,
+                },
             });
 
             otherUser.sendSocketEvent("chat", {

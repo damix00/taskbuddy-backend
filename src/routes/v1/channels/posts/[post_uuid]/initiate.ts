@@ -101,10 +101,19 @@ export default [
 
             // Send notification
             user.sendNotification({
-                title: "New post request",
-                body: `You have a new post request from @${
-                    req.user!.username
-                }!`,
+                title: `Post request from @${req.user!.username}`,
+                body:
+                    message.length > 50
+                        ? message.slice(0, 50) + "..."
+                        : message,
+                imageUrl:
+                    req.profile!.profile_picture?.length > 0
+                        ? req.profile!.profile_picture
+                        : undefined,
+                data: {
+                    type: "message",
+                    channel_uuid: newChannel.uuid,
+                },
             });
 
             newChannel.last_message_time = new Date();
