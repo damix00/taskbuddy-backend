@@ -92,6 +92,7 @@ export default [
                 data: {
                     type: "message",
                     channel_uuid: req.channel!.uuid,
+                    message_uuid: result.uuid,
                 },
             });
 

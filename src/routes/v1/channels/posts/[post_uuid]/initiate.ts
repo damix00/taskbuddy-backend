@@ -113,6 +113,7 @@ export default [
                 data: {
                     type: "message",
                     channel_uuid: newChannel.uuid,
+                    message_uuid: messageResult.uuid,
                 },
             });
 
