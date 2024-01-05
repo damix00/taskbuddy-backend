@@ -23,6 +23,13 @@ export default async (req: MessageRequest, res: Response) => {
                 req.channel!.uuid
             ),
         });
+
+        const otherUser = req.channel!.getOtherUser(req.user!.id);
+
+        otherUser.sendSocketEvent("message_deleted", {
+            message_uuid: req.message!.uuid,
+            channel_uuid: req.channel!.uuid,
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });

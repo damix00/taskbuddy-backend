@@ -102,6 +102,13 @@ class Channel extends DataModel implements ChannelModel {
         return await this.update({ last_message_time: date });
     }
 
+    public getOtherUser(user_id: number): User {
+        const isChannelCreator = this.created_by_id == user_id;
+        const otherUser = isChannelCreator ? this.recipient : this.created_by;
+
+        return otherUser;
+    }
+
     setStatus: (status: ChannelStatus) => Promise<boolean>;
     complete: () => Promise<boolean>;
     cancel: () => Promise<boolean>;
