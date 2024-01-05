@@ -7,6 +7,8 @@ import {
     RequestMessageFields,
 } from "../../../models/chats/messages";
 import { User } from "../../accounts/users";
+import reads from "./queries/reads";
+import writes from "./queries/writes";
 
 class Message extends DataModel implements MessageModel {
     id: number;
@@ -40,10 +42,38 @@ class Message extends DataModel implements MessageModel {
         this.refetchOnUpdate = refetchOnUpdate;
     }
 
-    update: (fields: Partial<MessageFields>) => Promise<boolean>;
+    public async update(fields: Partial<MessageFields>): Promise<boolean> {
+        const obj = { ...this, ...fields };
+
+        const updated = await writes.updateMessage(obj);
+
+        if (updated) {
+            this._refetch();
+        }
+
+        return updated;
+    }
+
+    public override async refetch(): Promise<void> {
+        const message = await reads.getMessageById(this.id);
+
+        if (message) {
+            Object.assign(this, message);
+        }
+    }
+
+    public async deleteMessage(): Promise<boolean> {
+        const deleted = await writes.deleteMessage(this.id);
+
+        if (deleted) {
+            this._refetch();
+        }
+
+        return deleted;
+    }
+
     setSeen: (seen: boolean) => Promise<boolean>;
     setSeenAt: (date: Date) => Promise<boolean>;
-    deleteMessage: () => Promise<boolean>;
     restoreMessage: () => Promise<boolean>;
     acceptRequest: () => Promise<boolean>;
     rejectRequest: () => Promise<boolean>;

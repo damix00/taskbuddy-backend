@@ -11,6 +11,7 @@ import { User } from "../../accounts/users";
 import Post from "../../posts/post";
 import Message from "../messages";
 import { MessageWrites } from "../messages/wrapper";
+import reads from "./queries/reads";
 import writes from "./queries/writes";
 
 class Channel extends DataModel implements ChannelModel {
@@ -49,11 +50,7 @@ class Channel extends DataModel implements ChannelModel {
         this.refetchOnUpdate = refetchOnUpdate;
     }
 
-    public override async refetch(): Promise<void> {
-        // const result = await reads.getTokenById(this.id);
-        // if (!result) throw new Error("Notification not found");
-        // super.setData(result);
-    }
+    public override async refetch(): Promise<void> {}
 
     public async update(data: Partial<ChannelFields>): Promise<boolean> {
         try {

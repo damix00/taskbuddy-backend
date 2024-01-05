@@ -44,15 +44,14 @@ namespace reads {
                     messages.*,
                     TO_JSON(users.*) AS sender,
                     TO_JSON(request_messages.*) AS request_message,
-                    COALESCE(json_agg(DISTINCT message_attachments) FILTER (WHERE message_attachments.id IS NOT NULL), '[]') AS attachments,
-                    profiles.profile_picture
+                    COALESCE(json_agg(DISTINCT message_attachments) FILTER (WHERE message_attachments.id IS NOT NULL), '[]') AS attachments
                 FROM messages
                 LEFT JOIN users ON messages.sender_id = users.id
                 LEFT JOIN request_messages ON messages.id = request_messages.message_id
                 LEFT JOIN message_attachments ON messages.id = message_attachments.message_id
-                LEFT JOIN profiles ON messages.sender_id = profiles.user_id
                 WHERE ${field_name} = $1
                 GROUP BY messages.id, users.id, request_messages.id
+                ORDER BY messages.created_at DESC
             `;
 
             const p = [value];

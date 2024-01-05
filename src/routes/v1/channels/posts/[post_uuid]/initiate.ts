@@ -118,6 +118,7 @@ export default [
             });
 
             newChannel.last_message_time = new Date();
+            messageResult.profile_picture = req.profile!.profile_picture;
             newChannel.last_messages.push(messageResult);
 
             // Return channel

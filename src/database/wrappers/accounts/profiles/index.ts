@@ -97,6 +97,7 @@ export class Profile extends DataModel implements ProfileModel {
     // Private setter method
     private async setter(field: string, value: any): Promise<boolean> {
         const data = { ...this.getFields(), [field]: value }; // Create new object with updated field
+
         return await this.update(data); // Update the profile
     }
 
@@ -197,7 +198,7 @@ export class Profile extends DataModel implements ProfileModel {
     }
 
     public async setPosts(count: number) {
-        return await this.setter("posts", count);
+        return await this.setter("post_count", count);
     }
 
     public async setLocationText(locationText: string) {

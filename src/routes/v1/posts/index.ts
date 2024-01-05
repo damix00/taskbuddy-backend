@@ -65,7 +65,7 @@ export default [
                 is_remote === undefined ||
                 is_urgent === undefined ||
                 !price ||
-                !suggestion_radius ||
+                suggestion_radius === undefined ||
                 !start_date ||
                 !end_date ||
                 !tags ||
@@ -73,6 +73,8 @@ export default [
                 media.length < RemoteConfigData.minMedia ||
                 media.length > RemoteConfigData.maxMedia
             ) {
+                console.log("missing fields");
+                console.log(req.body);
                 return res
                     .status(400)
                     .json({ message: "Missing required fields" });
@@ -83,6 +85,7 @@ export default [
                 job_type != JobType.PART_TIME &&
                 job_type != JobType.FULL_TIME
             ) {
+                console.log(`invalid job type ${job_type}`);
                 return res.status(400).json({ message: "Invalid job type" });
             }
 
@@ -91,6 +94,7 @@ export default [
                 price < RemoteConfigData.minPrice ||
                 price > RemoteConfigData.maxPrice
             ) {
+                console.log(`invalid price ${price}`);
                 return res.status(400).json({ message: "Invalid price" });
             }
 
@@ -99,6 +103,7 @@ export default [
                 suggestion_radius < RemoteConfigData.minRadius ||
                 suggestion_radius > RemoteConfigData.maxRadius
             ) {
+                console.log("invalid radius");
                 return res.status(400).json({ message: "Invalid radius" });
             }
 
@@ -112,11 +117,13 @@ export default [
                     isNaN(location_lon) ||
                     !location_name)
             ) {
+                console.log("missing location");
                 return res.status(400).json({ message: "Missing location" });
             }
 
             // Check if tags are valid
             if (!Array.isArray(tags)) {
+                console.log("invalid tags: " + tags);
                 return res.status(400).json({ message: "Invalid tags" });
             }
 
@@ -126,6 +133,7 @@ export default [
                     isNaN(parseInt(tag)) ||
                     (await TagReads.getTagById(parseInt(tag))) === null
                 ) {
+                    console.log("invalid tag: " + tag);
                     return res.status(400).json({ message: "Invalid tags" });
                 }
             }
