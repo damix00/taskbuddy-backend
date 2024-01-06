@@ -130,7 +130,9 @@ export class ChannelReads {
 
         if (!channels) return [];
 
-        return channels.map((channel) => toChannel(channel) as Channel);
+        return channels.map(
+            (channel: ChannelWithRelations) => toChannel(channel) as Channel
+        );
     }
 
     public static async getIncomingChannels(
@@ -144,7 +146,9 @@ export class ChannelReads {
 
         if (!channels) return [];
 
-        return channels.map((channel) => toChannel(channel) as Channel);
+        return channels.map(
+            (channel: ChannelWithRelations) => toChannel(channel) as Channel
+        );
     }
 
     public static async getChannelByPostId(

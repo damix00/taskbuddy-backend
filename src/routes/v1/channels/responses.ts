@@ -30,6 +30,8 @@ export function getChannelResponse(channel: Channel, requester: User) {
             getMessageResponse(message, requester, channel.uuid)
         ),
         other_user: isUserCreator ? "recipient" : "creator",
+        status: channel.status,
+        is_post_creator: channel.post.user_id == requester.id,
         negotiated_price: channel.negotiated_price,
         negotiated_date: channel.negotiated_date.toISOString(),
     };
