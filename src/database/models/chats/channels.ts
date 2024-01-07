@@ -39,12 +39,11 @@ export interface ChannelWithRelations extends ChannelFields {
 }
 
 export interface ChannelModel extends ChannelWithRelations {
+    getPost: () => Promise<Post | null>;
     update: (fields: Partial<ChannelFields>) => Promise<boolean>;
     setStatus: (status: ChannelStatus) => Promise<boolean>;
     complete: () => Promise<boolean>;
     cancel: () => Promise<boolean>;
-    rejectAsPostOwner: () => Promise<boolean>;
-    rejectAsEmployee: () => Promise<boolean>;
     setNegotiatedPrice: (price: number) => Promise<boolean>;
     setNegotiatedDate: (date: Date) => Promise<boolean>;
     setSharingLocation: (sharing: boolean) => Promise<boolean>;

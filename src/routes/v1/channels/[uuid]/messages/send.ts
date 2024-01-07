@@ -14,20 +14,13 @@ export default [
     withChannel,
     async (req: ChannelRequest, res: Response) => {
         try {
-            const { content, request_type } = req.body;
+            const { content } = req.body;
 
             const attachments = req.files;
 
             if (!content || content.length == 0 || content.length > 2000) {
                 res.status(400).json({
                     error: "Missing content",
-                });
-                return;
-            }
-
-            if (request_type != undefined && isNaN(request_type)) {
-                res.status(400).json({
-                    error: "Invalid request type",
                 });
                 return;
             }
@@ -55,7 +48,6 @@ export default [
                     channel_id: req.channel!.id,
                     message: content,
                     system_message: false,
-                    request: request_type ? { request_type } : undefined,
                     attachments: [],
                 },
                 req.user!,

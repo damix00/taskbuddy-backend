@@ -58,6 +58,7 @@ export function getMessageResponse(
         request: message.request
             ? {
                   status: message.request.status,
+                  type: message.request.request_type,
               }
             : null,
         attachments:

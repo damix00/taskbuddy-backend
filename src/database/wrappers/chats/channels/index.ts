@@ -9,6 +9,7 @@ import { CreateMessageFields } from "../../../models/chats/messages";
 import { Profile } from "../../accounts/profiles";
 import { User } from "../../accounts/users";
 import Post from "../../posts/post";
+import { PostReads } from "../../posts/post/wrapper";
 import Message from "../messages";
 import { MessageWrites } from "../messages/wrapper";
 import reads from "./queries/reads";
@@ -109,14 +110,32 @@ class Channel extends DataModel implements ChannelModel {
         return otherUser;
     }
 
-    setStatus: (status: ChannelStatus) => Promise<boolean>;
-    complete: () => Promise<boolean>;
-    cancel: () => Promise<boolean>;
-    rejectAsPostOwner: () => Promise<boolean>;
-    rejectAsEmployee: () => Promise<boolean>;
-    setNegotiatedPrice: (price: number) => Promise<boolean>;
-    setNegotiatedDate: (date: Date) => Promise<boolean>;
-    setSharingLocation: (sharing: boolean) => Promise<boolean>;
+    public async getPost(): Promise<Post | null> {
+        return await PostReads.getPostById(this.post_id);
+    }
+
+    public async setStatus(status: ChannelStatus): Promise<boolean> {
+        return await this.update({ status });
+    }
+
+    public async complete(): Promise<boolean> {
+        return await this.setStatus(ChannelStatus.COMPLETED);
+    }
+
+    public async cancel(): Promise<boolean> {
+        return await this.setStatus(ChannelStatus.CANCELLED);
+    }
+
+    public async setNegotiatedPrice(price: number): Promise<boolean> {
+        return await this.update({ negotiated_price: price });
+    }
+
+    public async setNegotiatedDate(date: Date): Promise<boolean> {
+        return await this.update({ negotiated_date: date });
+    }
+    public async setSharingLocation(sharing: boolean): Promise<boolean> {
+        return await this.update({ sharing_location: sharing });
+    }
 }
 
 export default Channel;

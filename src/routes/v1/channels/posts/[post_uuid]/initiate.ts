@@ -36,6 +36,12 @@ export default [
                 });
             }
 
+            if (post.reserved_by) {
+                return res.status(403).json({
+                    message: "Forbidden",
+                });
+            }
+
             const user = await post.getUser();
 
             if (!user) {

@@ -289,6 +289,12 @@ class Post extends DataModel implements PostWithRelationsModel {
         }
     }
 
+    public async reserve(user_id: number): Promise<boolean> {
+        return await this.update({
+            reserved_by: user_id,
+        });
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
@@ -305,7 +311,6 @@ class Post extends DataModel implements PostWithRelationsModel {
     removeFlag: () => Promise<boolean>;
     shadowBan: () => Promise<boolean>;
     removeShadowBan: () => Promise<boolean>;
-    reserve: (user_id: number) => Promise<boolean>;
     cancelReservation: () => Promise<boolean>;
     complete: () => Promise<boolean>;
     close: () => Promise<boolean>;
