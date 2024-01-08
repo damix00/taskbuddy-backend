@@ -41,9 +41,16 @@ namespace reads {
                 LEFT JOIN profiles AS recipient_profile ON channels.recipient_id = recipient_profile.user_id
                 LEFT JOIN posts ON channels.post_id = posts.id
                 LEFT JOIN LATERAL (
-                    SELECT * FROM messages
+                    SELECT
+                        messages.*,
+                        TO_JSONB(request_messages.*) AS request,
+                        COALESCE(jsonb_agg(DISTINCT message_attachments) FILTER (WHERE message_attachments.id IS NOT NULL), '[]') AS attachments
+                    FROM messages
+                    LEFT JOIN request_messages ON messages.id = request_messages.message_id
+                    LEFT JOIN message_attachments ON messages.id = message_attachments.message_id
                     WHERE messages.channel_id = channels.id
-                    ORDER BY created_at DESC
+                    GROUP BY messages.id, request_messages.id
+                    ORDER BY messages.created_at DESC
                     LIMIT 10
                 ) AS messages ON channels.id = messages.channel_id
 

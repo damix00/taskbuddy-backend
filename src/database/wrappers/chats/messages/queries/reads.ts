@@ -11,7 +11,7 @@ namespace reads {
                 SELECT
                     messages.*,
                     TO_JSON(users.*) AS sender,
-                    TO_JSON(request_messages.*) AS request_message,
+                    TO_JSON(request_messages.*) AS request,
                     COALESCE(json_agg(DISTINCT message_attachments) FILTER (WHERE message_attachments.id IS NOT NULL), '[]') AS attachments
                 FROM messages
                 LEFT JOIN users ON messages.sender_id = users.id

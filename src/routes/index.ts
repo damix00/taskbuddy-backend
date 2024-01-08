@@ -31,6 +31,7 @@ import incoming from "./v1/channels/incoming";
 import outgoing from "./v1/channels/outgoing";
 import seen from "./v1/channels/[uuid]/seen";
 import message_uuid from "./v1/channels/[uuid]/messages/[message_uuid]";
+import worker from "./v1/channels/[uuid]/actions/worker";
 
 export type route = {
     path: string;
@@ -154,6 +155,13 @@ const messageRoutes: route[] = [
     },
 ];
 
+const channelActions: route[] = [
+    {
+        path: "/v1/channels/:uuid/actions/worker",
+        handler: worker,
+    },
+];
+
 const channelRoutes: route[] = [
     {
         path: "/v1/channels/posts/:post_uuid/initiate",
@@ -175,6 +183,7 @@ const channelRoutes: route[] = [
         path: "/v1/channels/outgoing",
         handler: outgoing,
     },
+    ...channelActions,
     {
         path: "/v1/channels/:uuid",
         handler: get_channel,
