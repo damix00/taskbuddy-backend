@@ -59,7 +59,7 @@ export function authorize(fetchProfile: boolean = false) {
                 });
             }
 
-            if (!LoginReads.getLoginById(decoded.login_id)) {
+            if (!(await LoginReads.getLoginById(decoded.login_id))) {
                 return res.status(401).json({
                     message: "Invalid token",
                 });

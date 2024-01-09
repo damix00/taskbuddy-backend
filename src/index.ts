@@ -53,7 +53,7 @@ app.disable("etag"); // Disable 304 responses
 app.use(userAgent); // add user agent to request
 
 for (const route of routes) {
-    app.use(route.path, route.handler);
+    app.all(route.path, route.handler);
 }
 
 app.all("*", (req, res) => {

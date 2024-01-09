@@ -61,7 +61,7 @@ export class User extends DataModel implements UserModel {
 
         if (!result) return null;
 
-        return new User(result);
+        return new User(result, false);
     }
 
     // Updates the user's data
