@@ -3,12 +3,16 @@
 
 import { Response } from "express";
 import { authorize } from "../../../../../../middleware/authorization";
-import { MessageRequest } from "./middleware";
+import { MessageRequest, withMessage } from "./middleware";
 import { RequestMessageStatus } from "../../../../../../database/models/chats/messages";
 import { getMessageResponse } from "../../../responses";
+import { withChannel } from "../../middleware";
+import { ChannelStatus } from "../../../../../../database/models/chats/channels";
 
 export default [
     authorize(true),
+    withChannel,
+    withMessage,
     async (req: MessageRequest, res: Response) => {
         try {
             const action = req.query.action;
@@ -49,8 +53,13 @@ export default [
 
             if (action == "accept") {
                 success = await message.acceptRequest();
+
+                await req.channel!.post.reserve(req.user!.id);
+                await req.channel!.setStatus(ChannelStatus.ACCEPTED);
             } else {
                 success = await message.rejectRequest();
+
+                await req.channel!.setStatus(ChannelStatus.REJECTED);
             }
 
             if (!success) {
@@ -61,6 +70,15 @@ export default [
 
             res.status(200).json({
                 message: "Success",
+            });
+
+            req.user!.sendSocketEvent("message_updated", {
+                channel_uuid: req.channel!.uuid,
+                message: getMessageResponse(
+                    req.message!,
+                    req.user!,
+                    req.channel!.uuid
+                ),
             });
 
             req.channel!.getOtherUser(req.user!.id).sendSocketEvent(

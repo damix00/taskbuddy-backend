@@ -55,17 +55,20 @@ export function getMessageResponse(
             profile_picture: message.profile_picture,
             is_me: message.sender.id == requester.id,
         },
-        request: message.request
+        request: message.deleted
+            ? null
+            : message.request
             ? {
                   status: message.request.status,
                   type: message.request.request_type,
               }
             : null,
-        attachments:
-            message.attachments?.map((attachment) => ({
-                type: attachment.attachment_type,
-                url: attachment.attachment_url,
-            })) ?? [],
+        attachments: message.deleted
+            ? []
+            : message.attachments?.map((attachment) => ({
+                  type: attachment.attachment_type,
+                  url: attachment.attachment_url,
+              })) ?? [],
         created_at: message.created_at,
         edited: message.edited,
         edited_at: message.edited_at,

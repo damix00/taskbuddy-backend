@@ -82,6 +82,8 @@ export default [
                     ),
                 });
 
+                console.log(message);
+
                 const otherUser = channel!.getOtherUser(req.user!.id);
 
                 // Send push notification
@@ -115,6 +117,8 @@ export default [
                 });
             }
         } catch (error) {
+            console.error(error);
+
             res.status(500).json({
                 message: "Internal server error",
             });

@@ -56,12 +56,6 @@ export class MessageWrites {
         );
     }
 
-    public static async updateMessageRelations(
-        data: MessageWithRelations
-    ): Promise<boolean> {
-        return await writes.updateMessageRelations(data);
-    }
-
     public static async updateMessage(data: MessageFields): Promise<boolean> {
         return await writes.updateMessage(data);
     }

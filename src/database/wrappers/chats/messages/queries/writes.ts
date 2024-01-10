@@ -85,7 +85,7 @@ namespace writes {
                             attachment_url
                         ) VALUES (
                             $1, $2, $3
-                        )
+                        ) RETURNING *
                     `;
 
                     const createAttachmentParams = [
@@ -113,7 +113,7 @@ namespace writes {
                         request_type
                     ) VALUES (
                         $1, $2
-                    )
+                    ) RETURNING *
                 `;
 
                 const createRequestParams = [
@@ -121,12 +121,12 @@ namespace writes {
                     data.request.request_type,
                 ];
 
-                const r = await executeQuery(
+                const r = await executeQuery<RequestMessageFields>(
                     createRequestQuery,
                     createRequestParams
                 );
 
-                if (r.length > 0) request = r[0] as RequestMessageFields;
+                if (r.length > 0) request = r[0];
             }
 
             return {
@@ -139,109 +139,6 @@ namespace writes {
         } catch (err) {
             console.error(err);
             return null;
-        }
-    }
-
-    export async function updateMessageRelations(
-        data: MessageWithRelations
-    ): Promise<boolean> {
-        try {
-            const updateMessageQuery = `
-                UPDATE messages SET
-                    channel_id = $1,
-                    sender_id = $2,
-                    system_message = $3,
-                    message = $4,
-                    seen = $5,
-                    seen_at = $6,
-                    edited = $7,
-                    edited_at = $8,
-                    deleted = $9
-                WHERE id = $10
-            `;
-
-            const updateMessageParams = [
-                data.channel_id,
-                data.sender_id,
-                data.system_message,
-                data.message,
-                data.seen,
-                data.seen_at,
-                data.edited,
-                data.edited_at,
-                data.deleted,
-                data.id,
-            ];
-
-            await executeQuery(updateMessageQuery, updateMessageParams);
-
-            // Update attachments
-
-            if (data.attachments) {
-                const deleteAttachmentsQuery = `
-                    DELETE FROM message_attachments WHERE message_id = $1
-                `;
-
-                const deleteAttachmentsParams = [data.id];
-
-                await executeQuery(
-                    deleteAttachmentsQuery,
-                    deleteAttachmentsParams
-                );
-
-                for (const attachment of data.attachments) {
-                    const createAttachmentQuery = `
-                        INSERT INTO message_attachments (
-                            message_id,
-                            attachment_type,
-                            attachment_url
-                        ) VALUES (
-                            $1, $2, $3
-                        )
-                    `;
-
-                    const createAttachmentParams = [
-                        data.id,
-                        attachment.attachment_type,
-                        attachment.attachment_url,
-                    ];
-
-                    await executeQuery(
-                        createAttachmentQuery,
-                        createAttachmentParams
-                    );
-                }
-            }
-
-            // Delete request
-            await executeQuery(
-                "DELETE FROM request_messages WHERE message_id = $1",
-                [data.id]
-            );
-
-            // Update request
-            if (data.request) {
-                const createRequestQuery = `
-                    INSERT INTO request_messages (
-                        message_id,
-                        request_type
-                    ) VALUES (
-                        $1, $2
-                    )
-                `;
-
-                const createRequestParams = [
-                    data.id,
-                    data.request.request_type,
-                ];
-
-                await executeQuery(createRequestQuery, createRequestParams);
-            }
-
-            return true;
-        } catch (err) {
-            console.error(err);
-            return false;
         }
     }
 
@@ -295,10 +192,11 @@ namespace writes {
             const q = `
             UPDATE request_messages
             SET
-                message_id = $1,
                 status = $2,
                 request_type = $3,
                 updated_at = NOW()
+            WHERE message_id = $1
+            RETURNING *
             `;
 
             const p = [data.message_id, data.status, data.request_type];
