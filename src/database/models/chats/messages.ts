@@ -78,10 +78,7 @@ export interface MessageWithRelations extends MessageFields {
 
 export interface MessageModel extends MessageWithRelations {
     update: (fields: Partial<MessageFields>) => Promise<boolean>;
-    setSeen: (seen: boolean) => Promise<boolean>;
-    setSeenAt: (date: Date) => Promise<boolean>;
     deleteMessage: () => Promise<boolean>;
-    restoreMessage: () => Promise<boolean>;
     acceptRequest: () => Promise<boolean>;
     rejectRequest: () => Promise<boolean>;
 }

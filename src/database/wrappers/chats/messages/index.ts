@@ -5,6 +5,7 @@ import {
     MessageModel,
     MessageWithRelations,
     RequestMessageFields,
+    RequestMessageStatus,
 } from "../../../models/chats/messages";
 import { User } from "../../accounts/users";
 import reads from "./queries/reads";
@@ -72,11 +73,51 @@ class Message extends DataModel implements MessageModel {
         return deleted;
     }
 
-    setSeen: (seen: boolean) => Promise<boolean>;
-    setSeenAt: (date: Date) => Promise<boolean>;
-    restoreMessage: () => Promise<boolean>;
-    acceptRequest: () => Promise<boolean>;
-    rejectRequest: () => Promise<boolean>;
+    public async acceptRequest(): Promise<boolean> {
+        if (!this.request) {
+            return false;
+        }
+
+        if (this.request?.status != RequestMessageStatus.PENDING) {
+            return false;
+        }
+
+        const accepted = await writes.updateRequestMessage({
+            status: RequestMessageStatus.ACCEPTED,
+            message_id: this.id,
+            request_type: this.request!.request_type,
+        });
+
+        if (accepted) {
+            this.request.status = RequestMessageStatus.ACCEPTED;
+            this._refetch();
+        }
+
+        return accepted;
+    }
+
+    public async rejectRequest(): Promise<boolean> {
+        if (!this.request) {
+            return false;
+        }
+
+        if (this.request?.status != RequestMessageStatus.PENDING) {
+            return false;
+        }
+
+        const rejected = await writes.updateRequestMessage({
+            status: RequestMessageStatus.REJECTED,
+            message_id: this.id,
+            request_type: this.request!.request_type,
+        });
+
+        if (rejected) {
+            this.request.status = RequestMessageStatus.REJECTED;
+            this._refetch();
+        }
+
+        return rejected;
+    }
 }
 
 export default Message;

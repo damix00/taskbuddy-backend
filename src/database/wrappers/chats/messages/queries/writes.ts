@@ -7,6 +7,7 @@ import {
     MessageFields,
     MessageWithRelations,
     RequestMessageFields,
+    RequestMessageStatus,
     RequestMessageType,
 } from "../../../../models/chats/messages";
 import reads from "./reads";
@@ -285,9 +286,11 @@ namespace writes {
         }
     }
 
-    export async function updateRequestMessage(
-        data: RequestMessageFields
-    ): Promise<boolean> {
+    export async function updateRequestMessage(data: {
+        message_id: number;
+        status: RequestMessageStatus;
+        request_type: RequestMessageType;
+    }): Promise<boolean> {
         try {
             const q = `
             UPDATE request_messages
