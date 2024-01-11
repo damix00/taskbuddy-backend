@@ -7,7 +7,7 @@ import { ChannelRequest, withChannel } from "../middleware";
 import { ChannelStatus } from "../../../../../database/models/chats/channels";
 import { requireMethod } from "../../../../../middleware/require_method";
 import { RequestMessageType } from "../../../../../database/models/chats/messages";
-import { getMessageResponse } from "../../responses";
+import { getChannelResponse, getMessageResponse } from "../../responses";
 
 export default [
     requireMethod("POST"),
@@ -26,8 +26,10 @@ export default [
                 });
             }
 
+            const parsedVerdict = parseInt(verdict as string);
+
             // Check if the user is the post owner
-            if (req.user!.id != channel!.post.user_id) {
+            if (parsedVerdict == 1 && req.user!.id != channel!.post.user_id) {
                 return res.status(403).json({
                     message: "Forbidden",
                 });
@@ -42,11 +44,23 @@ export default [
                 });
             }
 
-            const parsedVerdict = parseInt(verdict as string);
-
             if (parsedVerdict == 0) {
                 // Reject
                 await channel!.setStatus(ChannelStatus.REJECTED);
+
+                req.channel?.created_by.sendSocketEvent("channel_update", {
+                    channel: getChannelResponse(
+                        req.channel!,
+                        req.channel!.created_by
+                    ),
+                });
+
+                req.channel?.recipient.sendSocketEvent("channel_update", {
+                    channel: getChannelResponse(
+                        req.channel!,
+                        req.channel!.recipient
+                    ),
+                });
 
                 return res.status(200).json({
                     message: "Worker rejected",
@@ -81,8 +95,6 @@ export default [
                         channel!.uuid
                     ),
                 });
-
-                console.log(message);
 
                 const otherUser = channel!.getOtherUser(req.user!.id);
 

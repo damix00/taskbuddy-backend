@@ -133,8 +133,18 @@ class Channel extends DataModel implements ChannelModel {
     public async setNegotiatedDate(date: Date): Promise<boolean> {
         return await this.update({ negotiated_date: date });
     }
+
     public async setSharingLocation(sharing: boolean): Promise<boolean> {
         return await this.update({ sharing_location: sharing });
+    }
+
+    public sendSocketChannel(event: string, data: any): void {
+        try {
+            this.recipient.sendSocketEvent(event, data);
+            this.created_by.sendSocketEvent(event, data);
+        } catch (err) {
+            console.error(err);
+        }
     }
 }
 

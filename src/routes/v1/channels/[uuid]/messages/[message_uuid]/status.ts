@@ -5,7 +5,7 @@ import { Response } from "express";
 import { authorize } from "../../../../../../middleware/authorization";
 import { MessageRequest, withMessage } from "./middleware";
 import { RequestMessageStatus } from "../../../../../../database/models/chats/messages";
-import { getMessageResponse } from "../../../responses";
+import { getChannelResponse, getMessageResponse } from "../../../responses";
 import { withChannel } from "../../middleware";
 import { ChannelStatus } from "../../../../../../database/models/chats/channels";
 
@@ -87,11 +87,25 @@ export default [
                     channel_uuid: req.channel!.uuid,
                     message: getMessageResponse(
                         req.message!,
-                        req.user!,
+                        req.channel!.getOtherUser(req.user!.id),
                         req.channel!.uuid
                     ),
                 }
             );
+
+            req.channel?.created_by.sendSocketEvent("channel_update", {
+                channel: getChannelResponse(
+                    req.channel!,
+                    req.channel!.created_by
+                ),
+            });
+
+            req.channel?.recipient.sendSocketEvent("channel_update", {
+                channel: getChannelResponse(
+                    req.channel!,
+                    req.channel!.recipient
+                ),
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: "Internal server error" });

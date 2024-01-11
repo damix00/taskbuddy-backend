@@ -7,6 +7,7 @@ import { requireMethod } from "../../../../../middleware/require_method";
 import { ChannelRequest, withChannel } from "../middleware";
 import { BlockReads } from "../../../../../database/wrappers/accounts/blocks/wrapper";
 import { getMessageResponse } from "../../responses";
+import { ChannelStatus } from "../../../../../database/models/chats/channels";
 
 export default [
     requireMethod("POST"),
@@ -21,6 +22,13 @@ export default [
             if (!content || content.length == 0 || content.length > 2000) {
                 res.status(400).json({
                     error: "Missing content",
+                });
+                return;
+            }
+
+            if (req.channel!.status == ChannelStatus.REJECTED) {
+                res.status(403).json({
+                    error: "Couldn't send message",
                 });
                 return;
             }
