@@ -26,6 +26,12 @@ export default [
                 });
             }
 
+            if (channel!.status == ChannelStatus.REJECTED) {
+                return res.status(403).json({
+                    message: "Forbidden",
+                });
+            }
+
             const parsedVerdict = parseInt(verdict as string);
 
             // Check if the user is the post owner
@@ -61,6 +67,17 @@ export default [
                         req.channel!.recipient
                     ),
                 });
+
+                await req.channel!.sendMessage(
+                    {
+                        message: `This job has been rejected by ${
+                            req.user!.first_name
+                        } ${req.user!.last_name}.`,
+                        system_message: true,
+                        channel_id: req.channel!.id,
+                    },
+                    null
+                );
 
                 return res.status(200).json({
                     message: "Worker rejected",

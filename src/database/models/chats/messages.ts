@@ -11,6 +11,7 @@ export type CreateMessageFields = {
     }[];
     request?: {
         request_type: RequestMessageType;
+        request_data?: string;
     };
 };
 
@@ -64,13 +65,14 @@ export interface RequestMessageFields {
     id: number;
     message_id: number;
     status: RequestMessageStatus;
+    data?: string;
     request_type: RequestMessageType;
     created_at: Date;
     updated_at: Date;
 }
 
 export interface MessageWithRelations extends MessageFields {
-    sender: User;
+    sender: User | null;
     profile_picture: string;
     attachments: MessageAttachmentFields[];
     request: RequestMessageFields | null;

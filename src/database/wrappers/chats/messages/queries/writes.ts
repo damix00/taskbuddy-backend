@@ -34,7 +34,7 @@ namespace writes {
 
     export async function createMessage(
         data: CreateMessageFields,
-        sender: User,
+        sender: User | null,
         profile_picture: string
     ): Promise<MessageWithRelations | null> {
         try {
@@ -59,7 +59,7 @@ namespace writes {
             const createMessageParams = [
                 uuid,
                 data.channel_id,
-                data.sender_id,
+                sender?.id || null,
                 data.system_message,
                 data.message,
                 new Date().toUTCString(),
@@ -110,15 +110,17 @@ namespace writes {
                 const createRequestQuery = `
                     INSERT INTO request_messages (
                         message_id,
-                        request_type
+                        request_type,
+                        data
                     ) VALUES (
-                        $1, $2
+                        $1, $2, $3
                     ) RETURNING *
                 `;
 
                 const createRequestParams = [
                     message.id,
                     data.request.request_type,
+                    data.request?.request_data || null,
                 ];
 
                 const r = await executeQuery<RequestMessageFields>(
@@ -187,6 +189,7 @@ namespace writes {
         message_id: number;
         status: RequestMessageStatus;
         request_type: RequestMessageType;
+        data?: string;
     }): Promise<boolean> {
         try {
             const q = `
@@ -194,12 +197,18 @@ namespace writes {
             SET
                 status = $2,
                 request_type = $3,
+                data = $4,
                 updated_at = NOW()
             WHERE message_id = $1
             RETURNING *
             `;
 
-            const p = [data.message_id, data.status, data.request_type];
+            const p = [
+                data.message_id,
+                data.status,
+                data.request_type,
+                data.data || null,
+            ];
 
             const res = await executeQuery(q, p);
 

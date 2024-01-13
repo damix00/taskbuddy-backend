@@ -47,7 +47,7 @@ export function getMessageResponse(
         channel_uuid: channel_uuid,
         deleted: message.deleted,
         message: message.deleted ? "" : message.message,
-        sender: {
+        sender: message.sender && {
             uuid: message.sender.uuid,
             username: message.sender.username,
             first_name: message.sender.first_name,
@@ -61,6 +61,7 @@ export function getMessageResponse(
             ? {
                   status: message.request.status,
                   type: message.request.request_type,
+                  data: message.request.data,
               }
             : null,
         attachments: message.deleted

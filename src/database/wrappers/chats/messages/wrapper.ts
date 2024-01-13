@@ -18,8 +18,11 @@ function toMessage(message: MessageWithRelations | null): Message | null {
     message.created_at = new Date(message.created_at as any);
     message.updated_at = new Date(message.updated_at as any);
 
-    message.sender.id = parseInt(message.sender.id as any);
-    message.sender = new User(message.sender);
+    if (message.sender) {
+        // @ts-ignore
+        message.sender?.id = parseInt(message.sender?.id as any);
+        message.sender = new User(message.sender);
+    }
 
     return new Message(message);
 }
@@ -48,7 +51,7 @@ export class MessageReads {
 export class MessageWrites {
     public static async createMessage(
         data: CreateMessageFields,
-        sender: User,
+        sender: User | null,
         profile_picture: string = ""
     ): Promise<Message | null> {
         return toMessage(

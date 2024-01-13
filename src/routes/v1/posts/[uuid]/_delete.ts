@@ -31,6 +31,8 @@ export default async (req: ExtendedRequest, res: Response) => {
             });
         }
 
+        await req.profile!.setPosts(Math.max(req.profile!.post_count - 1, 0));
+
         res.status(200).json({
             message: "Post deleted",
         });

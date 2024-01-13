@@ -75,7 +75,7 @@ class Channel extends DataModel implements ChannelModel {
 
     public async sendMessage(
         message: CreateMessageFields,
-        sender: User,
+        sender: User | null = null,
         profile_picture: string = ""
     ): Promise<Message | null> {
         try {

@@ -86,6 +86,7 @@ class Message extends DataModel implements MessageModel {
             status: RequestMessageStatus.ACCEPTED,
             message_id: this.id,
             request_type: this.request!.request_type,
+            data: this.request!.data,
         });
 
         if (accepted) {
@@ -109,6 +110,7 @@ class Message extends DataModel implements MessageModel {
             status: RequestMessageStatus.REJECTED,
             message_id: this.id,
             request_type: this.request!.request_type,
+            data: this.request!.data,
         });
 
         if (rejected) {

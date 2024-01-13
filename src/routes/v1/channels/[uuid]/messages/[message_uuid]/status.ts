@@ -1,13 +1,60 @@
-// PATCH /v1/channels/:uuid/messages/:message_uuid/status
+// PATCH /v1/channels/:uuid/messages/:message_uuid/worker
 // Update the status of a request message (if it exists)
 
 import { Response } from "express";
 import { authorize } from "../../../../../../middleware/authorization";
 import { MessageRequest, withMessage } from "./middleware";
-import { RequestMessageStatus } from "../../../../../../database/models/chats/messages";
+import {
+    RequestMessageStatus,
+    RequestMessageType,
+} from "../../../../../../database/models/chats/messages";
 import { getChannelResponse, getMessageResponse } from "../../../responses";
 import { withChannel } from "../../middleware";
 import { ChannelStatus } from "../../../../../../database/models/chats/channels";
+
+async function handleDeal(req: MessageRequest, res: Response, action: string) {
+    let success = false;
+
+    if (action == "accept") {
+        success = await req.message!.acceptRequest();
+
+        await req.channel!.post.reserve(req.user!.id);
+    } else {
+        success = await req.message!.rejectRequest();
+    }
+
+    if (!success) {
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+
+    req.channel?.created_by.sendSocketEvent("channel_update", {
+        channel: getChannelResponse(req.channel!, req.channel!.created_by),
+    });
+
+    req.channel?.recipient.sendSocketEvent("channel_update", {
+        channel: getChannelResponse(req.channel!, req.channel!.recipient),
+    });
+}
+
+async function handlePrice(req: MessageRequest, res: Response, action: string) {
+    let success = false;
+    let data = JSON.parse(req.message!.request!.data!);
+
+    if (action == "accept") {
+        success = await req.message!.acceptRequest();
+        await req.channel!.setNegotiatedPrice(parseFloat(data["price"]));
+    } else {
+        success = await req.message!.rejectRequest();
+    }
+
+    if (!success) {
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+}
 
 export default [
     authorize(true),
@@ -49,23 +96,12 @@ export default [
                 });
             }
 
-            let success = false;
-
-            if (action == "accept") {
-                success = await message.acceptRequest();
-
-                await req.channel!.post.reserve(req.user!.id);
-                await req.channel!.setStatus(ChannelStatus.ACCEPTED);
-            } else {
-                success = await message.rejectRequest();
-
-                await req.channel!.setStatus(ChannelStatus.REJECTED);
-            }
-
-            if (!success) {
-                return res.status(500).json({
-                    message: "Internal server error",
-                });
+            if (message.request.request_type == RequestMessageType.DEAL) {
+                await handleDeal(req, res, action);
+            } else if (
+                message.request.request_type == RequestMessageType.PRICE
+            ) {
+                await handlePrice(req, res, action);
             }
 
             res.status(200).json({
@@ -92,20 +128,6 @@ export default [
                     ),
                 }
             );
-
-            req.channel?.created_by.sendSocketEvent("channel_update", {
-                channel: getChannelResponse(
-                    req.channel!,
-                    req.channel!.created_by
-                ),
-            });
-
-            req.channel?.recipient.sendSocketEvent("channel_update", {
-                channel: getChannelResponse(
-                    req.channel!,
-                    req.channel!.recipient
-                ),
-            });
         } catch (err) {
             console.error(err);
             res.status(500).json({ message: "Internal server error" });

@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS request_messages (
     message_id BIGINT NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
     status INT NOT NULL DEFAULT 0, -- 0 = pending, 1 = accepted, 2 = rejected
     request_type INT NOT NULL, -- 0 = location, 1 = price, 2 = date, 3 = phone number
+    data TEXT, -- Data that the sender is requesting
     created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );

@@ -86,19 +86,24 @@ function toChannel(channel: ChannelWithRelations | null) {
         message.created_at = new Date(message.created_at as any);
         message.updated_at = new Date(message.updated_at as any);
 
-        const sender =
-            message.sender_id == channel.created_by_id
-                ? channel.created_by
-                : channel.recipient;
+        let sender;
+
+        if (message.sender_id == channel.created_by_id) {
+            sender = channel.created_by;
+        } else if (message.sender_id == channel.recipient_id) {
+            sender = channel.recipient;
+        }
 
         const senderProfile =
             message.sender_id == channel.created_by_id
                 ? channel.creator_profile
                 : channel.recipient_profile;
 
-        sender.id = parseInt(sender.id as any);
-        message.profile_picture = senderProfile?.profile_picture ?? null;
-        message.sender = new User(sender, false);
+        if (sender) {
+            sender.id = parseInt(sender?.id as any);
+            message.profile_picture = senderProfile?.profile_picture ?? null;
+            message.sender = new User(sender, false);
+        }
     });
 
     return new Channel(channel);

@@ -24,6 +24,10 @@ export default [
             );
 
             for (const msg of messages) {
+                if (msg.sender == null) {
+                    continue;
+                }
+
                 if (msg.sender.id == req.channel!.created_by_id) {
                     msg.profile_picture =
                         req.channel!.creator_profile.profile_picture;
