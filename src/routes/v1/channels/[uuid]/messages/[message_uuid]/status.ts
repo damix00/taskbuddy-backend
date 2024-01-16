@@ -16,11 +16,15 @@ async function handleDeal(req: MessageRequest, res: Response, action: string) {
     let success = false;
 
     if (action == "accept") {
-        success = await req.message!.acceptRequest();
+        success =
+            (await req.message!.acceptRequest()) &&
+            (await req.channel!.setStatus(ChannelStatus.ACCEPTED));
 
         await req.channel!.post.reserve(req.user!.id);
     } else {
-        success = await req.message!.rejectRequest();
+        success =
+            (await req.message!.rejectRequest()) &&
+            (await req.channel!.setStatus(ChannelStatus.REJECTED));
     }
 
     if (!success) {

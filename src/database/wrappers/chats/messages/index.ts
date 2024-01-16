@@ -92,6 +92,8 @@ class Message extends DataModel implements MessageModel {
         if (accepted) {
             this.request.status = RequestMessageStatus.ACCEPTED;
             this._refetch();
+        } else {
+            console.error("Failed to accept request");
         }
 
         return accepted;
