@@ -57,8 +57,8 @@ export default [
             });
 
             await req.channel!.getOtherUser(req.user!.id).sendNotification({
-                title: "Channel canceled",
-                body: "This job has been canceled.",
+                title: req.channel!.post!.title,
+                body: `This job has been canceled by @${req.user!.username}.`,
                 data: {
                     type: "message",
                     channel_uuid: req.channel!.uuid,

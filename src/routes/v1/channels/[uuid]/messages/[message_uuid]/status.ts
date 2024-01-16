@@ -60,6 +60,24 @@ async function handlePrice(req: MessageRequest, res: Response, action: string) {
     }
 }
 
+async function handleDate(req: MessageRequest, res: Response, action: string) {
+    let success = false;
+    let data = JSON.parse(req.message!.request!.data!);
+
+    if (action == "accept") {
+        success = await req.message!.acceptRequest();
+        await req.channel!.setNegotiatedDate(data["date"]);
+    } else {
+        success = await req.message!.rejectRequest();
+    }
+
+    if (!success) {
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+}
+
 export default [
     authorize(true),
     withChannel,
@@ -106,6 +124,10 @@ export default [
                 message.request.request_type == RequestMessageType.PRICE
             ) {
                 await handlePrice(req, res, action);
+            } else if (
+                message.request.request_type == RequestMessageType.DATE
+            ) {
+                await handleDate(req, res, action);
             }
 
             res.status(200).json({

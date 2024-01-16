@@ -34,6 +34,7 @@ export enum RequestMessageType {
     DATE = 2,
     PHONE_NUMBER = 3,
     DEAL = 4,
+    COMPLETE = 5,
 }
 
 export interface MessageFields {
