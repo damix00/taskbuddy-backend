@@ -35,6 +35,7 @@ import worker from "./v1/channels/[uuid]/actions/worker";
 import status from "./v1/channels/[uuid]/messages/[message_uuid]/status";
 import cancel from "./v1/channels/[uuid]/actions/cancel";
 import price from "./v1/channels/[uuid]/actions/negotiate/price";
+import date from "./v1/channels/[uuid]/actions/negotiate/date";
 
 export type route = {
     path: string;
@@ -174,6 +175,10 @@ const channelActions: route[] = [
     {
         path: "/v1/channels/:uuid/actions/negotiate/price",
         handler: price,
+    },
+    {
+        path: "/v1/channels/:uuid/actions/negotiate/date",
+        handler: date,
     },
 ];
 
