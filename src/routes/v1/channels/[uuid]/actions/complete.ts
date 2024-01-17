@@ -38,6 +38,9 @@ export default [
                     message: "",
                     request: {
                         request_type: RequestMessageType.COMPLETE,
+                        request_data: JSON.stringify({
+                            left_review: false,
+                        }),
                     },
                     attachments: [],
                     system_message: false,

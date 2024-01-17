@@ -4,7 +4,7 @@ import { Response, Router } from "express";
 import { requireMethod } from "../../../../../middleware/require_method";
 import { authorize } from "../../../../../middleware/authorization";
 import { ChannelRequest, withChannel } from "../middleware";
-import { getChannelResponse } from "../../responses";
+import { getChannelResponse, getMessageResponse } from "../../responses";
 
 export default [
     requireMethod("POST"),
@@ -40,7 +40,7 @@ export default [
                 ),
             });
 
-            await req.channel!.sendMessage(
+            const message = await req.channel!.sendMessage(
                 {
                     message: `This job has been cancelled by ${
                         req.user!.first_name
@@ -55,6 +55,27 @@ export default [
                 message: "Channel canceled",
                 channel: getChannelResponse(req.channel!, req.user!),
             });
+
+            if (message) {
+                // Send socket event to all users in the channel
+                const otherUser = req.channel!.getOtherUser(req.user!.id);
+
+                otherUser.sendSocketEvent("chat", {
+                    message: getMessageResponse(
+                        message!,
+                        otherUser,
+                        req.channel!.uuid
+                    ),
+                });
+
+                req.user!.sendSocketEvent("chat", {
+                    message: getMessageResponse(
+                        message!,
+                        req.user!,
+                        req.channel!.uuid
+                    ),
+                });
+            }
 
             await req.channel!.getOtherUser(req.user!.id).sendNotification({
                 title: req.channel!.post!.title,

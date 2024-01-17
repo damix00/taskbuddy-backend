@@ -111,3 +111,14 @@ CREATE TABLE IF NOT EXISTS comment_interaction_logs ( -- Likes on comments
     FOREIGN KEY (comment_id) REFERENCES post_comments(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS job_completions (
+    id BIGSERIAL PRIMARY KEY,
+    channel_id BIGINT NOT NULL REFERENCES channels(id),
+    post_id BIGINT NOT NULL REFERENCES posts(id),
+    completed_for_id BIGINT NOT NULL REFERENCES users(id),
+    completed_by_id BIGINT NOT NULL REFERENCES users(id),
+    completed_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
+);
