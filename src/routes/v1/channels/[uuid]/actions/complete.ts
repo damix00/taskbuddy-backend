@@ -1,4 +1,4 @@
-// POST /v1/channels/:uuid/actions/cancel
+// POST /v1/channels/:uuid/actions/complete
 
 import { Response, Router } from "express";
 import { requireMethod } from "../../../../../middleware/require_method";
@@ -14,7 +14,7 @@ export default [
     withChannel,
     async (req: ChannelRequest, res: Response) => {
         try {
-            const isEmployee = req.channel!.post.user_id == req.user!.id;
+            const isEmployee = req.channel!.post.user_id != req.user!.id;
 
             if (!isEmployee) {
                 return res.status(403).json({
@@ -26,6 +26,8 @@ export default [
                 req.channel!.status != ChannelStatus.ACCEPTED &&
                 req.channel!.status != ChannelStatus.COMPLETED
             ) {
+                console.log(req.channel!.status);
+
                 return res.status(403).json({
                     message: "You cannot complete this job.",
                 });
@@ -39,7 +41,8 @@ export default [
                     request: {
                         request_type: RequestMessageType.COMPLETE,
                         request_data: JSON.stringify({
-                            left_review: false,
+                            left_review_by_employee: false,
+                            left_review_by_employer: false,
                         }),
                     },
                     attachments: [],
