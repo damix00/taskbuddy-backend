@@ -1,73 +1,109 @@
 import { executeQuery } from "../../../connection";
-import { ReviewFields } from "../../../models/reviews/review";
+import {
+    ReviewFields,
+    ReviewWithRelations,
+} from "../../../models/reviews/review";
 
-function fixTypes(result: ReviewFields): ReviewFields {
-    result.id = parseInt(result.id as any);
-    result.user_id = parseInt(result.user_id as any);
-    result.post_id = parseInt(result.post_id as any);
-    result.rating = parseInt(result.rating as any);
+async function getReviewByField(
+    field: string,
+    value: any
+): Promise<ReviewWithRelations | null> {
+    try {
+        const q = `
+            SELECT reviews.*,
+                TO_JSON(user.*) AS user,
+                TO_JSON(rating_for.*) AS rating_for,
+                TO_JSON(post.*) AS post
+            FROM reviews
+            LEFT JOIN users AS user ON reviews.user_id = user.id
+            LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
+            LEFT JOIN posts AS post ON reviews.post_id = post.id
+            WHERE ${field} = $1
+            GROUP BY reviews.id, user.id, rating_for.id, post.id
+        `;
 
-    return result;
+        const result = await executeQuery<ReviewWithRelations>(q, [value]);
+
+        if (result.length === 0) return null;
+
+        return result[0];
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 }
 
 namespace reads {
     export async function getReviewById(
         id: number
-    ): Promise<ReviewFields | null> {
-        try {
-            const q = `
-                SELECT *
-                FROM reviews
-                WHERE id = $1;
-            `;
-
-            const result = await executeQuery<ReviewFields>(q, [id]);
-
-            if (result.length === 0) return null;
-
-            return fixTypes(result[0]);
-        } catch (err) {
-            console.error(err);
-            return null;
-        }
+    ): Promise<ReviewWithRelations | null> {
+        return await getReviewByField("reviews.id", id);
     }
 
     export async function getReviewByUUID(
         uuid: string
-    ): Promise<ReviewFields | null> {
-        try {
-            const q = `
-                SELECT *
-                FROM reviews
-                WHERE uuid = $1;
-            `;
-
-            const result = await executeQuery<ReviewFields>(q, [uuid]);
-
-            if (result.length === 0) return null;
-
-            return fixTypes(result[0]);
-        } catch (err) {
-            console.error(err);
-            return null;
-        }
+    ): Promise<ReviewWithRelations | null> {
+        return await getReviewByField("reviews.uuid", uuid);
     }
 
-    export async function getReviewsByPost(
-        post_id: number
-    ): Promise<ReviewFields[] | null> {
+    export interface ReviewsForUser {
+        written: ReviewWithRelations[];
+        recieved: ReviewWithRelations[];
+    }
+
+    export async function getReviewsForUser(
+        user_id: number,
+        requested_by_id: number,
+        offset: number = 0
+    ): Promise<ReviewsForUser | null> {
         try {
-            const q = `
-                SELECT *
+            // First, select reviews that the user (requested_by_id) has written for the user (user_id)
+            const writtenQuery = `
+                SELECT reviews.*,
+                    TO_JSON(user.*) AS user,
+                    TO_JSON(rating_for.*) AS rating_for,
+                    TO_JSON(post.*) AS post
                 FROM reviews
-                WHERE post_id = $1;
+                LEFT JOIN users AS user ON reviews.user_id = user.id
+                LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
+                LEFT JOIN posts AS post ON reviews.post_id = post.id
+                WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2
+                GROUP BY reviews.id, user.id, rating_for.id, post.id
+                ORDER BY reviews.created_at DESC
+                OFFSET $3 LIMIT 20
             `;
 
-            const result = await executeQuery<ReviewFields>(q, [post_id]);
+            const writtenResult = await executeQuery<ReviewWithRelations>(
+                writtenQuery,
+                [requested_by_id, user_id, offset]
+            );
 
-            if (result.length === 0) return null;
+            // Select reviews that the user (requested_by_id) has received
 
-            return result.map(fixTypes);
+            const received = `
+                SELECT reviews.*,
+                    TO_JSON(user.*) AS user,
+                    TO_JSON(rating_for.*) AS rating_for,
+                    TO_JSON(post.*) AS post
+                FROM reviews
+                LEFT JOIN users AS user ON reviews.user_id = user.id
+                LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
+                LEFT JOIN posts AS post ON reviews.post_id = post.id
+                WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2
+                GROUP BY reviews.id, user.id, rating_for.id, post.id
+                ORDER BY reviews.created_at DESC
+                OFFSET $3 LIMIT 20
+            `;
+
+            const recipientResult = await executeQuery<ReviewWithRelations>(
+                received,
+                [user_id, requested_by_id, offset]
+            );
+
+            return {
+                written: writtenResult,
+                recieved: recipientResult,
+            };
         } catch (err) {
             console.error(err);
             return null;

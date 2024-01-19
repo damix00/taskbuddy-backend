@@ -103,8 +103,6 @@ export default [
                     req.channel!.uuid
                 ),
             });
-
-            req.channel!.setLastMessageTime(new Date());
         } catch (err) {
             console.error(err);
             res.status(500).json({

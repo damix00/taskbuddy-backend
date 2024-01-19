@@ -98,6 +98,14 @@ async function handleComplete(
             completed_for: req.channel!.created_by,
             completed_by: req.channel!.recipient,
         });
+
+        req.channel?.created_by.sendSocketEvent("channel_update", {
+            channel: getChannelResponse(req.channel!, req.channel!.created_by),
+        });
+
+        req.channel?.recipient.sendSocketEvent("channel_update", {
+            channel: getChannelResponse(req.channel!, req.channel!.recipient),
+        });
     } else {
         success = await req.message!.rejectRequest();
     }

@@ -79,6 +79,8 @@ class Channel extends DataModel implements ChannelModel {
         profile_picture: string = ""
     ): Promise<Message | null> {
         try {
+            await this.update({ last_message_time: new Date() });
+
             return await MessageWrites.createMessage(
                 message,
                 sender,

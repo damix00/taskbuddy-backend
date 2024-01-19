@@ -26,6 +26,7 @@ import os from "os";
 import path from "path";
 import { randomNearbyLocation } from "../../../utils/utils";
 import { getPostResponse } from "./responses";
+import { checkText } from "../../../classification/text_check";
 
 export default [
     authorize(true),
@@ -249,7 +250,7 @@ export default [
 
             await req.profile!.setPosts(req.profile!.post_count + 1);
 
-            return res.status(200).json({
+            res.status(200).json({
                 message: "Post created",
                 post: getPostResponse(
                     post,
@@ -261,6 +262,13 @@ export default [
                     post.bookmarked
                 ),
             });
+
+            // Use the OpenAI API to check for explicit content
+            if (await checkText(`${title}\n\n${description}`)) {
+                console.log(`Post ${post.id} contains explicit content.`);
+
+                await post.shadowBan(); // Shadow ban the post if it contains explicit content
+            }
         } catch (err) {
             console.error(err);
 
