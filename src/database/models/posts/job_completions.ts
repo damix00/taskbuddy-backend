@@ -1,3 +1,6 @@
+import { User } from "../../wrappers/accounts/users";
+import Channel from "../../wrappers/chats/channels";
+import Post from "../../wrappers/posts/post";
 import { ChannelFields } from "../chats/channels";
 import { UserFields } from "../users/user";
 import { PostFields } from "./post";
@@ -13,15 +16,17 @@ export interface JobCompletionFields {
     updated_at: Date;
 }
 
+export interface JobCompletionCreationFields {
+    channel: Channel;
+    post: Post;
+    completed_for: User;
+    completed_by: User;
+}
+
 // Interface for a job completion with all its relations
 export interface JobCompletionWithRelations extends JobCompletionFields {
     channel: ChannelFields;
     post: PostFields;
     completed_for: UserFields;
     completed_by: UserFields;
-}
-
-export interface JobCompletionModel extends JobCompletionWithRelations {
-    update: (fields: Partial<JobCompletionWithRelations>) => Promise<boolean>;
-    deleteJobCompletion: () => Promise<boolean>;
 }

@@ -11,6 +11,7 @@ import {
 import { getChannelResponse, getMessageResponse } from "../../../responses";
 import { withChannel } from "../../middleware";
 import { ChannelStatus } from "../../../../../../database/models/chats/channels";
+import { JobCompletionWrites } from "../../../../../../database/wrappers/posts/completions/wrapper";
 
 async function handleDeal(req: MessageRequest, res: Response, action: string) {
     let success = false;
@@ -78,6 +79,36 @@ async function handleDate(req: MessageRequest, res: Response, action: string) {
     }
 }
 
+async function handleComplete(
+    req: MessageRequest,
+    res: Response,
+    action: string
+) {
+    let success = false;
+
+    if (action == "accept") {
+        success = await req.message!.acceptRequest();
+        await req.channel!.setStatus(ChannelStatus.COMPLETED);
+        await req.channel!.post.complete();
+
+        // Insert into post completions
+        await JobCompletionWrites.addPostCompletion({
+            channel: req.channel!,
+            post: req.channel!.post,
+            completed_for: req.channel!.created_by,
+            completed_by: req.channel!.recipient,
+        });
+    } else {
+        success = await req.message!.rejectRequest();
+    }
+
+    if (!success) {
+        return res.status(500).json({
+            message: "Internal server error",
+        });
+    }
+}
+
 export default [
     authorize(true),
     withChannel,
@@ -128,6 +159,10 @@ export default [
                 message.request.request_type == RequestMessageType.DATE
             ) {
                 await handleDate(req, res, action);
+            } else if (
+                message.request.request_type == RequestMessageType.COMPLETE
+            ) {
+                await handleComplete(req, res, action);
             }
 
             res.status(200).json({

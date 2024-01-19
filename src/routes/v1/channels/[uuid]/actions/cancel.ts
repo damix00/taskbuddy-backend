@@ -13,6 +13,7 @@ export default [
     async (req: ChannelRequest, res: Response) => {
         try {
             await req.channel!.cancel();
+            await req.channel!.post.cancelReservation();
 
             const isEmployee = req.channel!.post.user_id == req.user!.id;
 

@@ -295,6 +295,111 @@ class Post extends DataModel implements PostWithRelationsModel {
         });
     }
 
+    public async complete(): Promise<boolean> {
+        return await this.update({
+            status: PostStatus.COMPLETED,
+        });
+    }
+
+    public async addFlag(flag: {
+        removal_reason: string;
+        flagged_reason: string;
+    }): Promise<boolean> {
+        try {
+            return await this.update({
+                removal_reason: flag.removal_reason,
+                flagged_reason: flag.flagged_reason,
+                flagged: true,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async removeFlag(): Promise<boolean> {
+        try {
+            return await this.update({
+                removal_reason: "",
+                flagged_reason: "",
+                flagged: false,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async shadowBan(): Promise<boolean> {
+        try {
+            return await this.update({
+                shadow_banned: true,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async removeShadowBan(): Promise<boolean> {
+        try {
+            return await this.update({
+                shadow_banned: false,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async cancelReservation(): Promise<boolean> {
+        try {
+            return await this.update({
+                reserved_by: null,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async close(): Promise<boolean> {
+        try {
+            return await this.update({
+                status: PostStatus.CLOSED,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async reopen(): Promise<boolean> {
+        try {
+            return await this.update({
+                status: PostStatus.OPEN,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public async expire(): Promise<boolean> {
+        try {
+            return await this.update({
+                status: PostStatus.EXPIRED,
+            });
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    public hasExpired(): boolean {
+        return this.status == PostStatus.EXPIRED;
+    }
+
     addComment: (comment: {
         user_id: number;
         comment: string;
@@ -304,19 +409,6 @@ class Post extends DataModel implements PostWithRelationsModel {
     removeComment: (comment_id: number) => Promise<boolean>;
     addTag: (tag_id: number) => Promise<boolean>;
     removeTag: (tag_id: number) => Promise<boolean>;
-    addFlag: (flag: {
-        removal_reason: string;
-        flagged_reason: string;
-    }) => Promise<boolean>;
-    removeFlag: () => Promise<boolean>;
-    shadowBan: () => Promise<boolean>;
-    removeShadowBan: () => Promise<boolean>;
-    cancelReservation: () => Promise<boolean>;
-    complete: () => Promise<boolean>;
-    close: () => Promise<boolean>;
-    reopen: () => Promise<boolean>;
-    expire: () => Promise<boolean>;
-    hasExpired: () => boolean;
 }
 
 export default Post;
