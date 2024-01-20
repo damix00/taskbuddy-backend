@@ -37,6 +37,7 @@ import cancel from "./v1/channels/[uuid]/actions/cancel";
 import price from "./v1/channels/[uuid]/actions/negotiate/price";
 import date from "./v1/channels/[uuid]/actions/negotiate/date";
 import complete from "./v1/channels/[uuid]/actions/complete";
+import review from "./v1/channels/[uuid]/messages/[message_uuid]/review";
 
 export type route = {
     path: string;
@@ -153,6 +154,10 @@ const messageRoutes: route[] = [
     {
         path: "/v1/channels/:uuid/messages/:message_uuid/status",
         handler: status,
+    },
+    {
+        path: "/v1/channels/:uuid/messages/:message_uuid/review",
+        handler: review,
     },
     {
         path: "/v1/channels/:uuid/messages/:message_uuid",

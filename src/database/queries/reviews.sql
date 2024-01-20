@@ -10,4 +10,4 @@ CREATE TABLE IF NOT EXISTS reviews (
     description TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
-)
+);

@@ -37,7 +37,7 @@
     "main": "out/index.js",
     "scripts": {
         "dev": "concurrently \"tsc --watch\" \"tsc && nodemon out/src/index.js\"",
-        "start": "tsc && MODE=prod node out/src/index.js",
+        "start": "tsc && node out/src/index.js",
         "test": "tsc && npx jest"
     },
     "author": "damix",

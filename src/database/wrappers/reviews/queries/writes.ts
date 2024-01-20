@@ -41,6 +41,7 @@ namespace writes {
             return {
                 ...result[0],
                 user: data.user,
+                user_profile: data.user_profile,
                 rating_for: data.rating_for,
                 post: data.post,
             };
@@ -70,6 +71,22 @@ namespace writes {
                 data.description,
                 review_id,
             ]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    export async function deleteReview(review_id: number): Promise<boolean> {
+        try {
+            const q = `
+                DELETE FROM reviews
+                WHERE id = $1
+            `;
+
+            await executeQuery(q, [review_id]);
 
             return true;
         } catch (err) {

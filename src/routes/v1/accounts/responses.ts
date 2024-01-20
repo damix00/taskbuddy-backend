@@ -1,5 +1,6 @@
 import { ProfileFields } from "../../../database/models/users/profile";
 import { UserFields } from "../../../database/models/users/user";
+import Review from "../../../database/wrappers/reviews";
 import { signToken, toUserPayload } from "../../../verification/jwt";
 
 export function getUserResponse(user: UserFields, login_id: number) {
@@ -96,4 +97,8 @@ export function getPublicUserProfileResponse(
         verified: user.verified,
         ...getProfileResponse(profile),
     };
+}
+
+export function getReviewResponse(review: Review) {
+    return {};
 }

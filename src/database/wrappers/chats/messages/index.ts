@@ -55,6 +55,20 @@ class Message extends DataModel implements MessageModel {
         return updated;
     }
 
+    public async updateRequestMessage(
+        fields: Partial<RequestMessageFields>
+    ): Promise<boolean> {
+        if (!this.request) {
+            return false;
+        }
+
+        const obj = { ...this.request, ...fields };
+
+        const updated = await writes.updateRequestMessage(obj);
+
+        return updated;
+    }
+
     public override async refetch(): Promise<void> {
         const message = await reads.getMessageById(this.id);
 

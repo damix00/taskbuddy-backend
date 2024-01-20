@@ -1,3 +1,4 @@
+import { Profile } from "../../wrappers/accounts/profiles";
 import { User } from "../../wrappers/accounts/users";
 import Post from "../../wrappers/posts/post";
 
@@ -17,6 +18,7 @@ export interface ReviewFields {
 
 export interface CreateReviewFields {
     user: User;
+    user_profile: Profile;
     rating_for: User;
     post: Post;
     rating: number;
@@ -26,6 +28,7 @@ export interface CreateReviewFields {
 
 export interface ReviewWithRelations extends ReviewFields {
     user: User;
+    user_profile: Profile;
     rating_for: User;
     post?: Post;
 }

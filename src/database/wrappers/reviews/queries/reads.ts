@@ -13,13 +13,15 @@ async function getReviewByField(
             SELECT reviews.*,
                 TO_JSON(user.*) AS user,
                 TO_JSON(rating_for.*) AS rating_for,
-                TO_JSON(post.*) AS post
+                TO_JSON(post.*) AS post,
+                TO_JSON(profile.*) AS user_profile
             FROM reviews
             LEFT JOIN users AS user ON reviews.user_id = user.id
             LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
             LEFT JOIN posts AS post ON reviews.post_id = post.id
+            LEFT JOIN profiles AS profile ON user.id = profile.user_id
             WHERE ${field} = $1
-            GROUP BY reviews.id, user.id, rating_for.id, post.id
+            GROUP BY reviews.id, user.id, rating_for.id, post.id, profile.id
         `;
 
         const result = await executeQuery<ReviewWithRelations>(q, [value]);
