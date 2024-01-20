@@ -19,6 +19,11 @@ function toReview(review: ReviewWithRelations | null): Review | null {
     return new Review(review);
 }
 
+export interface ReviewsForUser {
+    written: Review[];
+    recieved: Review[];
+}
+
 export class ReviewReads {
     static async getReviewById(id: number): Promise<Review | null> {
         return toReview(await reads.getReviewById(id));
@@ -32,7 +37,7 @@ export class ReviewReads {
         user_id: number,
         requested_by_id: number,
         offset: number = 0
-    ): Promise<reads.ReviewsForUser | null> {
+    ): Promise<ReviewsForUser | null> {
         const reviews = await reads.getReviewsForUser(
             user_id,
             requested_by_id,

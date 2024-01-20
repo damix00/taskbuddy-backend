@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { executeQuery } from "../../../connection";
 import {
     CreateReviewFields,
@@ -6,6 +7,26 @@ import {
 } from "../../../models/reviews/review";
 
 namespace writes {
+    async function generateReviewUUID(): Promise<String | null> {
+        try {
+            do {
+                const uuid = v4();
+
+                const q = `
+                    SELECT uuid FROM reviews WHERE uuid = $1
+                `;
+
+                const r = await executeQuery<{ uuid: string }>(q, [uuid]);
+
+                if (r.length === 0) return uuid;
+            } while (true);
+        } catch (e) {
+            console.error(e);
+
+            return null;
+        }
+    }
+
     export async function createReview(
         data: CreateReviewFields
     ): Promise<ReviewWithRelations | null> {
@@ -26,6 +47,7 @@ namespace writes {
             `;
 
             const result = await executeQuery<ReviewFields>(q, [
+                await generateReviewUUID(),
                 data.post.uuid,
                 data.user.id,
                 data.rating_for.id,

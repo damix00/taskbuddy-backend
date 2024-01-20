@@ -38,6 +38,7 @@ import price from "./v1/channels/[uuid]/actions/negotiate/price";
 import date from "./v1/channels/[uuid]/actions/negotiate/date";
 import complete from "./v1/channels/[uuid]/actions/complete";
 import review from "./v1/channels/[uuid]/messages/[message_uuid]/review";
+import meReviews from "./v1/accounts/me/reviews";
 
 export type route = {
     path: string;
@@ -83,6 +84,10 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/posts",
         handler: mePosts,
+    },
+    {
+        path: "/v1/accounts/me/reviews",
+        handler: meReviews,
     },
     {
         path: "/v1/accounts/me/profile",

@@ -1,7 +1,9 @@
 import { ProfileFields } from "../../../database/models/users/profile";
 import { UserFields } from "../../../database/models/users/user";
+import { User } from "../../../database/wrappers/accounts/users";
 import Review from "../../../database/wrappers/reviews";
 import { signToken, toUserPayload } from "../../../verification/jwt";
+import { getPostOnlyResponse } from "../posts/responses";
 
 export function getUserResponse(user: UserFields, login_id: number) {
     return {
@@ -99,6 +101,22 @@ export function getPublicUserProfileResponse(
     };
 }
 
-export function getReviewResponse(review: Review) {
-    return {};
+export function getReviewResponse(review: Review, requested_by: User) {
+    return {
+        uuid: review.uuid,
+        rating: review.rating,
+        title: review.title,
+        description: review.description,
+        post_title: review.post_title,
+        created_at: review.created_at,
+        updated_at: review.updated_at,
+        post: review.post ? getPostOnlyResponse(review.post) : null,
+        user: getPublicUserProfileResponse(
+            review.user,
+            review.user_profile,
+            requested_by.id == review.user.id,
+            false
+        ),
+        rating_for: review.rating_for.uuid,
+    };
 }

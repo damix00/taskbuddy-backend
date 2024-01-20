@@ -118,7 +118,7 @@ export default [
         });
 
         res.status(200).json({
-            review: getReviewResponse(review),
+            review: getReviewResponse(review, req.user!),
         });
 
         // Send socket events
