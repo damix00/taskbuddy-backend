@@ -15,6 +15,8 @@ import {
 import { ReviewWrites } from "../../../../../../database/wrappers/reviews/wrapper";
 import { getReviewResponse } from "../../../../accounts/responses";
 import { getMessageResponse } from "../../../responses";
+import { ReviewType } from "../../../../../../database/models/reviews/review";
+import { BlockReads } from "../../../../../../database/wrappers/accounts/blocks/wrapper";
 
 export default [
     requireMethod("POST"),
@@ -64,6 +66,18 @@ export default [
             });
         }
 
+        // Check if blocked
+        if (
+            await BlockReads.isBlocked(
+                req.channel!.getOtherUser(req.user!.id).id,
+                req.user!.id
+            )
+        ) {
+            return res.status(400).json({
+                error: "You have blocked this user",
+            });
+        }
+
         const isEmployee = req.channel!.post.user_id != req.user!.id;
 
         const data = JSON.parse(req.message.request.data!);
@@ -99,6 +113,7 @@ export default [
             rating,
             title: title.trim(),
             description: description.trim(),
+            type: isEmployee ? ReviewType.EMPLOYEE : ReviewType.EMPLOYER,
         });
 
         if (!review) {

@@ -110,13 +110,12 @@ export function getReviewResponse(review: Review, requested_by: User) {
         post_title: review.post_title,
         created_at: review.created_at,
         updated_at: review.updated_at,
-        post: review.post ? getPostOnlyResponse(review.post) : null,
         user: getPublicUserProfileResponse(
             review.user,
             review.user_profile,
             requested_by.id == review.user.id,
-            false
+            review.following
         ),
-        rating_for: review.rating_for.uuid,
+        rating_for_uuid: review.rating_for.uuid,
     };
 }

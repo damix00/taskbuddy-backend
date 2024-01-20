@@ -14,6 +14,7 @@ export default [
 
         const reviews = await ReviewReads.getReviewsForUser(
             req.user!.id,
+            req.user!.id,
             offset
         );
 

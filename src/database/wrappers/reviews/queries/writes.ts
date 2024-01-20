@@ -40,9 +40,10 @@ namespace writes {
                     post_title,
                     rating,
                     title,
-                    description
+                    description,
+                    type
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9
                 ) RETURNING *
             `;
 
@@ -56,6 +57,7 @@ namespace writes {
                 data.rating,
                 data.title,
                 data.description,
+                data.type,
             ]);
 
             if (result.length === 0) return null;
@@ -65,7 +67,7 @@ namespace writes {
                 user: data.user,
                 user_profile: data.user_profile,
                 rating_for: data.rating_for,
-                post: data.post,
+                following: false,
             };
         } catch (err) {
             console.error(err);

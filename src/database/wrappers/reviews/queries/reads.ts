@@ -62,15 +62,16 @@ namespace reads {
             // First, select reviews that the user (requested_by_id) has written for the user (user_id)
             const writtenQuery = `
                 SELECT reviews.*,
-                    TO_JSON(user.*) AS user,
-                    TO_JSON(rating_for.*) AS rating_for,
-                    TO_JSON(post.*) AS post
+                    TO_JSON(user_data.*) AS user,
+                    TO_JSON(rating_for_data.*) AS rating_for,
+                    TO_JSON(profile_data.*) AS user_profile,
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $1 AND follows.following = reviews.user_id) AS following
                 FROM reviews
-                LEFT JOIN users AS user ON reviews.user_id = user.id
-                LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
-                LEFT JOIN posts AS post ON reviews.post_id = post.id
+                LEFT JOIN users AS user_data ON reviews.user_id = user_data.id
+                LEFT JOIN users AS rating_for_data ON reviews.rating_for_id = rating_for_data.id
+                LEFT JOIN profiles AS profile_data ON user_data.id = profile_data.user_id
                 WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2
-                GROUP BY reviews.id, user.id, rating_for.id, post.id
+                GROUP BY reviews.id, user_data.id, rating_for_data.id, profile_data.id
                 ORDER BY reviews.created_at DESC
                 OFFSET $3 LIMIT 20
             `;
@@ -82,29 +83,30 @@ namespace reads {
 
             // Select reviews that the user (requested_by_id) has received
 
-            const received = `
+            const recievedQuery = `
                 SELECT reviews.*,
-                    TO_JSON(user.*) AS user,
-                    TO_JSON(rating_for.*) AS rating_for,
-                    TO_JSON(post.*) AS post
+                    TO_JSON(user_data.*) AS user,
+                    TO_JSON(rating_for_data.*) AS rating_for,
+                    TO_JSON(profile_data.*) AS user_profile,
+                    EXISTS(SELECT 1 FROM follows WHERE follows.follower = $1 AND follows.following = reviews.user_id) AS following
                 FROM reviews
-                LEFT JOIN users AS user ON reviews.user_id = user.id
-                LEFT JOIN users AS rating_for ON reviews.rating_for_id = rating_for.id
-                LEFT JOIN posts AS post ON reviews.post_id = post.id
-                WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2
-                GROUP BY reviews.id, user.id, rating_for.id, post.id
+                LEFT JOIN users AS user_data ON reviews.user_id = user_data.id
+                LEFT JOIN users AS rating_for_data ON reviews.rating_for_id = rating_for_data.id
+                LEFT JOIN profiles AS profile_data ON user_data.id = profile_data.user_id
+                WHERE reviews.rating_for_id = $2
+                GROUP BY reviews.id, user_data.id, rating_for_data.id, profile_data.id
                 ORDER BY reviews.created_at DESC
                 OFFSET $3 LIMIT 20
             `;
 
-            const recipientResult = await executeQuery<ReviewWithRelations>(
-                received,
-                [user_id, requested_by_id, offset]
+            const recievedResult = await executeQuery<ReviewWithRelations>(
+                recievedQuery,
+                [requested_by_id, user_id, offset]
             );
 
             return {
                 written: writtenResult,
-                recieved: recipientResult,
+                recieved: recievedResult,
             };
         } catch (err) {
             console.error(err);

@@ -1,5 +1,9 @@
 import { DataModel } from "../../data_model";
-import { ReviewFields, ReviewModel } from "../../models/reviews/review";
+import {
+    ReviewFields,
+    ReviewModel,
+    ReviewType,
+} from "../../models/reviews/review";
 import { Profile } from "../accounts/profiles";
 import { User } from "../accounts/users";
 import Post from "../posts/post";
@@ -10,7 +14,6 @@ export default class Review extends DataModel implements ReviewModel {
     user: User;
     user_profile: Profile;
     rating_for: User;
-    post?: Post | undefined;
     id: number;
     uuid: string;
     user_id: number;
@@ -22,6 +25,8 @@ export default class Review extends DataModel implements ReviewModel {
     description: string;
     created_at: Date;
     updated_at: Date;
+    following: boolean;
+    type: ReviewType;
 
     constructor(review: ReviewFields, refetchOnUpdate: boolean = true) {
         super(refetchOnUpdate);
