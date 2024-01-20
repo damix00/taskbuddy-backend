@@ -49,7 +49,6 @@ namespace writes {
 
             const result = await executeQuery<ReviewFields>(q, [
                 await generateReviewUUID(),
-                data.post.uuid,
                 data.user.id,
                 data.rating_for.id,
                 data.post.id,
