@@ -136,6 +136,22 @@ export default [
             review: getReviewResponse(review, req.user!),
         });
 
+        const p = await otherUser.getProfile();
+
+        if (p) {
+            if (isEmployee) {
+                await p.setRatingEmployer(
+                    p.rating_employer + rating / p.completed_employer
+                );
+                await p.setRatingCountEmployer(p.rating_count_employer + 1);
+            } else {
+                await p.setRatingEmployee(
+                    p.rating_employee + rating / p.completed_employee
+                );
+                await p.setRatingCountEmployee(p.rating_count_employee + 1);
+            }
+        }
+
         // Send socket events
 
         req.user!.sendSocketEvent("message_updated", {

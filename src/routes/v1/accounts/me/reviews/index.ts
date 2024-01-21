@@ -11,11 +11,13 @@ export default [
     authorize(true),
     async (req: ExtendedRequest, res: Response) => {
         const offset = parseInt(req.query.offset || (0 as any));
+        const type = parseInt(req.query.type || (0 as any)); // 0 = all, 1 = as epmloyer, 2 = as employee
 
         const reviews = await ReviewReads.getReviewsForUser(
             req.user!.id,
             req.user!.id,
-            offset
+            offset,
+            type
         );
 
         if (!reviews) {

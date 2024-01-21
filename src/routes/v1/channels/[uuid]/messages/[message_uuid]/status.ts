@@ -99,6 +99,14 @@ async function handleComplete(
             completed_by: req.channel!.recipient,
         });
 
+        const p = await req.channel!.getOtherUser(req.user!.id).getProfile();
+
+        if (p) {
+            await p.setCompletedEmployee(p.completed_employee + 1);
+        }
+
+        req.profile!.setCompletedEmployer(req.profile!.completed_employer + 1);
+
         req.channel?.created_by.sendSocketEvent("channel_update", {
             channel: getChannelResponse(req.channel!, req.channel!.created_by),
         });

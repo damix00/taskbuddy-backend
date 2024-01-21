@@ -56,7 +56,8 @@ namespace reads {
     export async function getReviewsForUser(
         user_id: number,
         requested_by_id: number,
-        offset: number = 0
+        offset: number = 0,
+        type: number = 0
     ): Promise<ReviewsForUser | null> {
         try {
             // First, select reviews that the user (requested_by_id) has written for the user (user_id)
@@ -70,7 +71,13 @@ namespace reads {
                 LEFT JOIN users AS user_data ON reviews.user_id = user_data.id
                 LEFT JOIN users AS rating_for_data ON reviews.rating_for_id = rating_for_data.id
                 LEFT JOIN profiles AS profile_data ON user_data.id = profile_data.user_id
-                WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2
+                WHERE reviews.user_id = $1 AND reviews.rating_for_id = $2 ${
+                    type
+                        ? type == 1
+                            ? "AND reviews.type = 1"
+                            : "AND reviews.type = 0"
+                        : ""
+                }
                 GROUP BY reviews.id, user_data.id, rating_for_data.id, profile_data.id
                 ORDER BY reviews.created_at DESC
                 OFFSET $3 LIMIT 20
@@ -93,7 +100,13 @@ namespace reads {
                 LEFT JOIN users AS user_data ON reviews.user_id = user_data.id
                 LEFT JOIN users AS rating_for_data ON reviews.rating_for_id = rating_for_data.id
                 LEFT JOIN profiles AS profile_data ON user_data.id = profile_data.user_id
-                WHERE reviews.rating_for_id = $2
+                WHERE reviews.rating_for_id = $2 ${
+                    type
+                        ? type == 1
+                            ? "AND reviews.type = 1"
+                            : "AND reviews.type = 0"
+                        : ""
+                }
                 GROUP BY reviews.id, user_data.id, rating_for_data.id, profile_data.id
                 ORDER BY reviews.created_at DESC
                 OFFSET $3 LIMIT 20

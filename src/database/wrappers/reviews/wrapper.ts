@@ -36,12 +36,14 @@ export class ReviewReads {
     static async getReviewsForUser(
         user_id: number,
         requested_by_id: number,
-        offset: number = 0
+        offset: number = 0,
+        type: number = 0
     ): Promise<ReviewsForUser | null> {
         const reviews = await reads.getReviewsForUser(
             user_id,
             requested_by_id,
-            offset
+            offset,
+            type
         );
 
         if (!reviews) return null;
