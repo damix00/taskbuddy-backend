@@ -50,7 +50,7 @@ namespace reads {
 
     export interface ReviewsForUser {
         written: ReviewWithRelations[];
-        recieved: ReviewWithRelations[];
+        received: ReviewWithRelations[];
     }
 
     export async function getReviewsForUser(
@@ -90,7 +90,7 @@ namespace reads {
 
             // Select reviews that the user (requested_by_id) has received
 
-            const recievedQuery = `
+            const receivedQuery = `
                 SELECT reviews.*,
                     TO_JSON(user_data.*) AS user,
                     TO_JSON(rating_for_data.*) AS rating_for,
@@ -112,14 +112,14 @@ namespace reads {
                 OFFSET $3 LIMIT 20
             `;
 
-            const recievedResult = await executeQuery<ReviewWithRelations>(
-                recievedQuery,
+            const receivedResult = await executeQuery<ReviewWithRelations>(
+                receivedQuery,
                 [requested_by_id, user_id, offset]
             );
 
             return {
                 written: writtenResult,
-                recieved: recievedResult,
+                received: receivedResult,
             };
         } catch (err) {
             console.error(err);

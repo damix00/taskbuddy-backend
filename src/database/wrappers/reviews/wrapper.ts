@@ -21,7 +21,7 @@ function toReview(review: ReviewWithRelations | null): Review | null {
 
 export interface ReviewsForUser {
     written: Review[];
-    recieved: Review[];
+    received: Review[];
 }
 
 export class ReviewReads {
@@ -50,7 +50,7 @@ export class ReviewReads {
 
         return {
             written: reviews.written.map((review) => toReview(review)!),
-            recieved: reviews.recieved.map((review) => toReview(review)!),
+            received: reviews.received.map((review) => toReview(review)!),
         };
     }
 }

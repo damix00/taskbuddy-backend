@@ -39,6 +39,7 @@ import date from "./v1/channels/[uuid]/actions/negotiate/date";
 import complete from "./v1/channels/[uuid]/actions/complete";
 import review from "./v1/channels/[uuid]/messages/[message_uuid]/review";
 import meReviews from "./v1/accounts/me/reviews";
+import reviews from "./v1/accounts/[uuid]/reviews";
 
 export type route = {
     path: string;
@@ -144,6 +145,10 @@ const userRoutes: route[] = [
     {
         path: "/v1/accounts/:uuid/posts",
         handler: getAccountPosts,
+    },
+    {
+        path: "/v1/accounts/:uuid/reviews",
+        handler: reviews,
     },
     {
         path: "/v1/accounts/:uuid",

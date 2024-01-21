@@ -27,7 +27,7 @@ export default [
         }
 
         return res.status(200).json({
-            reviews: reviews!.recieved.map((r) =>
+            reviews: reviews!.received.map((r) =>
                 getReviewResponse(r, req.user!)
             ),
         });
