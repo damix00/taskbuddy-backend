@@ -110,6 +110,7 @@ export function getReviewResponse(review: Review, requested_by: User) {
         post_title: review.post_title,
         created_at: review.created_at,
         updated_at: review.updated_at,
+        type: review.type,
         user: getPublicUserProfileResponse(
             review.user,
             review.user_profile,
