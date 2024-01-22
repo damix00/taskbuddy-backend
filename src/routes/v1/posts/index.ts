@@ -103,9 +103,10 @@ export default [
             }
 
             if (
-                isNaN(suggestion_radius) ||
-                suggestion_radius < RemoteConfigData.minRadius ||
-                suggestion_radius > RemoteConfigData.maxRadius
+                !is_remote &&
+                (isNaN(suggestion_radius) ||
+                    suggestion_radius < RemoteConfigData.minRadius ||
+                    suggestion_radius > RemoteConfigData.maxRadius)
             ) {
                 console.log("invalid radius");
                 return res.status(400).json({ message: "Invalid radius" });

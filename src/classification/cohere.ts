@@ -27,7 +27,7 @@ export async function classifyCategory(
         inputs: [text],
         examples: [
             {
-                label: "5", // General
+                label: "general", // General
                 text:
                     "Pomoć oko selidbe - Pakiranje i premještaj\n\n" +
                     "Trebam pomoć u pakiranju stvari za selidbu! Imate li iskustva s organizacijom " +
@@ -35,7 +35,7 @@ export async function classifyCategory(
                     "nešto dodatnog novca. Fleksibilno radno vrijeme!",
             },
             {
-                label: "5",
+                label: "general",
                 text:
                     "Moving Assistance - Packing and Moving\n\n" +
                     " I need help packing for a move! Do you have experience with " +
@@ -43,11 +43,11 @@ export async function classifyCategory(
                     "earn some extra cash. Flexible working hours!",
             },
             {
-                label: "6", // Home services
+                label: "home_services", // Home services
                 text: "Trebam majstora za popravak perilice rublja.",
             },
             {
-                label: "6",
+                label: "home_services",
                 text:
                     "Čišćenje doma - Tražim pouzdanu pomoćnicu!\n\n" +
                     "Trebam pomoć u redovnom čišćenju stana. Tražim odgovornu i " +
@@ -55,7 +55,7 @@ export async function classifyCategory(
                     "Ponudite svoje usluge i zaradite nagradu!",
             },
             {
-                label: "6",
+                label: "home_services",
                 text:
                     "Home Cleaning - Looking for a reliable helper!\n\n" +
                     "I need help with regular home cleaning. I am looking for a " +
@@ -63,15 +63,15 @@ export async function classifyCategory(
                     "Offer your services and earn a reward!",
             },
             {
-                label: "7", // Technology Assistance
+                label: "technology", // Technology Assistance
                 text: "Trebam pomoć oko instalacije Windowsa na novi laptop.",
             },
             {
-                label: "7",
+                label: "technology",
                 text: "I need help installing Windows on my new laptop.",
             },
             {
-                label: "7",
+                label: "technology",
                 text:
                     "Pomoć s računalom - Instalacija softvera\n\n" +
                     "Trebam pomoć oko instalacije određenog softvera na mom računalu. " +
@@ -79,7 +79,7 @@ export async function classifyCategory(
                     "podešavanjima, javite se! Plaćam za vašu stručnost.",
             },
             {
-                label: "7",
+                label: "technology",
                 text:
                     "Computer Assistance - Software Installation\n\n" +
                     "I need help installing specific software on my computer. " +
@@ -87,15 +87,15 @@ export async function classifyCategory(
                     "configurations, let me know! I pay for your expertise.",
             },
             {
-                label: "8", // Errands and delivery
+                label: "errands_and_delivery", // Errands and delivery (8)
                 text: "Trebam dostavu namirnica iz dućana. Plaćam 10 kn po dostavi.",
             },
             {
-                label: "8",
+                label: "errands_and_delivery",
                 text: "I need groceries delivered from the store. I pay 10 kn per delivery.",
             },
             {
-                label: "8",
+                label: "errands_and_delivery",
                 text:
                     "Dostava namirnica - Zaradi dok pomažeš!\n\n" +
                     "Voliš vožnju i imaš vlastiti automobil? " +
@@ -103,7 +103,7 @@ export async function classifyCategory(
                     "Dostavljaj namirnice i zaradi dok pomažeš zajednici.",
             },
             {
-                label: "8",
+                label: "errands_and_delivery",
                 text:
                     "Grocery Delivery - Earn while helping!\n\n" +
                     "Do you enjoy driving and have your own car? " +
@@ -111,15 +111,15 @@ export async function classifyCategory(
                     "Deliver groceries and earn while helping the community.",
             },
             {
-                label: "9", // Creative and Design
+                label: "creative_and_design", // Creative and Design
                 text: "Trebam dizajn za logo tvrtke.",
             },
             {
-                label: "9",
+                label: "creative_and_design",
                 text: "I need a design for my company logo.",
             },
             {
-                label: "9",
+                label: "creative_and_design",
                 text:
                     "Izrada personaliziranih čestitki - Unikatni pokloni!\n\n" +
                     "Imate li kreativne vještine? Napravite personaliziranu " +
@@ -127,7 +127,7 @@ export async function classifyCategory(
                     "poklon i podržite lokalne umjetnike.",
             },
             {
-                label: "9",
+                label: "creative_and_design",
                 text:
                     "Custom Greeting Cards - Unique Gifts!\n\n" +
                     "Do you have creative skills? Make a personalized " +
@@ -135,15 +135,15 @@ export async function classifyCategory(
                     "gift and support local artists.",
             },
             {
-                label: "10", // Fitness and Health
+                label: "fitness_and_health", // Fitness and Health
                 text: "Trebam osobnog trenera za vježbanje.",
             },
             {
-                label: "10",
+                label: "fitness_and_health",
                 text: "I need a personal trainer for exercising.",
             },
             {
-                label: "10",
+                label: "fitness_and_health",
                 text:
                     "Osobni trener - Pomoć u vježbanju\n\n" +
                     "Trebam pomoć u vježbanju i motivaciji. " +
@@ -151,7 +151,7 @@ export async function classifyCategory(
                     "javite se i zaradite dok pomažete!",
             },
             {
-                label: "10",
+                label: "fitness_and_health",
                 text:
                     "Personal Trainer - Exercise Assistance\n\n" +
                     "I need help with exercising and motivation. " +
@@ -159,55 +159,67 @@ export async function classifyCategory(
                     "let me know and earn while helping!",
             },
             {
-                label: "11", // Business
+                label: "business", // Business
                 text: "Trebam pomoć oko izrade poslovnog plana.",
             },
             {
-                label: "11",
+                label: "business",
                 text: "I need help with making a business plan.",
             },
             {
-                label: "11",
+                label: "business",
                 text:
                     "Financijsko savjetovanje za male poduzetnike - Ojačajte svoj biznis!\n\n" +
                     "Male poduzetnike potičemo da se jave za besplatno financijsko savjetovanje. " +
                     "Ojačajte svoj biznis uz stručne savjete. Vaš uspjeh je naša misija!",
             },
             {
-                label: "11",
+                label: "business",
                 text:
                     "Financial Consulting for Small Business Owners - Strengthen Your Business!\n\n" +
                     "We encourage small business owners to apply for free financial consulting. " +
                     "Strengthen your business with expert advice. Your success is our mission!",
             },
             {
-                label: "12", // Education
+                label: "education", // Education
                 text: "Trebam instruktora za učenje gitare.",
             },
             {
-                label: "12",
+                label: "education",
                 text: "I need a tutor for learning guitar.",
             },
             {
-                label: "12",
+                label: "education",
                 text:
                     "Privatne instrukcije iz matematike\n\n" +
                     "Trebam instruktora za učenje matematike.",
             },
             {
-                label: "12",
+                label: "education",
                 text:
                     "Private Math Tutoring\n\n" +
                     "I need a tutor for learning math.",
             },
         ],
-        model: "classify-multilingual-v3.0",
+        model: "embed-multilingual-v3.0",
     });
+
+    const map = {
+        general: 5,
+        home_services: 6,
+        technology: 7,
+        errands_and_delivery: 8,
+        creative_and_design: 9,
+        fitness_and_health: 10,
+        business: 11,
+        education: 12,
+    };
 
     if (!response.classifications) return null;
 
-    const category = parseInt(response.classifications[0].prediction as string);
+    const category = response.classifications[0].prediction;
     const confidence = response.classifications[0].confidence;
 
-    return { category, confidence: confidence || 0 };
+    // @ts-ignore
+    return { category: map[category], confidence: confidence || 0 };
 }
