@@ -31,6 +31,7 @@ export interface PostFields {
     user_id: number;
     title: string;
     title_vector: string;
+    classified_category: number;
     description: string;
     job_type: JobType;
     price: number;

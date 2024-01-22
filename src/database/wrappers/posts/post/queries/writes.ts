@@ -16,6 +16,7 @@ namespace writes {
         user_id: number;
         title: string;
         title_vector: any;
+        classified_category: number;
         description: string;
         job_type: JobType;
         price: number;
@@ -102,6 +103,7 @@ namespace writes {
                 data.user_id,
                 data.title,
                 data.title_vector,
+                data.classified_category,
                 data.description,
                 data.job_type,
                 data.price,
@@ -122,6 +124,7 @@ namespace writes {
                     user_id,
                     title,
                     title_vector,
+                    classified_category,
                     description,
                     job_type,   
                     price,
@@ -148,7 +151,8 @@ namespace writes {
                     $12,
                     $13,
                     $14,
-                    $15
+                    $15,
+                    $16
                 ) RETURNING *
             `,
                 values

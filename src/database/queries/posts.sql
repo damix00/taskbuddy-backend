@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS posts (
     uuid VARCHAR(1024) NOT NULL UNIQUE, -- UUID of post
     user_id BIGINT NOT NULL, -- User who posted
     title VARCHAR(256) NOT NULL, -- Title of job
-    title_vector vector NOT NULL, -- Vector representation of title for similarity search
+    title_vector vector NOT NULL, -- Vector representation of title for similarity search,
+    classified_category INTEGER NOT NULL, -- Category of job, classified by AI
     description TEXT NOT NULL, -- Description of job
     job_type INTEGER NOT NULL, -- 0 - one-time, 1 - part-time, 2 - full-time
     price FLOAT NOT NULL, -- Price of job

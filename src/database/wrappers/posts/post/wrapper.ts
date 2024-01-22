@@ -142,6 +142,7 @@ export class PostWrites {
         user_id: number;
         title: string;
         title_vector: any;
+        classified_category: number;
         description: string;
         job_type: JobType;
         price: number;

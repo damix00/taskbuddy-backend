@@ -43,6 +43,16 @@ export class CategoryReads {
             };
         });
     }
+
+    static async getAllCategories(): Promise<Category[] | null> {
+        const categories = await reads.getAllCategories();
+
+        if (!categories) return null;
+
+        return categories.map((category) => {
+            return new Category(category);
+        });
+    }
 }
 
 export class CategoryWrites {

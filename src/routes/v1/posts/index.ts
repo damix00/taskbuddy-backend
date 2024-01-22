@@ -18,7 +18,10 @@ import {
     PostWrites,
 } from "../../../database/wrappers/posts/post/wrapper";
 import { TagReads } from "../../../database/wrappers/posts/tags/wrapper";
-import { generateEmbedding } from "../../../classification/cohere";
+import {
+    classifyCategory,
+    generateEmbedding,
+} from "../../../classification/cohere";
 import fs from "fs";
 import FirebaseStorage from "../../../firebase/storage/files";
 import uniqueFilename from "unique-filename";
@@ -154,6 +157,15 @@ export default [
 
             const ip = req.ip || req.socket.remoteAddress;
 
+            const vector = await generateEmbedding(
+                `${title}\n\n${description}`,
+                false
+            );
+
+            const classifiedCategory = await classifyCategory(
+                `${title}\n\n${description}`
+            );
+
             // Upload media to firebase storage
             const urls = await Promise.all(
                 media.map(async (file, i) => {
@@ -200,24 +212,18 @@ export default [
             // @ts-ignore
             urls.sort((a, b) => a.index - b.index);
 
-            const vector = await generateEmbedding(
-                `${title}\n\n${description}`,
-                false
-            );
-
             let loc = null;
 
             if (!is_remote) {
                 loc = randomNearbyLocation(location_lat, location_lon, 500);
             }
 
-            // const testfetch = await PostReads.getPostById(22, req.user!.id);
-
             const post = await PostWrites.createPost({
                 user_id: req.user!.id,
                 job_type,
                 title,
                 title_vector: `[${vector}]`,
+                classified_category: classifiedCategory?.category || 0,
                 description,
                 location: {
                     lat: is_remote ? null : location_lat || null,

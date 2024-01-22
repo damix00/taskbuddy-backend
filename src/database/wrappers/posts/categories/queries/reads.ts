@@ -6,6 +6,25 @@ import {
 import { PostTagModel } from "../../../../models/posts/post_tag";
 
 namespace reads {
+    export async function getAllCategories(): Promise<
+        PostCategoryModel[] | null
+    > {
+        try {
+            const query = `
+                SELECT *
+                FROM post_categories
+            `;
+
+            const result = await executeQuery<PostCategoryModel>(query);
+
+            return result;
+        } catch (err) {
+            console.log(err);
+
+            return null;
+        }
+    }
+
     export async function getCategoryById(
         id: number
     ): Promise<PostCategoryModel | null> {

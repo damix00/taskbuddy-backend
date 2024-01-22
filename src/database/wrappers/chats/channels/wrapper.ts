@@ -75,6 +75,7 @@ function toChannel(channel: ChannelWithRelations | null) {
             approx_lon: _channel.post_location.approx_lon,
             suggestion_radius: _channel.post_location.suggestion_radius,
             location_name: _channel.post_location.location_name,
+            classified_category: channel.post.classified_category,
         },
         false
     );
