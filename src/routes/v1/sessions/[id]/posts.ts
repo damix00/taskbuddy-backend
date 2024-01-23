@@ -11,6 +11,7 @@ import {
 } from "../../../../database/models/algorithm/scroll_sessions";
 import { FeedAlgorithm } from "../../../../database/wrappers/algorithm/feed_algorithm";
 import { getPostResultResponse } from "../../posts/responses";
+import { UserSessionsWrapper } from "../../../../database/wrappers/algorithm/sessions_wrapper";
 
 export default [
     requireMethod("GET"),
@@ -32,11 +33,17 @@ export default [
                 req.session!.id,
                 req.user!.id,
                 req.session!.lat || 0,
-                req.session!.lon || 0
+                req.session!.lon || 0,
+                req.loaded_post_ids
             );
 
             if (filters.type == SessionType.FOLLOWING) {
                 const posts = await algorithm.getFollowingPosts();
+
+                await UserSessionsWrapper.addSessionPosts(
+                    req.session!.id,
+                    posts.map((post) => post.id)
+                );
 
                 res.status(200).json({
                     message: "Posts retrieved",

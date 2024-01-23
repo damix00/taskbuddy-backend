@@ -30,8 +30,6 @@ export class UserSessionsWrapper {
         lon: number,
         filters: string = "{}"
     ): Promise<ScrollSessionFields | null> {
-        console.log(filters);
-
         try {
             const q = `
                 INSERT INTO scroll_sessions (user_id, ip_address, lat, lon, filters)
@@ -91,10 +89,6 @@ export class UserSessionsWrapper {
             const result = await executeQuery<{ post_id: number }>(q, [
                 scroll_session_id,
             ]);
-
-            if (result.length === 0) {
-                return null;
-            }
 
             return result.map((r) => r.post_id);
         } catch (err) {

@@ -39,20 +39,22 @@ export class FeedAlgorithm {
     user_id: number;
     lat: number;
     lon: number;
-    loaded_post_ids: number[] = [];
+    loaded_post_ids: number[];
 
     constructor(
         filters: SessionFilters,
         session_id: number,
         user_id: number,
         lat: number,
-        lon: number
+        lon: number,
+        loaded_post_ids: number[] = []
     ) {
         this.filters = filters;
         this.session_id = session_id;
         this.user_id = user_id;
         this.lat = lat;
         this.lon = lon;
+        this.loaded_post_ids = loaded_post_ids;
     }
 
     async getFollowingPosts(limit: number = 10): Promise<Post[]> {

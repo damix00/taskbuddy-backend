@@ -5,6 +5,7 @@ import { UserSessionsWrapper } from "../../../database/wrappers/algorithm/sessio
 
 export interface SessionRequest extends ExtendedRequest {
     session?: ScrollSessionFields;
+    loaded_post_ids?: number[];
 }
 
 export async function withSession(
@@ -31,7 +32,19 @@ export async function withSession(
             return;
         }
 
+        const loaded_post_ids = await UserSessionsWrapper.getSessionPosts(id);
+
+        if (loaded_post_ids === null) {
+            console.error("Failed to load posts for session");
+
+            res.status(500).json({
+                message: "Internal server error",
+            });
+            return;
+        }
+
         req.session = session;
+        req.loaded_post_ids = loaded_post_ids;
 
         next();
     } catch (err) {
