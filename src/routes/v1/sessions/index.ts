@@ -5,7 +5,11 @@ import { Response } from "express";
 import { authorize } from "../../../middleware/authorization";
 import { ExtendedRequest } from "../../../types/request";
 import { requireMethod } from "../../../middleware/require_method";
-import { floatParser, listParser } from "../../../middleware/parsers";
+import {
+    floatParser,
+    intParser,
+    listParser,
+} from "../../../middleware/parsers";
 import { UserSessionsWrapper } from "../../../database/wrappers/algorithm/sessions_wrapper";
 import { getSessionResponse } from "./responses";
 import {
@@ -19,10 +23,22 @@ export default [
     requireMethod("POST"),
     authorize(true),
     floatParser(["lat", "lon"]),
-    listParser(["filters"]),
+    intParser(["urgency", "location", "type"]),
+    listParser(["tags"]),
     async (req: ExtendedRequest, res: Response) => {
         try {
-            const filters = req.body.filters as SessionFilters;
+            const filters = req.body as SessionFilters;
+
+            for (let i = 0; i < filters.tags.length; i++) {
+                if (isNaN(parseInt(filters.tags[i] as any))) {
+                    res.status(400).json({
+                        message: "Invalid tag id",
+                    });
+                    return;
+                }
+
+                filters.tags[i] = parseInt(filters.tags[i] as any);
+            }
 
             if (!filters) {
                 res.status(500).json({
@@ -36,7 +52,7 @@ export default [
                 req.ip || "",
                 req.body.lat,
                 req.body.lon,
-                JSON.stringify(req.body.filters)
+                JSON.stringify(filters)
             );
 
             if (!session) {

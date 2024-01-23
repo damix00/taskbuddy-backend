@@ -53,6 +53,11 @@ export default [
                 });
                 return;
             }
+
+            res.status(200).json({
+                message: "Posts retrieved",
+                posts: [],
+            });
         } catch (err) {
             console.error(err);
             res.status(500).json({

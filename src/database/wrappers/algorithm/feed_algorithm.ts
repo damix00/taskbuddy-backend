@@ -109,6 +109,7 @@ export class FeedAlgorithm {
                 }
                 AND posts.user_id != $1 AND post_removals.removed = false
                 AND EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = posts.user_id)
+                AND posts.end_date > NOW() -- Post hasn't expired
                 AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2) OR NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = posts.user_id))
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
             -- Order by most recent
