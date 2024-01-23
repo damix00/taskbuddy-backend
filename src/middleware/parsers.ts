@@ -65,7 +65,11 @@ export function listParser(fields: string[] = []) {
     return parser(
         fields,
         (value: string) => {
-            return value.startsWith("[") && value.endsWith("]");
+            return (
+                value.startsWith("[") &&
+                value.endsWith("]") &&
+                JSON.parse(value) instanceof Array
+            );
         },
         (value: string) => {
             try {

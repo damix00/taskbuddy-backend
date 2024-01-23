@@ -40,6 +40,9 @@ import complete from "./v1/channels/[uuid]/actions/complete";
 import review from "./v1/channels/[uuid]/messages/[message_uuid]/review";
 import meReviews from "./v1/accounts/me/reviews";
 import reviews from "./v1/accounts/[uuid]/reviews";
+import feedPosts from "./v1/sessions/[id]/posts";
+import sessionId from "./v1/sessions/[id]";
+import sessionsHandler from "./v1/sessions";
 
 export type route = {
     path: string;
@@ -230,11 +233,27 @@ const channelRoutes: route[] = [
     },
 ];
 
+const sessions: route[] = [
+    {
+        path: "/v1/sessions/:id/posts",
+        handler: feedPosts,
+    },
+    {
+        path: "/v1/sessions/:id",
+        handler: sessionId,
+    },
+    {
+        path: "/v1/sessions",
+        handler: sessionsHandler,
+    },
+];
+
 const routes: route[] = [
     ...messageRoutes,
     ...channelRoutes,
     ...userRoutes,
     ...postRoutes,
+    ...sessions,
     {
         path: "/v1/ping",
         handler: ping,

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS scroll_sessions (
     lon FLOAT,
     filters TEXT, -- JSON string of the filters
     created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
-    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
+    updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
 
 CREATE TABLE IF NOT EXISTS session_posts (
@@ -30,5 +30,5 @@ CREATE TABLE IF NOT EXISTS user_interests (
     created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (category_id) REFERENCES categories(id)
+    FOREIGN KEY (category_id) REFERENCES post_categories(category_id)
 );
