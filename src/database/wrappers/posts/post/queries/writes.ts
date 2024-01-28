@@ -114,7 +114,7 @@ namespace writes {
                 data.end_date,
                 data.status || PostStatus.OPEN,
                 data.urgent,
-                null,
+                false,
             ];
 
             const post = await executeQuery<PostFields>(
@@ -135,7 +135,7 @@ namespace writes {
                     end_date,
                     status,
                     urgent,
-                    reserved_by
+                    reserved
                 ) VALUES (
                     $1,
                     $2,

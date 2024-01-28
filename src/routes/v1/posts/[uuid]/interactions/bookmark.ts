@@ -25,7 +25,8 @@ export default [
             const post = await PostReads.getPostByUUID(uuid);
 
             if (!post) {
-                return res.status(404).json({ error: "Post not found" });
+                res.status(404).json({ error: "Post not found" });
+                return;
             }
 
             if (req.method === "PUT") {
@@ -37,9 +38,12 @@ export default [
                         post.classified_category,
                         InterestValues.BOOKMARK
                     );
+
+                    return;
                 }
 
-                return res.status(403).json({ message: "Forbidden" });
+                res.status(403).json({ message: "Forbidden" });
+                return;
             } else if (req.method === "DELETE") {
                 if (await post.removeBookmark(req.user!.id)) {
                     res.status(200).json({ message: "Post unbookmarked" });
@@ -49,9 +53,12 @@ export default [
                         post.classified_category,
                         InterestValues.UNBOOKMARK
                     );
+
+                    return;
                 }
 
-                return res.status(403).json({ message: "Forbidden" });
+                res.status(403).json({ message: "Forbidden" });
+                return;
             }
 
             return res.status(405).json({ message: "Method not allowed" });

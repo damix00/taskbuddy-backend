@@ -12,21 +12,21 @@ import writes from "./queries/writes";
 interface DatabaseChannel extends ChannelWithRelations {
     media: PostMedia[];
     tags: PostTags[];
-    post_interactions: {
+    post_interactions?: {
         likes: number;
         comments: number;
         shares: number;
         bookmarks: number;
         impressions: number;
     };
-    post_removals: {
+    post_removals?: {
         removed: boolean;
         removal_reason: string;
         flagged: boolean;
         flagged_reason: string;
         shadow_banned: boolean;
     };
-    post_location: {
+    post_location?: {
         remote: boolean;
         lat: number;
         lon: number;
@@ -42,6 +42,15 @@ function toChannel(channel: ChannelWithRelations | null) {
     if (!channel) return null;
 
     const _channel: DatabaseChannel = channel as DatabaseChannel;
+
+    if (
+        !_channel.post ||
+        !_channel.post_interactions ||
+        !_channel.post_removals ||
+        !_channel.post_location
+    ) {
+        return null;
+    }
 
     channel.id = parseInt(channel.id as any);
     channel.post_id = parseInt(channel.post_id as any);

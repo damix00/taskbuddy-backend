@@ -8,7 +8,7 @@ export enum InterestValues {
     LIKE = 3,
     UNLIKE = -3,
     MESSAGE = 4, // When a user creates a chat channel about a post
-    COMPLETE = 5, // When a user completes a job
+    COMPLETE = 7, // When a user completes a job
 }
 
 export class UserInterests {
@@ -25,7 +25,10 @@ export class UserInterests {
                 LIMIT $2
             `;
 
-            const result = await executeQuery<UserInterestsFields>(q, [userId]);
+            const result = await executeQuery<UserInterestsFields>(q, [
+                userId,
+                limit,
+            ]);
 
             return result;
         } catch (err) {
@@ -40,11 +43,30 @@ export class UserInterests {
         weight: number
     ): Promise<boolean> {
         try {
+            const found = await executeQuery(
+                `
+                    SELECT *
+                    FROM user_interests
+                    WHERE user_id = $1 AND category_id = $2
+                `,
+                [user_id, category_id]
+            );
+
+            if (found.length === 0) {
+                const q = `
+                    INSERT INTO user_interests (user_id, category_id, weight)
+                    VALUES ($1, $2, $3)
+                `;
+
+                await executeQuery(q, [user_id, category_id, weight]);
+
+                return true;
+            }
+
             const q = `
-                INSERT INTO user_interests (user_id, category_id, weight)
-                VALUES ($1, $2, $3)
-                ON CONFLICT (user_id, category_id)
-                DO UPDATE SET weight = user_interests.weight + $3
+                UPDATE user_interests
+                SET weight = weight + $3
+                WHERE user_id = $1 AND category_id = $2
             `;
 
             await executeQuery(q, [user_id, category_id, weight]);

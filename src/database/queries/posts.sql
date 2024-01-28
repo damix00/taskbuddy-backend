@@ -41,21 +41,6 @@ CREATE TABLE IF NOT EXISTS post_interactions (
     impressions BIGINT NOT NULL DEFAULT 0 -- Number of times post has been seen
 );
 
-CREATE TABLE IF NOT EXISTS post_comments (
-    id BIGSERIAL PRIMARY KEY,
-    post_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    comment TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    likes BIGINT NOT NULL DEFAULT 0,
-    reply_count BIGINT NOT NULL DEFAULT 0,
-    is_reply BOOLEAN NOT NULL DEFAULT FALSE,
-    reply_to BIGINT,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (reply_to) REFERENCES post_comments(id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS post_removals (
     id BIGSERIAL PRIMARY KEY,
     removed BOOLEAN NOT NULL DEFAULT FALSE, -- Removed by admin
@@ -100,16 +85,6 @@ CREATE TABLE IF NOT EXISTS post_interaction_logs ( -- Likes on posts
     interaction_ip TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE IF NOT EXISTS comment_interaction_logs ( -- Likes on comments
-    user_id INTEGER NOT NULL,
-    comment_id INTEGER NOT NULL,
-    interaction_type INTEGER NOT NULL, -- 0 - like, 1 - reply
-    interaction_ip TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (comment_id) REFERENCES post_comments(id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

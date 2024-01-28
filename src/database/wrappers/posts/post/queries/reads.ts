@@ -260,7 +260,7 @@ namespace reads {
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
             WHERE post_location.remote = false AND post_removals.removed = false AND post_removals.shadow_banned = false AND posts.user_id != $1
-            AND posts.reserved_by IS NULL
+            AND posts.reserved = false
             AND posts.end_date > NOW()
             -- Post is within the posts suggestion radius or the user is following the author, postgis distance is in meters so divide by 1000 to get kilometers
             AND ((ST_DistanceSphere(ST_MakePoint($3, $2), ST_MakePoint(post_location.lon, post_location.lat)) / 1000) <= post_location.suggestion_radius OR EXISTS(SELECT 1 FROM follows WHERE follows.follower = $1 AND follows.following = posts.user_id))

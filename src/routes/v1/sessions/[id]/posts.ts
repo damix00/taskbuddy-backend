@@ -40,10 +40,12 @@ export default [
             if (filters.type == SessionType.FOLLOWING) {
                 const posts = await algorithm.getFollowingPosts();
 
-                await UserSessionsWrapper.addSessionPosts(
-                    req.session!.id,
-                    posts.map((post) => post.id)
-                );
+                if (posts.length > 0) {
+                    await UserSessionsWrapper.addSessionPosts(
+                        req.session!.id,
+                        posts.map((post) => post.id)
+                    );
+                }
 
                 res.status(200).json({
                     message: "Posts retrieved",
@@ -54,9 +56,20 @@ export default [
                 return;
             }
 
+            const posts = await algorithm.getSuggestedPosts();
+
+            if (posts.length > 0) {
+                await UserSessionsWrapper.addSessionPosts(
+                    req.session!.id,
+                    posts.map((post) => post.id)
+                );
+            }
+
             res.status(200).json({
                 message: "Posts retrieved",
-                posts: [],
+                posts: posts.map((post) =>
+                    getPostResultResponse(post, req.user!)
+                ),
             });
         } catch (err) {
             console.error(err);
