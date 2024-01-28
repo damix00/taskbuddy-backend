@@ -6,6 +6,10 @@ import { ExtendedRequest } from "../../../../../types/request";
 import { PostReads } from "../../../../../database/wrappers/posts/post/wrapper";
 import { Interactions } from "../../../../../database/wrappers/posts/interactions";
 import { requireMethods } from "../../../../../middleware/require_method";
+import {
+    InterestValues,
+    UserInterests,
+} from "../../../../../database/wrappers/algorithm/user_interests_wrapper";
 
 export default [
     authorize(true),
@@ -26,13 +30,29 @@ export default [
 
             if (req.method === "PUT") {
                 if (await post.addLike(req.user!.id)) {
-                    return res.status(200).json({ message: "Post liked" });
+                    res.status(200).json({ message: "Post liked" });
+
+                    UserInterests.incrementInterestValue(
+                        req.user!.id,
+                        post.classified_category,
+                        InterestValues.LIKE
+                    );
+
+                    return;
                 }
 
                 return res.status(403).json({ message: "Forbidden" });
             } else if (req.method === "DELETE") {
                 if (await post.removeLike(req.user!.id)) {
-                    return res.status(200).json({ message: "Post unliked" });
+                    res.status(200).json({ message: "Post unliked" });
+
+                    UserInterests.incrementInterestValue(
+                        req.user!.id,
+                        post.classified_category,
+                        InterestValues.UNLIKE
+                    );
+
+                    return;
                 }
 
                 return res.status(403).json({ message: "Forbidden" });

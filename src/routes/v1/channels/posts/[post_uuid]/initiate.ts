@@ -36,7 +36,7 @@ export default [
                 });
             }
 
-            if (post.reserved_by) {
+            if (post.reserved) {
                 return res.status(403).json({
                     message: "Forbidden",
                 });

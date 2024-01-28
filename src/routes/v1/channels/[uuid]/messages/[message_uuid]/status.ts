@@ -21,7 +21,7 @@ async function handleDeal(req: MessageRequest, res: Response, action: string) {
             (await req.message!.acceptRequest()) &&
             (await req.channel!.setStatus(ChannelStatus.ACCEPTED));
 
-        await req.channel!.post.reserve(req.user!.id);
+        await req.channel!.post.reserve();
     } else {
         success =
             (await req.message!.rejectRequest()) &&

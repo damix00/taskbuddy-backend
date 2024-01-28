@@ -33,7 +33,7 @@ export function getPostResponse(
         price: post.price,
         start_date: post.start_date,
         end_date: post.end_date,
-        reserved: !!post.reserved_by,
+        reserved: post.reserved,
         tags: post?.tags.map((tag) => tag.tag_id) || [],
         media:
             post?.media.map((media) => ({
@@ -96,7 +96,7 @@ export function getPostResultResponse(post: Post, user: User) {
         price: post.price,
         start_date: post.start_date,
         end_date: post.end_date,
-        reserved: !!post.reserved_by,
+        reserved: post.reserved,
         tags: post.tags.map((tag) => tag.tag_id),
         media: post.media.map((media) => ({
             media: media.media,
@@ -146,7 +146,7 @@ export function getPostOnlyResponse(post: Post) {
         price: post.price,
         start_date: post.start_date,
         end_date: post.end_date,
-        reserved: !!post.reserved_by,
+        reserved: post.reserved,
         tags: post.tags.map((tag) => tag.tag_id),
         media: post.media.map((media) => ({
             media: media.media,

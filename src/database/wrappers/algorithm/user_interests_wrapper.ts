@@ -1,15 +1,28 @@
 import { executeQuery } from "../../connection";
 import { UserInterestsFields } from "../../models/algorithm/user_interests";
 
+export enum InterestValues {
+    INTERACTION = 1, // An interaction is when a user spends significant time on a post
+    BOOKMARK = 2, // A bookmark is when a user saves a post
+    UNBOOKMARK = -2, // An unbookmark is when a user removes a post from their bookmarks
+    LIKE = 3,
+    UNLIKE = -3,
+    MESSAGE = 4, // When a user creates a chat channel about a post
+    COMPLETE = 5, // When a user completes a job
+}
+
 export class UserInterests {
     static async getUserInterests(
-        userId: number
+        userId: number,
+        limit: number = 3
     ): Promise<UserInterestsFields[]> {
         try {
             const q = `
                 SELECT *
                 FROM user_interests
                 WHERE user_id = $1
+                ORDER BY weight DESC
+                LIMIT $2
             `;
 
             const result = await executeQuery<UserInterestsFields>(q, [userId]);
@@ -21,7 +34,7 @@ export class UserInterests {
         }
     }
 
-    static async setInterestValue(
+    static async incrementInterestValue(
         user_id: number,
         category_id: number,
         weight: number
@@ -31,7 +44,7 @@ export class UserInterests {
                 INSERT INTO user_interests (user_id, category_id, weight)
                 VALUES ($1, $2, $3)
                 ON CONFLICT (user_id, category_id)
-                DO UPDATE SET weight = $3
+                DO UPDATE SET weight = user_interests.weight + $3
             `;
 
             await executeQuery(q, [user_id, category_id, weight]);

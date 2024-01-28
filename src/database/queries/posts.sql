@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS posts (
     end_date TIMESTAMP NOT NULL, -- End date of job
     urgent BOOLEAN NOT NULL DEFAULT FALSE, -- Is the job urgent?
     status INTEGER NOT NULL, -- 0 - open, 1 - closed, 2 - reserved, 3 - completed, 4 - cancelled, 5 - expired
-    reserved_by BIGINT DEFAULT NULL, -- User who reserved the post
+    reserved BOOLEAN NOT NULL DEFAULT FALSE, -- Is it reserved?
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,

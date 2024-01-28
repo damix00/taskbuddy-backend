@@ -76,6 +76,7 @@ function toChannel(channel: ChannelWithRelations | null) {
             suggestion_radius: _channel.post_location.suggestion_radius,
             location_name: _channel.post_location.location_name,
             classified_category: channel.post.classified_category,
+            reserved: channel.post.reserved,
         },
         false
     );
