@@ -43,6 +43,7 @@ import reviews from "./v1/accounts/[uuid]/reviews";
 import feedPosts from "./v1/sessions/[id]/posts";
 import sessionId from "./v1/sessions/[id]";
 import sessionsHandler from "./v1/sessions";
+import block from "./v1/accounts/[uuid]/block";
 
 export type route = {
     path: string;
@@ -144,6 +145,10 @@ const userRoutes: route[] = [
     {
         path: "/v1/accounts/:uuid/follow",
         handler: follow,
+    },
+    {
+        path: "/v1/accounts/:uuid/block",
+        handler: block,
     },
     {
         path: "/v1/accounts/:uuid/posts",

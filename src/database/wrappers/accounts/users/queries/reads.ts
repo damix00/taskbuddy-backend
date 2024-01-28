@@ -137,7 +137,7 @@ export namespace reads {
                 FROM users AS users
                 INNER JOIN profiles ON users.id = profiles.user_id
                 WHERE users.username LIKE $1
-                AND users.id != $2 AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2)
+                AND users.id != $2 AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = users.id)
                 ORDER BY users.username ASC
                 LIMIT 10
                 OFFSET $3
