@@ -114,8 +114,8 @@ export function getReviewResponse(review: Review, requested_by: User) {
         user: getPublicUserProfileResponse(
             review.user,
             review.user_profile,
-            requested_by.id == review.user.id,
-            review.following
+            review.following,
+            requested_by.id == review.user.id
         ),
         rating_for_uuid: review.rating_for.uuid,
     };
