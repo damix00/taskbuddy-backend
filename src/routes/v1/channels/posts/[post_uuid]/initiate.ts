@@ -12,6 +12,10 @@ import {
     ChannelWrites,
 } from "../../../../../database/wrappers/chats/channels/wrapper";
 import { getChannelResponse } from "../../responses";
+import {
+    InterestValues,
+    UserInterests,
+} from "../../../../../database/wrappers/algorithm/user_interests_wrapper";
 
 export default [
     requireMethod("POST"),
@@ -132,6 +136,12 @@ export default [
                 message: "Channel created",
                 channel: getChannelResponse(newChannel, req.user!),
             });
+
+            UserInterests.incrementInterestValue(
+                req.user!.id,
+                post.classified_category,
+                InterestValues.MESSAGE
+            );
 
             newChannel.setLastMessageTime(new Date());
 

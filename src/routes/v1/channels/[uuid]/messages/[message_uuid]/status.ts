@@ -12,6 +12,10 @@ import { getChannelResponse, getMessageResponse } from "../../../responses";
 import { withChannel } from "../../middleware";
 import { ChannelStatus } from "../../../../../../database/models/chats/channels";
 import { JobCompletionWrites } from "../../../../../../database/wrappers/posts/completions/wrapper";
+import {
+    InterestValues,
+    UserInterests,
+} from "../../../../../../database/wrappers/algorithm/user_interests_wrapper";
 
 async function handleDeal(req: MessageRequest, res: Response, action: string) {
     let success = false;
@@ -114,6 +118,18 @@ async function handleComplete(
         req.channel?.recipient.sendSocketEvent("channel_update", {
             channel: getChannelResponse(req.channel!, req.channel!.recipient),
         });
+
+        UserInterests.incrementInterestValue(
+            req.channel!.created_by.id,
+            req.channel!.post.classified_category,
+            InterestValues.COMPLETE
+        );
+
+        UserInterests.incrementInterestValue(
+            req.channel!.recipient.id,
+            req.channel!.post.classified_category,
+            InterestValues.COMPLETE
+        );
     } else {
         success = await req.message!.rejectRequest();
     }

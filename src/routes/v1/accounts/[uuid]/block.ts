@@ -10,6 +10,7 @@ import {
     BlockReads,
     BlockWrites,
 } from "../../../../database/wrappers/accounts/blocks/wrapper";
+import { FollowWrites } from "../../../../database/wrappers/accounts/follows/wrapper";
 
 export default [
     authorize(true),
@@ -54,6 +55,9 @@ export default [
                 }
 
                 await BlockWrites.block(req.user!.id, user.id);
+
+                // Unfollow
+                await FollowWrites.unfollow(req.user!.id, user.id);
             } else {
                 if (!(await BlockReads.isBlocked(req.user!.id, user.id))) {
                     return res.status(400).json({

@@ -39,10 +39,7 @@ export default [
                 : req.channel!.created_by;
 
             // Check if the user is blocked by the channel creator or vice versa
-            if (
-                (await BlockReads.isBlocked(req.user!.id, otherUser.id)) ||
-                (await BlockReads.isBlocked(otherUser.id, req.user!.id))
-            ) {
+            if (await BlockReads.isEitherBlocked(req.user!.id, otherUser.id)) {
                 res.status(403).json({
                     error: "Couldn't send message",
                 });

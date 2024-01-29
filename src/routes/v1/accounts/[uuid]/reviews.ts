@@ -8,6 +8,7 @@ import { ExtendedRequest } from "../../../../types/request";
 import { UserReads } from "../../../../database/wrappers/accounts/users/wrapper";
 import { ReviewReads } from "../../../../database/wrappers/reviews/wrapper";
 import { getReviewResponse } from "../responses";
+import { BlockReads } from "../../../../database/wrappers/accounts/blocks/wrapper";
 
 export default [
     authorize(true),
@@ -42,6 +43,12 @@ export default [
             if (!user) {
                 return res.status(404).json({
                     message: "User not found",
+                });
+            }
+
+            if (await BlockReads.isEitherBlocked(req.user!.id, user.id)) {
+                return res.status(403).json({
+                    message: "Cannot view reviews.",
                 });
             }
 

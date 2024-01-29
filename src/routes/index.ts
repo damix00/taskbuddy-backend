@@ -44,6 +44,7 @@ import feedPosts from "./v1/sessions/[id]/posts";
 import sessionId from "./v1/sessions/[id]";
 import sessionsHandler from "./v1/sessions";
 import block from "./v1/accounts/[uuid]/block";
+import blocked from "./v1/accounts/me/blocked";
 
 export type route = {
     path: string;
@@ -101,6 +102,10 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/fcm",
         handler: fcm,
+    },
+    {
+        path: "/v1/accounts/me/blocked",
+        handler: blocked,
     },
     {
         path: "/v1/accounts/me/test_fcm",
