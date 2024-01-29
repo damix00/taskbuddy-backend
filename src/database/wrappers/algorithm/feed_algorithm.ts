@@ -35,7 +35,8 @@ export class FeedAlgorithm {
     private async getPosts(
         limit: number = 10,
         condition: string = "",
-        following: boolean = false
+        following: boolean = false,
+        random: boolean = false
     ): Promise<Post[]> {
         // Get all posts that match the filters and that matches the condition
         try {
@@ -128,7 +129,7 @@ export class FeedAlgorithm {
                 this.user_id
             } AND blocks.blocked = posts.user_id))
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
-            ORDER BY posts.created_at DESC
+            ORDER BY posts.created_at DESC ${random ? ", RANDOM()" : ""}
             LIMIT ${limit}
             `;
 
@@ -196,15 +197,17 @@ export class FeedAlgorithm {
                         randomCount = limit - followingCount;
                         break;
                     case 1:
-                        // Random count is 40% of the limit
-                        randomCount = limit - followingCount - limit * 0.4;
+                        randomCount = Math.floor(
+                            limit - followingCount - limit * 0.5
+                        );
                         // The first element is the remaining
                         categoryCounts[0] =
                             limit - followingCount - randomCount;
                         break;
                     case 2:
-                        // Random count is 30% of the limit
-                        randomCount = limit - followingCount - limit * 0.23;
+                        randomCount = Math.floor(
+                            limit - followingCount - limit * 0.6
+                        );
                         // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
                         categoryCounts[0] = Math.floor(
                             Math.random() *
@@ -215,11 +218,12 @@ export class FeedAlgorithm {
                                 limit * 0.1
                         );
                         // The second element is the remaining
-                        categoryCounts[1] =
+                        categoryCounts[1] = Math.floor(
                             limit -
-                            followingCount -
-                            randomCount -
-                            categoryCounts[0];
+                                followingCount -
+                                randomCount -
+                                categoryCounts[0]
+                        );
                         break;
                 }
             }
@@ -236,7 +240,7 @@ export class FeedAlgorithm {
             // Get the remaining random posts
             const randomPosts = await this.getPosts(randomCount);
 
-            // tmpPosts.push(...randomPosts);
+            tmpPosts.push(...randomPosts);
             this.loaded_post_ids.push(...randomPosts.map((p) => p.id));
 
             // Shuffle the posts and map them
