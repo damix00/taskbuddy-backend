@@ -48,6 +48,8 @@ import blocked from "./v1/accounts/me/blocked";
 import friends from "./v1/accounts/me/friends";
 import interests from "./v1/accounts/me/interests";
 import handleInterest from "./v1/accounts/me/interests/[id]";
+import reportUser from "./v1/accounts/[uuid]/report";
+import reportPost from "./v1/posts/[uuid]/report";
 
 export type route = {
     path: string;
@@ -74,6 +76,10 @@ const postRoutes: route[] = [
     {
         path: "/v1/posts/:uuid/interactions/share",
         handler: share,
+    },
+    {
+        path: "/v1/posts/:uuid/report",
+        handler: reportPost,
     },
     {
         path: "/v1/posts/:uuid",
@@ -177,6 +183,10 @@ const userRoutes: route[] = [
     {
         path: "/v1/accounts/:uuid/reviews",
         handler: reviews,
+    },
+    {
+        path: "/v1/accounts/:uuid/report",
+        handler: reportUser,
     },
     {
         path: "/v1/accounts/:uuid",

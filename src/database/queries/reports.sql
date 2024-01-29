@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS user_reports (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    content_type INTEGER NOT NULL,
+    content_id BIGSERIAL NOT NULL,
+    reason TEXT NOT NULL,
+    reviewed BOOLEAN NOT NULL DEFAULT FALSE,
+    verdict BOOLEAN NOT NULL DEFAULT FALSE,
+    reviewed_by BIGSERIAL NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
