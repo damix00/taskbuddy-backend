@@ -1,33 +1,33 @@
-// GET /v1/accounts/me/blocked
-// Get a list of blocked users
+// GET /v1/accounts/me/friends
+// Return a list of friends (accounts that follow you and you follow them)
 
 import { Response } from "express";
 import { authorize } from "../../../../middleware/authorization";
 import { ExtendedRequest } from "../../../../types/request";
-import { BlockReads } from "../../../../database/wrappers/accounts/blocks/wrapper";
+import { FollowReads } from "../../../../database/wrappers/accounts/follows/wrapper";
 import { getPublicUserProfileResponse } from "../responses";
 
 export default [
     authorize(true),
     async (req: ExtendedRequest, res: Response) => {
         try {
-            const offset = parseInt(req.query.offset as string) || 0;
+            const offset = Number(req.query.offset) || 0;
 
-            const blocked = await BlockReads.getBlocks(req.user!.id, offset);
+            const friends = await FollowReads.getFriends(req.user!.id, offset);
 
             res.status(200).json({
-                accounts: blocked.map((block) =>
+                friends: friends.map((friend) =>
                     getPublicUserProfileResponse(
-                        block.user,
-                        block.profile,
-                        false,
+                        friend.user,
+                        friend.profile,
+                        true,
                         false
                     )
                 ),
             });
         } catch (err) {
             console.error(err);
-            return res.status(500).json({
+            res.status(500).json({
                 message: "Internal server error",
             });
         }

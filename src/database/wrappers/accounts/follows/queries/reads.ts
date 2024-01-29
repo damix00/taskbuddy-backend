@@ -1,5 +1,7 @@
 import { executeQuery } from "../../../../connection";
 import { FollowsFields } from "../../../../models/users/follows";
+import { ProfileFields } from "../../../../models/users/profile";
+import { UserFields } from "../../../../models/users/user";
 
 namespace reads {
     export async function getFollowById(id: number) {
@@ -103,6 +105,43 @@ namespace reads {
             ]);
 
             return result.map((r) => r.follower);
+        } catch (err) {
+            console.error(err);
+            return [];
+        }
+    }
+
+    // Mutual follows
+    export async function getFriends(
+        user_id: number,
+        offset: number = 0
+    ): Promise<
+        {
+            user: UserFields;
+            profile: ProfileFields;
+        }[]
+    > {
+        try {
+            const q = `
+                SELECT TO_JSON(users.*) AS user, TO_JSON(profiles.*) AS profile
+                FROM follows
+                LEFT JOIN users ON users.id = follows.following
+                LEFT JOIN profiles ON profiles.user_id = follows.following
+                WHERE follower = $1 AND follows.following IN (
+                    SELECT follower
+                    FROM follows
+                    WHERE following = $1
+                )
+                ORDER BY follows.created_at DESC
+                OFFSET $2
+            `;
+
+            const result = await executeQuery<{
+                user: UserFields;
+                profile: ProfileFields;
+            }>(q, [user_id, offset]);
+
+            return result;
         } catch (err) {
             console.error(err);
             return [];

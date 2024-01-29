@@ -143,8 +143,6 @@ export class FeedAlgorithm {
 
             return r;
         } catch (err) {
-            console.log("ERROR");
-
             console.error(err);
             return [];
         }
@@ -191,41 +189,71 @@ export class FeedAlgorithm {
 
             const categoryCounts = [0, 0, 0];
 
-            if (categories.length < 3) {
-                switch (categories.length) {
-                    case 0:
-                        randomCount = limit - followingCount;
-                        break;
-                    case 1:
-                        randomCount = Math.floor(
-                            limit - followingCount - limit * 0.5
-                        );
-                        // The first element is the remaining
-                        categoryCounts[0] =
-                            limit - followingCount - randomCount;
-                        break;
-                    case 2:
-                        randomCount = Math.floor(
-                            limit - followingCount - limit * 0.6
-                        );
-                        // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
-                        categoryCounts[0] = Math.floor(
-                            Math.random() *
-                                (limit -
-                                    followingCount -
-                                    randomCount -
-                                    limit * 0.1) +
-                                limit * 0.1
-                        );
-                        // The second element is the remaining
-                        categoryCounts[1] = Math.floor(
-                            limit -
+            switch (categories.length) {
+                case 0:
+                    randomCount = limit - followingCount;
+                    break;
+                case 1:
+                    randomCount = Math.floor(
+                        limit - followingCount - limit * 0.5
+                    );
+                    // The first element is the remaining
+                    categoryCounts[0] = limit - followingCount - randomCount;
+                    break;
+                case 2:
+                    randomCount = Math.floor(
+                        limit - followingCount - limit * 0.6
+                    );
+                    // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
+                    categoryCounts[0] = Math.floor(
+                        Math.random() *
+                            (limit -
                                 followingCount -
                                 randomCount -
-                                categoryCounts[0]
-                        );
-                        break;
-                }
+                                limit * 0.1) +
+                            limit * 0.1
+                    );
+                    // The second element is the remaining
+                    categoryCounts[1] = Math.floor(
+                        limit - followingCount - randomCount - categoryCounts[0]
+                    );
+                    break;
+                default:
+                    // Random distribution.
+                    // First element has most posts, second element has less posts, third element has least posts
+                    randomCount = Math.floor(
+                        limit - followingCount - limit * 0.8
+                    );
+
+                    // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
+                    categoryCounts[0] = Math.floor(
+                        Math.random() *
+                            (limit -
+                                followingCount -
+                                randomCount -
+                                limit * 0.1) +
+                            limit * 0.1
+                    );
+
+                    // The second element is random between 10% and 50% of (limit - followingCount - randomCount - categoryCounts[0])
+                    categoryCounts[1] = Math.floor(
+                        Math.random() *
+                            (limit -
+                                followingCount -
+                                randomCount -
+                                categoryCounts[0] -
+                                limit * 0.1) +
+                            limit * 0.1
+                    );
+
+                    // The third element is the remaining
+                    categoryCounts[2] = Math.floor(
+                        limit -
+                            followingCount -
+                            randomCount -
+                            categoryCounts[0] -
+                            categoryCounts[1]
+                    );
             }
 
             for (let i = 0; i < categories.length; i++) {

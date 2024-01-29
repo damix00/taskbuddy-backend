@@ -77,4 +77,61 @@ export class UserInterests {
             return false;
         }
     }
+
+    static async setInterestValue(
+        user_id: number,
+        category_id: number,
+        weight: number
+    ): Promise<boolean> {
+        try {
+            const found = await executeQuery(
+                `
+                    SELECT *
+                    FROM user_interests
+                    WHERE user_id = $1 AND category_id = $2
+                `,
+                [user_id, category_id]
+            );
+
+            if (found.length === 0) {
+                const q = `
+                    INSERT INTO user_interests (user_id, category_id, weight)
+                    VALUES ($1, $2, $3)
+                `;
+
+                await executeQuery(q, [user_id, category_id, weight]);
+
+                return true;
+            }
+
+            const q = `
+                UPDATE user_interests
+                SET weight = $3
+                WHERE user_id = $1 AND category_id = $2
+            `;
+
+            await executeQuery(q, [user_id, category_id, weight]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
+
+    static async deleteInterest(user_id: number, category_id: number) {
+        try {
+            const q = `
+                DELETE FROM user_interests
+                WHERE user_id = $1 AND category_id = $2
+            `;
+
+            await executeQuery(q, [user_id, category_id]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
 }

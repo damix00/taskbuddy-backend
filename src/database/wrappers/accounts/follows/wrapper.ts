@@ -1,5 +1,7 @@
 import Follow from ".";
 import { FollowsFields } from "../../../models/users/follows";
+import { Profile } from "../profiles";
+import { User } from "../users";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
@@ -26,6 +28,23 @@ export class FollowReads {
         other_user_id: number
     ): Promise<boolean> {
         return await reads.isMutual(user_id, other_user_id);
+    }
+
+    static async getFriends(
+        user_id: number,
+        offset: number = 0
+    ): Promise<
+        {
+            user: User;
+            profile: Profile;
+        }[]
+    > {
+        const r = await reads.getFriends(user_id, offset);
+
+        return r.map((friend) => ({
+            user: new User(friend.user),
+            profile: new Profile(friend.profile),
+        }));
     }
 }
 

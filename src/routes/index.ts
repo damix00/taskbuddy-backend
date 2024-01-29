@@ -45,6 +45,9 @@ import sessionId from "./v1/sessions/[id]";
 import sessionsHandler from "./v1/sessions";
 import block from "./v1/accounts/[uuid]/block";
 import blocked from "./v1/accounts/me/blocked";
+import friends from "./v1/accounts/me/friends";
+import interests from "./v1/accounts/me/interests";
+import handleInterest from "./v1/accounts/me/interests/[id]";
 
 export type route = {
     path: string;
@@ -106,6 +109,18 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/blocked",
         handler: blocked,
+    },
+    {
+        path: "/v1/accounts/me/friends",
+        handler: friends,
+    },
+    {
+        path: "/v1/accounts/me/interests",
+        handler: interests,
+    },
+    {
+        path: "/v1/accounts/me/interests/:id",
+        handler: handleInterest,
     },
     {
         path: "/v1/accounts/me/test_fcm",
