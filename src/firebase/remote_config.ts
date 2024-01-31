@@ -12,6 +12,8 @@ class RemoteConfigData {
 
     static recentMessagesCount: number = 10;
 
+    static maxAttachments: number = 10;
+
     static async fetch() {
         const template = await remoteConfig().getTemplate();
         const params = template.parameters;
@@ -37,9 +39,14 @@ class RemoteConfigData {
         // @ts-ignore
         this.maxMedia = parseInt(params["max_media"].defaultValue.value || 25);
 
-        this.recentMessagesCount = Number(
+        this.recentMessagesCount = parseInt(
             // @ts-ignore
             params["recent_messages_cnt"].defaultValue.value || 10
+        );
+
+        this.maxAttachments = parseInt(
+            // @ts-ignore
+            params["max_attachments"].defaultValue.value || 10
         );
     }
 }

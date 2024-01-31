@@ -8,16 +8,55 @@ import { ChannelRequest, withChannel } from "../middleware";
 import { BlockReads } from "../../../../../database/wrappers/accounts/blocks/wrapper";
 import { getMessageResponse } from "../../responses";
 import { ChannelStatus } from "../../../../../database/models/chats/channels";
+import { UploadedFile } from "express-fileupload";
+import RemoteConfigData from "../../../../../firebase/remote_config";
+import FirebaseStorage from "../../../../../firebase/storage/files";
+import uniqueFilename from "unique-filename";
+import os from "os";
+import path from "path";
+import fs from "fs";
+import { AttachmentType } from "../../../../../database/models/chats/messages";
+import { listParser } from "../../../../../middleware/parsers";
 
 export default [
     requireMethod("POST"),
     authorize(true),
     withChannel,
+    listParser(["attachment_types"]),
     async (req: ChannelRequest, res: Response) => {
         try {
             const { content } = req.body;
 
-            const attachments = req.files;
+            const attachments: UploadedFile[] = [];
+
+            // Check if the user is trying to send attachments
+            if (req.files) {
+                // Check if the user has exceeded the max number of attachments
+                if (
+                    Object.keys(req.files).length >
+                    RemoteConfigData.maxAttachments
+                ) {
+                    res.status(400).json({
+                        error: "Too many attachments",
+                    });
+                    return;
+                }
+
+                // Check if the user has exceeded the max attachment size
+                for (const key of Object.keys(req.files)) {
+                    const file = req.files[key] as UploadedFile;
+
+                    // 30 MB
+                    if (file.size > 30 * 1024 * 1024) {
+                        res.status(400).json({
+                            error: "Attachment too large",
+                        });
+                        return;
+                    }
+
+                    attachments.push(file);
+                }
+            }
 
             if (!content || content.length == 0 || content.length > 2000) {
                 res.status(400).json({
@@ -46,6 +85,49 @@ export default [
                 return;
             }
 
+            const attachmentTypes = req.body.attachment_types || [];
+
+            if (attachmentTypes.length != Object.keys(req.files).length) {
+                res.status(500).json({
+                    error: "Internal server error",
+                });
+                return;
+            }
+
+            for (const type of attachmentTypes) {
+                if (
+                    type != AttachmentType.IMAGE &&
+                    type != AttachmentType.VIDEO &&
+                    type != AttachmentType.DOCUMENT
+                ) {
+                    res.status(400).json({
+                        error: "Invalid attachment type",
+                    });
+                    return;
+                }
+            }
+
+            const files = await FirebaseStorage.uploadFiles(
+                attachments,
+                "attachments",
+                req.channel!.uuid
+            );
+
+            if (req.files && Object.keys(req.files).length != files.length) {
+                res.status(500).json({
+                    error: "Internal server error",
+                });
+                return;
+            }
+
+            const messageAttachments: {
+                attachment_url: string;
+                attachment_type: AttachmentType;
+            }[] = files.map((file, i) => ({
+                attachment_url: file,
+                attachment_type: attachmentTypes[i],
+            }));
+
             // Send message
             const result = await req.channel!.sendMessage(
                 {
@@ -53,7 +135,7 @@ export default [
                     channel_id: req.channel!.id,
                     message: content,
                     system_message: false,
-                    attachments: [],
+                    attachments: messageAttachments,
                 },
                 req.user!,
                 req.profile!.profile_picture

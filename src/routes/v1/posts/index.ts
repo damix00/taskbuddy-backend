@@ -168,50 +168,11 @@ export default [
             );
 
             // Upload media to firebase storage
-            const urls = await Promise.all(
-                media.map(async (file, i) => {
-                    const filename = uniqueFilename(
-                        os.tmpdir(),
-                        "post_media__"
-                    );
-                    const ext = path
-                        .extname(file.name)
-                        .toLowerCase()
-                        .replace(".", "");
-                    const mvfilename = `${filename}.${ext}`;
-
-                    // Temporarily save the file to the server
-                    await file.mv(mvfilename);
-
-                    const upload = await FirebaseStorage.uploadFile(
-                        mvfilename,
-                        `image/${ext.toLowerCase()}`,
-                        ext
-                    );
-
-                    // Delete the file from the server
-                    fs.rmSync(mvfilename);
-
-                    // Check if the upload was successful
-                    if (!upload) {
-                        return res
-                            .status(500)
-                            .json({ message: "Internal server error" });
-                    }
-
-                    // Get the URL
-                    let media = upload[0].metadata.mediaLink;
-
-                    return {
-                        url: media,
-                        index: i,
-                    };
-                })
+            const urls = await FirebaseStorage.uploadFiles(
+                media,
+                "posts",
+                req.user!.uuid
             );
-
-            // Sort the URLs by index
-            // @ts-ignore
-            urls.sort((a, b) => a.index - b.index);
 
             let loc = null;
 
@@ -243,8 +204,7 @@ export default [
                 tags,
                 status: PostStatus.OPEN,
                 media: urls.map((url) => ({
-                    // @ts-ignore
-                    media: url.url,
+                    media: url,
                     media_type: "image",
                 })),
             });

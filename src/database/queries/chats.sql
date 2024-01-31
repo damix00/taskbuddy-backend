@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS message_attachments (
     message_id BIGINT NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
     attachment_type INT NOT NULL, -- 0 = image, 1 = video, 2 = audio, 3 = document
     attachment_url VARCHAR(1024) NOT NULL,
+    thumbnail_url VARCHAR(1024),
     created_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now()),
     updated_at TIMESTAMP NOT NULL DEFAULT timezone('utc', now())
 );
