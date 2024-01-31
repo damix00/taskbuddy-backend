@@ -55,6 +55,7 @@ import reviewsHandler from "./v1/reviews/[uuid]";
 import sendForgotPassword from "./v1/accounts/me/security/forgot-password/send";
 import resetForgotPassword from "./v1/accounts/me/security/forgot-password/reset";
 import logout from "./v1/accounts/me/logout";
+import reserve from "./v1/posts/[uuid]/reserve";
 
 export type route = {
     path: string;
@@ -85,6 +86,10 @@ const postRoutes: route[] = [
     {
         path: "/v1/posts/:uuid/report",
         handler: reportPost,
+    },
+    {
+        path: "/v1/posts/:uuid/reserve",
+        handler: reserve,
     },
     {
         path: "/v1/posts/:uuid",

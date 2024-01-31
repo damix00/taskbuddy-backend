@@ -353,7 +353,7 @@ class Post extends DataModel implements PostWithRelationsModel {
     public async cancelReservation(): Promise<boolean> {
         try {
             return await this.update({
-                reserved: true,
+                reserved: false,
             });
         } catch (e) {
             console.error(e);
