@@ -3,6 +3,8 @@ import {
     CreateReviewFields,
     ReviewWithRelations,
 } from "../../models/reviews/review";
+import { Profile } from "../accounts/profiles";
+import { User } from "../accounts/users";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
@@ -14,6 +16,8 @@ function toReview(review: ReviewWithRelations | null): Review | null {
     review.user_id = parseInt(review.user_id.toString());
     review.rating_for_id = parseInt(review.rating_for_id.toString());
     review.post_id = parseInt(review.post_id.toString());
+    review.rating_for = new User(review.rating_for);
+    review.user_profile = new Profile(review.user_profile);
     review.rating = parseFloat(review.rating.toString());
 
     return new Review(review);

@@ -7,7 +7,7 @@ export interface ReviewRequest extends ExtendedRequest {
     review: Review;
 }
 
-export async function middleware(
+export async function withReview(
     req: ReviewRequest,
     res: Response,
     next: NextFunction
@@ -21,4 +21,6 @@ export async function middleware(
     }
 
     req.review = review;
+
+    next();
 }

@@ -20,6 +20,8 @@ export class Profile extends DataModel implements ProfileModel {
     rating_employee: number;
     rating_count_employer: number;
     rating_count_employee: number;
+    rating_sum_employee: number;
+    rating_sum_employer: number;
     cancelled_employer: number;
     cancelled_employee: number;
     completed_employer: number;
@@ -52,6 +54,8 @@ export class Profile extends DataModel implements ProfileModel {
             rating_employee: this.rating_employee,
             rating_count_employer: this.rating_count_employer,
             rating_count_employee: this.rating_count_employee,
+            rating_sum_employer: this.rating_sum_employer,
+            rating_sum_employee: this.rating_sum_employee,
             cancelled_employer: this.cancelled_employer,
             cancelled_employee: this.cancelled_employee,
             completed_employer: this.completed_employer,

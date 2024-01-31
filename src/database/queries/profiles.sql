@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS profiles (
     rating_employee DECIMAL NOT NULL DEFAULT 0, -- Rating as an employee
     rating_count_employer INTEGER NOT NULL DEFAULT 0, -- Number of ratings as an employer
     rating_count_employee INTEGER NOT NULL DEFAULT 0, -- Number of ratings as an employee
+    rating_sum_employer FLOAT NOT NULL DEFAULT 0, -- Sum of ratings as an employer
+    rating_sum_employee FLOAT NOT NULL DEFAULT 0, -- Sum of ratings as an employee
     cancelled_employer INTEGER NOT NULL DEFAULT 0, -- Number of tasks cancelled as an employer
     cancelled_employee INTEGER NOT NULL DEFAULT 0, -- Number of tasks cancelled as an employee
     completed_employer INTEGER NOT NULL DEFAULT 0, -- Number of tasks completed as an employer

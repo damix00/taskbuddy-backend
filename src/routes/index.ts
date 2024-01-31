@@ -50,6 +50,8 @@ import interests from "./v1/accounts/me/interests";
 import handleInterest from "./v1/accounts/me/interests/[id]";
 import reportUser from "./v1/accounts/[uuid]/report";
 import reportPost from "./v1/posts/[uuid]/report";
+import reportReview from "./v1/reviews/[uuid]/report";
+import reviewsHandler from "./v1/reviews/[uuid]";
 
 export type route = {
     path: string;
@@ -283,12 +285,24 @@ const sessions: route[] = [
     },
 ];
 
+const reviewRoutes: route[] = [
+    {
+        path: "/v1/reviews/:uuid/report",
+        handler: reportReview,
+    },
+    {
+        path: "/v1/reviews/:uuid",
+        handler: reviewsHandler,
+    },
+];
+
 const routes: route[] = [
     ...messageRoutes,
     ...channelRoutes,
     ...userRoutes,
     ...postRoutes,
     ...sessions,
+    ...reviewRoutes,
     {
         path: "/v1/ping",
         handler: ping,

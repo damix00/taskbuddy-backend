@@ -19,6 +19,18 @@ function toProfile(
     profile.completed_employer = parseInt(
         profile.completed_employer as unknown as string
     );
+    profile.rating_count_employee = parseInt(
+        profile.rating_count_employee as unknown as string
+    );
+    profile.rating_count_employer = parseInt(
+        profile.rating_count_employer as unknown as string
+    );
+    profile.rating_employee = parseFloat(
+        profile.rating_employee as unknown as string
+    );
+    profile.rating_employer = parseFloat(
+        profile.rating_employer as unknown as string
+    );
 
     return new Profile(profile);
 }

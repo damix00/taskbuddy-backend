@@ -140,15 +140,19 @@ export default [
 
         if (p) {
             if (isEmployee) {
-                await p.setRatingEmployer(
-                    p.rating_employer + rating / p.completed_employer
-                );
-                await p.setRatingCountEmployer(p.rating_count_employer + 1);
+                const sum = p.rating_sum_employer + rating;
+                await p.update({
+                    rating_employer: sum / (p.rating_count_employer + 1),
+                    rating_sum_employer: sum,
+                    rating_count_employer: p.rating_count_employer + 1,
+                });
             } else {
-                await p.setRatingEmployee(
-                    p.rating_employee + rating / p.completed_employee
-                );
-                await p.setRatingCountEmployee(p.rating_count_employee + 1);
+                const sum = p.rating_sum_employee + rating;
+                await p.update({
+                    rating_employee: sum / (p.rating_count_employee + 1),
+                    rating_sum_employee: sum,
+                    rating_count_employee: p.rating_count_employee + 1,
+                });
             }
         }
 

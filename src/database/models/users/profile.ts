@@ -11,6 +11,8 @@ export interface ProfileFields {
     rating_employee: number;
     rating_count_employer: number;
     rating_count_employee: number;
+    rating_sum_employer: number;
+    rating_sum_employee: number;
     cancelled_employer: number;
     cancelled_employee: number;
     completed_employer: number;

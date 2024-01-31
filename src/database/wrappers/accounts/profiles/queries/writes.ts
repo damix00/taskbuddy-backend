@@ -79,8 +79,10 @@ export namespace writes {
                     location_lon = $16,
                     is_private = $17,
                     deleted = $18,
+                    rating_sum_employer = $19,
+                    rating_sum_employee = $20,
                     updated_at = NOW()
-                WHERE id = $19 RETURNING *`;
+                WHERE id = $21 RETURNING *`;
             const params = [
                 profile.profile_picture,
                 profile.bio,
@@ -100,6 +102,8 @@ export namespace writes {
                 profile.location_lon || null,
                 profile.is_private,
                 profile.deleted,
+                profile.rating_sum_employer,
+                profile.rating_sum_employee,
                 profile.id,
             ];
             const result = await executeQuery<ProfileModel>(query, params);
