@@ -58,7 +58,10 @@ export default [
                 }
             }
 
-            if (!content || content.length == 0 || content.length > 2000) {
+            if (
+                (!content || content.length == 0 || content.length > 2000) &&
+                attachments.length == 0
+            ) {
                 res.status(400).json({
                     error: "Missing content",
                 });
@@ -87,7 +90,7 @@ export default [
 
             const attachmentTypes = req.body.attachment_types || [];
 
-            if (attachmentTypes.length != Object.keys(req.files).length) {
+            if (attachmentTypes.length != attachments.length) {
                 res.status(500).json({
                     error: "Internal server error",
                 });
@@ -113,7 +116,7 @@ export default [
                 req.channel!.uuid
             );
 
-            if (req.files && Object.keys(req.files).length != files.length) {
+            if (req.files && attachments.length != files.length) {
                 res.status(500).json({
                     error: "Internal server error",
                 });
