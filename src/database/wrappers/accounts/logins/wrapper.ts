@@ -34,4 +34,8 @@ export class LoginWrites {
     static async updateLogin(login: LoginModel): Promise<boolean> {
         return await writes.updateLogin(login);
     }
+
+    static async logout(login_id: number): Promise<boolean> {
+        return await writes.logout(login_id);
+    }
 }

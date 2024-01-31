@@ -8,8 +8,10 @@ import { sleep } from "../../../../../../utils/utils";
 import { sendOTP } from "../../../../../../verification/phone";
 import setKillswitch from "../../../../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../../../../database/models/killswitch";
+import { requireMethod } from "../../../../../../middleware/require_method";
 
 export default [
+    requireMethod("POST"),
     setKillswitch([KillswitchTypes.DISABLE_TWILIO]),
     async (req: ExtendedRequest, res: Response) => {
         try {

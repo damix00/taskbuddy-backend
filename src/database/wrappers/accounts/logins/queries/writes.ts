@@ -59,4 +59,22 @@ export namespace writes {
             return false;
         }
     }
+
+    export async function logout(login_id: number): Promise<boolean> {
+        try {
+            const query = `
+            DELETE FROM logins
+            WHERE id = $1
+            `;
+            const params = [login_id];
+
+            await executeQuery(query, params);
+
+            return true;
+        } catch (e) {
+            console.error("Error in function `logout`");
+            console.error(e);
+            return false;
+        }
+    }
 }

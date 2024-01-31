@@ -10,8 +10,10 @@ import { ProfileReads } from "../../../../../../database/wrappers/accounts/profi
 import { getUserProfileResponse } from "../../../responses";
 import setKillswitch from "../../../../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../../../../database/models/killswitch";
+import { requireMethod } from "../../../../../../middleware/require_method";
 
 export default [
+    requireMethod("POST"),
     setKillswitch([KillswitchTypes.DISABLE_TWILIO]),
     async (req: ExtendedRequest, res: Response) => {
         try {

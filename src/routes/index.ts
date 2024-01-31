@@ -54,6 +54,7 @@ import reportReview from "./v1/reviews/[uuid]/report";
 import reviewsHandler from "./v1/reviews/[uuid]";
 import sendForgotPassword from "./v1/accounts/me/security/forgot-password/send";
 import resetForgotPassword from "./v1/accounts/me/security/forgot-password/reset";
+import logout from "./v1/accounts/me/logout";
 
 export type route = {
     path: string;
@@ -143,6 +144,10 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/test_fcm",
         handler: test_fcm,
+    },
+    {
+        path: "/v1/accounts/me/logout",
+        handler: logout,
     },
 ];
 
