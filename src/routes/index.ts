@@ -52,6 +52,8 @@ import reportUser from "./v1/accounts/[uuid]/report";
 import reportPost from "./v1/posts/[uuid]/report";
 import reportReview from "./v1/reviews/[uuid]/report";
 import reviewsHandler from "./v1/reviews/[uuid]";
+import sendForgotPassword from "./v1/accounts/me/security/forgot-password/send";
+import resetForgotPassword from "./v1/accounts/me/security/forgot-password/reset";
 
 export type route = {
     path: string;
@@ -129,6 +131,14 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/interests/:id",
         handler: handleInterest,
+    },
+    {
+        path: "/v1/accounts/me/security/forgot-password/send",
+        handler: sendForgotPassword,
+    },
+    {
+        path: "/v1/accounts/me/security/forgot-password/reset",
+        handler: resetForgotPassword,
     },
     {
         path: "/v1/accounts/me/test_fcm",
