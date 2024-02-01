@@ -58,6 +58,8 @@ import logout from "./v1/accounts/me/logout";
 import reserve from "./v1/posts/[uuid]/reserve";
 import loginSessions from "./v1/accounts/me/security/sessions";
 import deleteLoginSession from "./v1/accounts/me/security/sessions/[id]";
+import logoutAll from "./v1/accounts/me/security/sessions/logout-all";
+import deleteAccount from "./v1/accounts/me/security/delete-acount";
 
 export type route = {
     path: string;
@@ -147,6 +149,14 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/security/forgot-password/reset",
         handler: resetForgotPassword,
+    },
+    {
+        path: "/v1/accounts/me/security/sessions/logout-all",
+        handler: logoutAll,
+    },
+    {
+        path: "/v1/accounts/me/security/delete-account",
+        handler: deleteAccount,
     },
     {
         path: "/v1/accounts/me/security/sessions/:id",

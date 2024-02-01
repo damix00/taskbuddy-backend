@@ -181,4 +181,8 @@ export class PostWrites {
     public static async deletePost(post_id: number): Promise<boolean> {
         return writes.deletePost(post_id);
     }
+
+    public static async deletePostsByUser(user_id: number): Promise<boolean> {
+        return writes.deletePostsByUser(user_id);
+    }
 }

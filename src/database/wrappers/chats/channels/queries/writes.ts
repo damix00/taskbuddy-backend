@@ -105,6 +105,23 @@ namespace writes {
             return false;
         }
     }
+
+    export async function deleteByUserId(user_id: number): Promise<boolean> {
+        try {
+            const q = `
+                DELETE FROM channels
+                WHERE created_by_id = $1
+                OR recipient_id = $1
+            `;
+
+            await executeQuery(q, [user_id]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
 }
 
 export default writes;

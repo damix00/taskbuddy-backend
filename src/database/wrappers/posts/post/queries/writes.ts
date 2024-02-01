@@ -305,6 +305,46 @@ namespace writes {
             return false;
         }
     }
+
+    export async function deletePostsByUser(user_id: number): Promise<boolean> {
+        try {
+            // Delete post media
+            await executeQuery(
+                `
+            DELETE FROM post_media
+            WHERE post_id IN (
+                SELECT id FROM posts WHERE user_id = $1
+            )
+            `,
+                [user_id]
+            );
+
+            // Delete post tags
+            await executeQuery(
+                `
+            DELETE FROM post_tag_relationship
+            WHERE post_id IN (
+                SELECT id FROM posts WHERE user_id = $1
+            )
+            `,
+                [user_id]
+            );
+
+            await executeQuery(
+                `
+                DELETE FROM posts
+                WHERE user_id = $1
+            `,
+                [user_id]
+            );
+
+            return true;
+        } catch (e) {
+            console.error(e);
+
+            return false;
+        }
+    }
 }
 
 export default writes;

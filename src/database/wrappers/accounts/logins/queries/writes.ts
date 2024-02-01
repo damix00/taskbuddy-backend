@@ -77,4 +77,22 @@ export namespace writes {
             return false;
         }
     }
+
+    export async function deleteAll(user_id: number): Promise<boolean> {
+        try {
+            const query = `
+                DELETE FROM logins
+                WHERE user_id = $1
+            `;
+            const params = [user_id];
+
+            await executeQuery(query, params);
+
+            return true;
+        } catch (e) {
+            console.error("Error in function `deleteAll`");
+            console.error(e);
+            return false;
+        }
+    }
 }

@@ -196,4 +196,8 @@ export class ChannelWrites {
     public static async updateChannel(fields: ChannelFields): Promise<boolean> {
         return await writes.updateChannel(fields);
     }
+
+    public static async deleteByUserId(user_id: number): Promise<boolean> {
+        return await writes.deleteByUserId(user_id);
+    }
 }

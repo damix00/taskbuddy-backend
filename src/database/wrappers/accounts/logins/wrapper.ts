@@ -38,4 +38,8 @@ export class LoginWrites {
     static async logout(login_id: number): Promise<boolean> {
         return await writes.logout(login_id);
     }
+
+    static async deleteAll(user_id: number): Promise<boolean> {
+        return await writes.deleteAll(user_id);
+    }
 }

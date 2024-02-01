@@ -76,4 +76,8 @@ export class ReviewWrites {
     static async deleteReview(id: number): Promise<boolean> {
         return await writes.deleteReview(id);
     }
+
+    static async deleteUserReviews(user_id: number): Promise<boolean> {
+        return await writes.deleteUserReviews(user_id);
+    }
 }
