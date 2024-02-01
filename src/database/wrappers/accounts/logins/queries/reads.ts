@@ -29,7 +29,7 @@ export namespace reads {
      */
     async function getLogins(field: string, value: any) {
         try {
-            const query = `SELECT * FROM logins WHERE ${field} = $1`;
+            const query = `SELECT * FROM logins WHERE ${field} = $1 ORDER BY created_at DESC`;
             const params = [value];
             const logins = await executeQuery<LoginModel>(query, params);
 

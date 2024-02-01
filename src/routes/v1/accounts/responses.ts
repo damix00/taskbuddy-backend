@@ -1,5 +1,6 @@
 import { ProfileFields } from "../../../database/models/users/profile";
 import { UserFields } from "../../../database/models/users/user";
+import { Login } from "../../../database/wrappers/accounts/logins";
 import { User } from "../../../database/wrappers/accounts/users";
 import Review from "../../../database/wrappers/reviews";
 import { signToken, toUserPayload } from "../../../verification/jwt";
@@ -118,5 +119,14 @@ export function getReviewResponse(review: Review, requested_by: User) {
             requested_by.id == review.user.id
         ),
         rating_for_uuid: review.rating_for.uuid,
+    };
+}
+
+export function getLoginResponse(login: Login) {
+    return {
+        id: parseInt(login.id as any),
+        ip_address: login.ip_address,
+        user_agent: login.user_agent,
+        created_at: login.created_at,
     };
 }

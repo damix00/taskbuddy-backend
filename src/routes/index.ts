@@ -56,6 +56,8 @@ import sendForgotPassword from "./v1/accounts/me/security/forgot-password/send";
 import resetForgotPassword from "./v1/accounts/me/security/forgot-password/reset";
 import logout from "./v1/accounts/me/logout";
 import reserve from "./v1/posts/[uuid]/reserve";
+import loginSessions from "./v1/accounts/me/security/sessions";
+import deleteLoginSession from "./v1/accounts/me/security/sessions/[id]";
 
 export type route = {
     path: string;
@@ -145,6 +147,14 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/security/forgot-password/reset",
         handler: resetForgotPassword,
+    },
+    {
+        path: "/v1/accounts/me/security/sessions/:id",
+        handler: deleteLoginSession,
+    },
+    {
+        path: "/v1/accounts/me/security/sessions",
+        handler: loginSessions,
     },
     {
         path: "/v1/accounts/me/test_fcm",
