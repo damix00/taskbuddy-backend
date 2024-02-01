@@ -102,10 +102,9 @@ export class User extends DataModel implements UserModel {
         const hash = await bcrypt.hashPassword(newPassword);
         this.password_hash = hash;
 
-        // Increment token version to log out all devices
         return await this.update({
             password_hash: hash,
-            token_version: ++this.token_version,
+            // token_version: ++this.token_version,
         });
     }
 

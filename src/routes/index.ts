@@ -60,6 +60,7 @@ import loginSessions from "./v1/accounts/me/security/sessions";
 import deleteLoginSession from "./v1/accounts/me/security/sessions/[id]";
 import logoutAll from "./v1/accounts/me/security/sessions/logout-all";
 import deleteAccount from "./v1/accounts/me/security/delete-acount";
+import changePassword from "./v1/accounts/me/security/change-password";
 
 export type route = {
     path: string;
@@ -165,6 +166,10 @@ const meRoutes: route[] = [
     {
         path: "/v1/accounts/me/security/sessions",
         handler: loginSessions,
+    },
+    {
+        path: "/v1/accounts/me/security/change-password",
+        handler: changePassword,
     },
     {
         path: "/v1/accounts/me/test_fcm",
