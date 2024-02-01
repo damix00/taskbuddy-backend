@@ -239,8 +239,9 @@ namespace writes {
                     end_date = $7,
                     status = $8,
                     reserved = $9,
+                    urgent = $10,
                     updated_at = NOW()
-                WHERE id = $10
+                WHERE id = $11
                 RETURNING *
             `;
 
@@ -254,6 +255,7 @@ namespace writes {
                 data.end_date,
                 data.status,
                 data.reserved,
+                data.urgent,
                 data.id,
             ]);
 

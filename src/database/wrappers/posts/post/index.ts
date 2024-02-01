@@ -2,6 +2,7 @@ import { DataModel } from "../../../data_model";
 import {
     JobType,
     MediaType,
+    PostFields,
     PostInteractions,
     PostLocation,
     PostMedia,
@@ -13,6 +14,7 @@ import {
 } from "../../../models/posts/post";
 import {
     updatePostInteractions,
+    updatePostLocation,
     updatePostRelations,
 } from "./relations/writes";
 import reads from "./queries/reads";
@@ -122,6 +124,21 @@ class Post extends DataModel implements PostWithRelationsModel {
         return false;
     }
 
+    public async updatePostData(data: Partial<PostFields>): Promise<boolean> {
+        this._refetch();
+
+        const newPost = { ...this, ...data };
+
+        const r = await writes.updatePost(newPost);
+
+        if (r) {
+            super.setData(newPost);
+            return true;
+        }
+
+        return false;
+    }
+
     public async updateInteractions(
         data: Partial<PostWithRelations>
     ): Promise<boolean> {
@@ -130,6 +147,21 @@ class Post extends DataModel implements PostWithRelationsModel {
         const newPost = { ...this, ...data };
 
         const r = await updatePostInteractions(newPost);
+
+        if (r) {
+            super.setData(newPost);
+            return true;
+        }
+
+        return false;
+    }
+
+    public async updateLocation(data: Partial<PostLocation>): Promise<boolean> {
+        this._refetch();
+
+        const newPost = { ...this, ...data };
+
+        const r = await updatePostLocation(newPost);
 
         if (r) {
             super.setData(newPost);

@@ -4,10 +4,14 @@ import { requireMethods } from "../../../../middleware/require_method";
 import { ExtendedRequest } from "../../../../types/request";
 import _get from "./_get";
 import _delete from "./_delete";
+import _patch from "./_patch";
+import { boolParser, floatParser } from "../../../../middleware/parsers";
 
 export default [
+    requireMethods(["GET", "DELETE", "PATCH"]),
+    boolParser(["urgent", "reserved"]),
+    floatParser(["lat", "lon"]),
     authorize(true),
-    requireMethods(["GET", "DELETE"]),
     (req: ExtendedRequest, res: Response) => {
         if (!req.params.uuid) {
             res.status(400).json({
@@ -22,6 +26,10 @@ export default [
 
         if (req.method.toUpperCase() == "DELETE") {
             return _delete(req, res);
+        }
+
+        if (req.method.toUpperCase() == "PATCH") {
+            return _patch(req, res);
         }
     },
 ];

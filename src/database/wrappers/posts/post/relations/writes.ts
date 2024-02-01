@@ -159,3 +159,40 @@ export async function updatePostInteractions(
         return false;
     }
 }
+
+export async function updatePostLocation(
+    post: PostWithRelations
+): Promise<boolean> {
+    try {
+        const r = await executeQuery(
+            `
+            UPDATE post_location
+            SET
+                lat = $1,
+                lon = $2,
+                location_name = $3,
+                suggestion_radius = $4,
+                remote = $5,
+                approx_lat = $6,
+                approx_lon = $7
+            WHERE id = $8 RETURNING *
+        `,
+            [
+                post.lat,
+                post.lon,
+                post.location_name,
+                post.suggestion_radius,
+                post.remote,
+                post.approx_lat,
+                post.approx_lon,
+                post.post_location_id,
+            ]
+        );
+
+        return true;
+    } catch (err) {
+        console.error(err);
+
+        return false;
+    }
+}

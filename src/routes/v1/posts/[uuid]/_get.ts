@@ -14,7 +14,7 @@ export default async (req: ExtendedRequest, res: Response) => {
 
         if (!post) {
             return res.status(404).json({
-                error: "Post not found",
+                message: "Post not found",
             });
         }
 
@@ -23,7 +23,7 @@ export default async (req: ExtendedRequest, res: Response) => {
 
         if (!user || !profile) {
             return res.status(404).json({
-                error: "User not found",
+                message: "User not found",
             });
         }
 
@@ -43,7 +43,7 @@ export default async (req: ExtendedRequest, res: Response) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({
-            error: "Internal server error",
+            message: "Internal server error",
         });
     }
 };
