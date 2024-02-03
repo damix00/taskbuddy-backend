@@ -122,7 +122,7 @@ namespace writes {
         try {
             const q = `
                 DELETE FROM reviews
-                WHERE user_id = $1
+                WHERE user_id = $1 OR rating_for_id = $1
             `;
 
             await executeQuery(q, [user_id]);

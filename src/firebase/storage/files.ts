@@ -75,7 +75,7 @@ export default class FirebaseStorage {
 
                 const upload = await FirebaseStorage.uploadFile(
                     mvfilename,
-                    `${folder}/${ext.toLowerCase()}`,
+                    file.mimetype,
                     ext
                 );
 

@@ -134,4 +134,20 @@ export class UserInterests {
             return false;
         }
     }
+
+    static async deleteUserInterests(user_id: number) {
+        try {
+            const q = `
+                DELETE FROM user_interests
+                WHERE user_id = $1
+            `;
+
+            await executeQuery(q, [user_id]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
 }

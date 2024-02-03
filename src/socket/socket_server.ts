@@ -28,6 +28,7 @@ export async function initSocketServer(server: any) {
 
         if (!user) {
             socket.disconnect(true);
+            return;
         }
 
         console.log(`User ${user!.username} connected`);

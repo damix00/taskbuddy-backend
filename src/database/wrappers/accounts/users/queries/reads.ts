@@ -136,7 +136,7 @@ export namespace reads {
                     EXISTS(SELECT 1 FROM follows WHERE follows.follower = $2 AND follows.following = users.id) AS is_following
                 FROM users AS users
                 INNER JOIN profiles ON users.id = profiles.user_id
-                WHERE users.username LIKE $1
+                WHERE users.username LIKE $1 AND users.deleted = FALSE
                 AND users.id != $2 AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = users.id AND blocks.blocked = $2) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = users.id)
                 ORDER BY users.username ASC
                 LIMIT 10

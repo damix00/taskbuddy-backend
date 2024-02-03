@@ -24,13 +24,13 @@ export function verifyToken(token: string): UserPayload {
 
 export function toUserPayload(user: UserFields, login_id: number): UserPayload {
     return {
-        id: user.id,
+        id: parseInt(user.id as any),
         uuid: user.uuid,
         email: user.email,
         phone_number: user.phone_number,
         username: user.username,
         token_version: user.token_version,
         created_at: user.created_at,
-        login_id,
+        login_id: parseInt(login_id as any),
     };
 }

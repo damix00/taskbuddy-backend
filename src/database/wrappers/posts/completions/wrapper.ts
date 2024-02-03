@@ -26,4 +26,8 @@ export class JobCompletionWrites {
     ): Promise<boolean> {
         return await writes.updatePostCompletion(data);
     }
+
+    static async deleteUsersCompletions(user_id: number): Promise<boolean> {
+        return await writes.deleteUsersCompletions(user_id);
+    }
 }

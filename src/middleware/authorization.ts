@@ -5,6 +5,7 @@ import { User } from "../database/wrappers/accounts/users";
 import { ProfileReads } from "../database/wrappers/accounts/profiles/wrapper";
 import { LoginReads } from "../database/wrappers/accounts/logins/wrapper";
 import * as killswitches from "../utils/global_killswitches";
+import { UserReads } from "../database/wrappers/accounts/users/wrapper";
 
 // Middleware to authorize a user
 export function authorize(fetchProfile: boolean = false) {
@@ -21,6 +22,8 @@ export function authorize(fetchProfile: boolean = false) {
 
         // If no token, return error
         if (!token) {
+            console.error("No token provided");
+
             return res.status(401).json({
                 message: "No token provided",
             });
@@ -43,23 +46,31 @@ export function authorize(fetchProfile: boolean = false) {
         try {
             const decoded = verifyToken(bearer);
 
-            // Get the user by the user ID
-            let user: User | null = await User.createInstance(decoded.id);
+            // Get the user by email
+            let user: User | null = await UserReads.getUserByEmail(
+                decoded.email
+            );
 
             // If there is no user, return error
             if (!user) {
+                console.log("No user");
+
                 return res.status(401).json({
                     message: "Invalid token",
                 });
             }
 
             if (!decoded.login_id) {
+                console.log("No login id");
+
                 return res.status(401).json({
                     message: "Invalid token",
                 });
             }
 
             if (!(await LoginReads.getLoginById(decoded.login_id))) {
+                console.log("Invalid login id");
+
                 return res.status(401).json({
                     message: "Invalid token",
                 });
@@ -94,6 +105,8 @@ export function authorize(fetchProfile: boolean = false) {
                 // Call next to continue to the next middleware
                 next();
             } else {
+                console.log("Invalid token");
+
                 return res.status(401).json({
                     message: "Invalid token",
                 });

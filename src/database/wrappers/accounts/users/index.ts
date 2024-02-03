@@ -94,8 +94,13 @@ export class User extends DataModel implements UserModel {
         });
     }
 
-    public deleteUser(): Promise<boolean> {
+    public softDelete(): Promise<boolean> {
         return this.update({ deleted: true });
+    }
+
+    // This will delete the user from the database
+    public async deleteUser(): Promise<boolean> {
+        return await writes.permaDelete(this.id);
     }
 
     public async changePassword(newPassword: string): Promise<boolean> {

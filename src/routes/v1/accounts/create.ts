@@ -22,6 +22,7 @@ import fs from "fs";
 import { UserWrites } from "../../../database/wrappers/accounts/users/wrapper";
 import { ProfileWrites } from "../../../database/wrappers/accounts/profiles/wrapper";
 import { executeQuery } from "../../../database/connection";
+import { signToken, toUserPayload } from "../../../verification/jwt";
 
 async function validate(
     ip: string,
@@ -215,6 +216,9 @@ export default [
                     message: "Internal server error",
                 });
             }
+
+            result.id = parseInt(result.id as any);
+            login.id = parseInt(login.id as any);
 
             res.status(200).json(
                 getUserProfileResponse(result, login.id, profile)

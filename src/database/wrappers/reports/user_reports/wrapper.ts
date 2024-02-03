@@ -15,4 +15,8 @@ export class UserReportWrites {
             reason
         );
     }
+
+    static async deleteUserReports(user_id: number): Promise<boolean> {
+        return await writes.deleteUserReports(user_id);
+    }
 }

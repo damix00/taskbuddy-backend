@@ -73,6 +73,24 @@ namespace writes {
             return false;
         }
     }
+
+    export async function deleteUsersCompletions(
+        user_id: number
+    ): Promise<boolean> {
+        try {
+            const q = `
+                DELETE FROM job_completions
+                WHERE completed_by_id = $1;
+            `;
+
+            await executeQuery<JobCompletionFields>(q, [user_id]);
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
+    }
 }
 
 export default writes;
