@@ -12,8 +12,8 @@ export class FeedAlgorithm {
     filters: SessionFilters;
     session_id: number;
     user_id: number;
-    lat: number;
-    lon: number;
+    lat?: number;
+    lon?: number;
     loaded_post_ids: number[];
 
     constructor(
@@ -111,6 +111,11 @@ export class FeedAlgorithm {
                         ? ` AND post_tag_relationship.tag_id IN (${this.filters.tags.join(
                               ", "
                           )})`
+                        : ""
+                }
+                ${
+                    this.lat != null && this.lon != null
+                        ? `AND (post_location.lat IS NULL OR post_location.lon IS NULL OR (ST_Distance(ST_MakePoint(post_location.lon, post_location.lat), ST_MakePoint(${this.lon}, ${this.lat})) < post_location.suggestion_radius))`
                         : ""
                 }
                 ${condition}

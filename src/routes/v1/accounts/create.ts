@@ -177,9 +177,6 @@ export default [
                 });
             }
 
-            // Create a new user instance from the result
-            result = new User(result);
-
             // Create a new profile for the user
             const profile = await ProfileWrites.addProfile({
                 user_id: result.id,
