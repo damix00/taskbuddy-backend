@@ -9,7 +9,7 @@ import { NotificationWrites } from "../../../../database/wrappers/accounts/notif
 
 export default [
     requireMethod("PATCH"),
-    authorize(true),
+    authorize(true, false),
     async (req: ExtendedRequest, res: Response) => {
         try {
             const { fcm_token } = req.body;

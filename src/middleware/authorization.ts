@@ -8,7 +8,10 @@ import * as killswitches from "../utils/global_killswitches";
 import { UserReads } from "../database/wrappers/accounts/users/wrapper";
 
 // Middleware to authorize a user
-export function authorize(fetchProfile: boolean = false) {
+export function authorize(
+    fetchProfile: boolean = false,
+    phoneNumberVerified: boolean = true
+) {
     return async (req: ExtendedRequest, res: Response, next: NextFunction) => {
         if (killswitches.isKillswitchEnabled("DISABLE_AUTH")) {
             return res.status(503).json({
@@ -73,6 +76,14 @@ export function authorize(fetchProfile: boolean = false) {
 
                 return res.status(401).json({
                     message: "Invalid token",
+                });
+            }
+
+            if (phoneNumberVerified && !user.phone_number_verified) {
+                console.log("Phone number not verified");
+
+                return res.status(403).json({
+                    message: "Phone number not verified",
                 });
             }
 

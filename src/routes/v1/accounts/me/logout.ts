@@ -13,7 +13,7 @@ import {
 
 export default [
     requireMethod("POST"),
-    authorize(true),
+    authorize(true, false),
     async (req: ExtendedRequest, res: Response) => {
         try {
             const token = await NotificationReads.getLoginToken(req.login_id);

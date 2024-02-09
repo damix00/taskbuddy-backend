@@ -9,7 +9,7 @@ import setKillswitch from "../../../../../middleware/killswitch";
 export default [
     setKillswitch([KillswitchTypes.DISABLE_TWILIO]),
     requireMethod("POST"),
-    authorize(false),
+    authorize(false, false),
     async (req: ExtendedRequest, res: Response) => {
         if (!req.user) return;
 

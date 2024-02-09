@@ -5,7 +5,7 @@ import { getProfileResponse } from "../../responses";
 import _update from "./_update";
 
 export default [
-    authorize(true),
+    authorize(true, false),
     async (req: ExtendedRequest, res: Response) => {
         if (req.method.toUpperCase() === "GET") {
             return res.status(200).json(getProfileResponse(req.profile!));

@@ -7,7 +7,7 @@ import { KillswitchTypes } from "../../../../../database/models/killswitch";
 
 export default [
     setKillswitch([KillswitchTypes.DISABLE_TWILIO]),
-    authorize(false),
+    authorize(false, false),
     async (req: ExtendedRequest, res: Response) => {
         if (!req.user) return;
 

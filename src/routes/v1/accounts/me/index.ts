@@ -6,7 +6,7 @@ import { getUserProfileResponse } from "../responses";
 import { ExtendedRequest } from "../../../../types/request";
 
 export default [
-    authorize(true),
+    authorize(true, false),
     async (req: ExtendedRequest, res: Response) => {
         res.status(200).json(
             getUserProfileResponse(req.user!, req.login_id, req.profile!)
