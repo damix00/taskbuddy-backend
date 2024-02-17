@@ -211,12 +211,17 @@ export class User extends DataModel implements UserModel {
             return false;
         }
 
-        const res = await fcm.sendNotification(
-            notification,
-            tokens.map((t) => t.token)
-        );
+        try {
+            const res = await fcm.sendNotification(
+                notification,
+                tokens.map((t) => t.token)
+            );
 
-        return res.success;
+            return res.success;
+        } catch (e) {
+            console.error(e);
+            return false;
+        }
     }
 
     public sendSocketEvent(event: string, ...args: any[]) {
