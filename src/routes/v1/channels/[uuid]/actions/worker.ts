@@ -68,7 +68,7 @@ export default [
                     ),
                 });
 
-                await req.channel!.sendMessage(
+                const m = await req.channel!.sendMessage(
                     {
                         message: `This job has been rejected by ${
                             req.user!.first_name
@@ -78,6 +78,31 @@ export default [
                     },
                     null
                 );
+
+                req.channel?.getOtherUser(req.user!.id).sendNotification({
+                    title: `${req.user!.first_name} ${req.user!.last_name}`,
+                    body: "Rejected your job request",
+                    imageUrl:
+                        req.profile!.profile_picture?.length > 0
+                            ? req.profile!.profile_picture
+                            : undefined,
+                    data: {
+                        type: "channel",
+                        channel_uuid: req.channel!.uuid,
+                    },
+                });
+
+                if (m) {
+                    req.channel
+                        ?.getOtherUser(req.user!.id)
+                        .sendSocketEvent("chat", {
+                            message: getMessageResponse(
+                                m,
+                                req.channel!.getOtherUser(req.user!.id),
+                                req.channel!.uuid
+                            ),
+                        });
+                }
 
                 return res.status(200).json({
                     message: "Worker rejected",
