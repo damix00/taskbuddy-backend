@@ -102,6 +102,14 @@ export default [
                                 req.channel!.uuid
                             ),
                         });
+
+                    req.user!.sendSocketEvent("chat", {
+                        message: getMessageResponse(
+                            m,
+                            req.user!,
+                            req.channel!.uuid
+                        ),
+                    });
                 }
 
                 return res.status(200).json({
