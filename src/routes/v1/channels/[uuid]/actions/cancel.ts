@@ -15,14 +15,14 @@ export default [
             await req.channel!.cancel();
             await req.channel!.post.cancelReservation();
 
-            const isEmployee = req.channel!.post.user_id == req.user!.id;
+            const isEmployer = req.channel!.post.user_id == req.user!.id;
 
-            if (isEmployee) {
-                await req.profile!.setCancelledEmployee(
-                    req.profile!.cancelled_employee + 1
+            if (isEmployer) {
+                await req.profile!.setCancelledEmployer(
+                    req.profile!.cancelled_employer + 1
                 );
             } else {
-                await req.profile!.setCancelledEmployer(
+                await req.profile!.setCancelledEmployee(
                     req.profile!.cancelled_employee + 1
                 );
             }

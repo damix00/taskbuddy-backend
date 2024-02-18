@@ -38,8 +38,6 @@ export default [
                     "channel_seen",
                     socketData
                 );
-
-                console.log("sent");
             }
         } catch (err) {
             console.error(err);
