@@ -25,6 +25,8 @@ export default [
     listParser(["attachment_types"]),
     async (req: ChannelRequest, res: Response) => {
         try {
+            console.log("Got request");
+
             const { content } = req.body;
 
             const attachments: UploadedFile[] = [];
@@ -109,6 +111,8 @@ export default [
                     return;
                 }
             }
+
+            console.log("Uploading files");
 
             const files = await FirebaseStorage.uploadFiles(
                 attachments,
