@@ -107,7 +107,9 @@ async function handleComplete(
             await p.setCompletedEmployee(p.completed_employee + 1);
         }
 
-        req.profile!.setCompletedEmployer(req.profile!.completed_employer + 1);
+        await req.profile!.setCompletedEmployer(
+            req.profile!.completed_employer + 1
+        );
 
         req.channel?.created_by.sendSocketEvent("channel_update", {
             channel: getChannelResponse(req.channel!, req.channel!.created_by),
