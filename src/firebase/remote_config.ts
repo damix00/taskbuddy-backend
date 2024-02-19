@@ -14,6 +14,8 @@ class RemoteConfigData {
 
     static maxAttachments: number = 10;
 
+    static searchThreshold: number = 0; // Used for vector search threshold value for similarity search
+
     static async fetch() {
         const template = await remoteConfig().getTemplate();
         const params = template.parameters;
@@ -47,6 +49,11 @@ class RemoteConfigData {
         this.maxAttachments = parseInt(
             // @ts-ignore
             params["max_attachments"].defaultValue.value || 10
+        );
+
+        this.searchThreshold = parseFloat(
+            // @ts-ignore
+            params["search_threshold"].defaultValue.value || 0
         );
     }
 }

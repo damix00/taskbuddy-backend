@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import { PostWithRelations } from "../../../../models/posts/post";
+import RemoteConfigData from "../../../../../firebase/remote_config";
 
 const postFields = `posts.*,
 post_interactions.likes,
@@ -189,6 +190,8 @@ namespace reads {
         offset: number
     ): Promise<PostWithRelations[] | null> {
         try {
+            const threshold = RemoteConfigData.searchThreshold;
+
             const q = `
             SELECT
                 ${postFields},
@@ -208,14 +211,16 @@ namespace reads {
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
             WHERE post_removals.shadow_banned = false AND post_removals.removed = false AND posts.user_id != $2
             AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2)
+            AND title_vector <=> $1 > $3
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
             ORDER BY title_vector <=> $1
-            LIMIT 10 OFFSET $3
+            LIMIT 10 OFFSET $4
             `;
 
             const r = await executeQuery<PostWithRelations>(q, [
                 `[${query_vector}]`,
                 user_id,
+                threshold,
                 offset,
             ]);
 
