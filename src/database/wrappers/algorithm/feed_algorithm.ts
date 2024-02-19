@@ -125,7 +125,7 @@ export class FeedAlgorithm {
                 ${
                     following
                         ? ` AND EXISTS(SELECT 1 FROM follows WHERE follows.follower = ${this.user_id} AND follows.following = posts.user_id)`
-                        : ""
+                        : " AND posts.status = 0"
                 }
                 AND posts.end_date > NOW()
                 AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = ${
