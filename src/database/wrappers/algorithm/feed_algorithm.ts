@@ -87,7 +87,7 @@ export class FeedAlgorithm {
             LEFT JOIN post_location ON posts.post_location_id = post_location.id
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
-            WHERE ${
+            WHERE posts.status = 0 AND ${
                 this.loaded_post_ids.length > 0
                     ? ` posts.id NOT IN (${this.loaded_post_ids.join(", ")})`
                     : " true"
@@ -125,7 +125,7 @@ export class FeedAlgorithm {
                 ${
                     following
                         ? ` AND EXISTS(SELECT 1 FROM follows WHERE follows.follower = ${this.user_id} AND follows.following = posts.user_id)`
-                        : " AND posts.status = 0"
+                        : ""
                 }
                 AND posts.end_date > NOW()
                 AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = ${
