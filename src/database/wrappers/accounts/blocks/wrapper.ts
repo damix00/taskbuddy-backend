@@ -6,6 +6,7 @@ import { User } from "../users";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
+// Convert a block object to a Block class
 function toBlock(block: BlocksFields | null): Block | null {
     if (!block) return null;
 
@@ -13,10 +14,12 @@ function toBlock(block: BlocksFields | null): Block | null {
 }
 
 export class BlockReads {
+    // Get a block by the ID
     static async getBlockById(id: number): Promise<Block | null> {
         return toBlock(await reads.getBlockById(id));
     }
 
+    // Checks if user1 has blocked user2
     static async isBlocked(blocker: number, blocked: number): Promise<boolean> {
         return await reads.isBlocked(blocker, blocked);
     }
@@ -31,7 +34,7 @@ export class BlockReads {
             profile: Profile;
         }[]
     > {
-        const r = await reads.getBlocks(user_id, offset, limit);
+        const r = await reads.getBlocks(user_id, offset, limit); // Execute the SQL query
 
         if (!r) return [];
 
@@ -41,6 +44,7 @@ export class BlockReads {
         }));
     }
 
+    // Checks if user1 has blocked user2 or vice versa
     static async isEitherBlocked(
         user1: number,
         user2: number

@@ -9,6 +9,7 @@ import Post from "../../posts/post";
 import reads from "./queries/reads";
 import writes from "./queries/writes";
 
+// This is returned from the database
 interface DatabaseChannel extends ChannelWithRelations {
     media: PostMedia[];
     tags: PostTags[];
@@ -38,6 +39,7 @@ interface DatabaseChannel extends ChannelWithRelations {
     last_message_senders: User[];
 }
 
+// Convert a channel object to a Channel class
 function toChannel(channel: ChannelWithRelations | null) {
     if (!channel) return null;
 
@@ -62,6 +64,7 @@ function toChannel(channel: ChannelWithRelations | null) {
     channel.created_by = new User(channel.created_by, false);
     channel.recipient = new User(channel.recipient, false);
 
+    // Convert the post to a Post class
     channel.post = new Post(
         {
             ...channel.post,
@@ -90,6 +93,7 @@ function toChannel(channel: ChannelWithRelations | null) {
         false
     );
 
+    // Convert the last message senders to User classes
     channel.last_messages.map((message, i) => {
         message.id = parseInt(message.id as any);
         message.channel_id = parseInt(message.channel_id as any);

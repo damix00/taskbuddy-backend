@@ -7,24 +7,27 @@ import os from "os";
 import path from "path";
 import fs from "fs";
 
+// This class is used to interact with Firebase Storage
 export default class FirebaseStorage {
+    // The bucket instance for Firebase Storage, used to interact with the storage
     static bucket: Bucket;
 
     static init() {
-        this.bucket = getStorage().bucket();
+        this.bucket = getStorage().bucket(); // Get the default bucket
     }
 
     static async doesFileExist(filename: string) {
-        const file = this.bucket.file(filename);
-        const exists = await file.exists();
+        const file = this.bucket.file(filename); // Get the file
+        const exists = await file.exists(); // Check if the file exists
 
-        return exists[0];
+        return exists[0]; // Return the result
     }
 
     static async generateUniqueFile(ext: string): Promise<string> {
-        let name = randomString(120) + "." + ext;
+        let name = randomString(120) + "." + ext; // Generate a random name
 
         while (await this.doesFileExist(name)) {
+            // While the file exists, generate a new name until it's unique
             name = randomString(120) + "." + ext;
         }
 
@@ -32,25 +35,30 @@ export default class FirebaseStorage {
     }
 
     static async uploadFile(path: string, mimetype: string, extension: string) {
-        const name = await this.generateUniqueFile(extension);
+        const name = await this.generateUniqueFile(extension); // Generate a unique name for the file
 
+        // Upload the file to the storage
         return await this.bucket.upload(path, {
             destination: `uploads/${name}`,
             metadata: {
                 contentType: mimetype,
-                cacheControl: "public, max-age=31536000",
+                cacheControl: "public, max-age=31536000", // Cache the file for 1 year
             },
         });
     }
 
     static async deleteFile(path: string) {
+        // Create a URL object from the path
         const url = new URL(path);
-        url.search = "";
+        url.search = ""; // Remove the search parameters
 
+        // Split the URL by the slashes
         const p = url.toString().split("/");
 
+        // Get the file from the storage by the last part of the URL (the ID of the file)
         const file = this.bucket.file(decodeURIComponent(p[p.length - 1]));
 
+        // Delete the file
         return await file.delete();
     }
 

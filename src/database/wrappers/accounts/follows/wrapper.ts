@@ -16,6 +16,7 @@ export class FollowReads {
         return toFollow(await reads.getFollowById(id));
     }
 
+    // Check if user1 follows user2
     static async isFollowing(
         follower: number,
         following: number

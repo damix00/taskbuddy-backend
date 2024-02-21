@@ -7,7 +7,6 @@ export async function checkText(text: string): Promise<boolean> {
         });
 
         if (result.results.length === 0) {
-            // OpenAI error, should never happen
             return false; // We don't know if it's safe or not, so we'll assume it is
         }
 

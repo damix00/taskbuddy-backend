@@ -4,6 +4,7 @@ import { ProfileFields } from "../../../../models/users/profile";
 import { UserFields } from "../../../../models/users/user";
 
 namespace reads {
+    // Get a follow by the ID
     export async function getFollowById(id: number) {
         try {
             const q = `
@@ -28,6 +29,7 @@ namespace reads {
         }
     }
 
+    // Check if user1 follows user2
     export async function isFollowing(
         follower: number,
         following: number
@@ -55,6 +57,7 @@ namespace reads {
         }
     }
 
+    // Check if user1 follows user2 and vice versa
     export async function isMutual(
         user_id: number,
         other_user_id: number
@@ -86,6 +89,7 @@ namespace reads {
         }
     }
 
+    // Get the followers of a user
     export async function getFollowers(
         user_id: number,
         offset: number = 0

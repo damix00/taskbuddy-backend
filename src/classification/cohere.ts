@@ -1,6 +1,7 @@
 import { CohereClient } from "cohere-ai";
 import { cohereToken } from "../config";
 
+// Create an instance of the Cohere API client
 const cohere = new CohereClient({
     token: cohereToken,
 });
@@ -26,6 +27,7 @@ export async function classifyCategory(
     const response = await cohere.classify({
         inputs: [text],
         examples: [
+            // This is a list of examples for each category, used to train the model
             {
                 label: "general", // General
                 text:

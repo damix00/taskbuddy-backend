@@ -1,18 +1,18 @@
 import { remoteConfig } from "firebase-admin";
 
 class RemoteConfigData {
-    static minPrice: number = 1;
-    static maxPrice: number = 10000;
+    static minPrice: number = 1; // Used for the minimum price of a job
+    static maxPrice: number = 10000; // Used for the maximum price of a job
 
-    static minRadius: number = 5;
-    static maxRadius: number = 100;
+    static minRadius: number = 5; // Used for the minimum radius in a post
+    static maxRadius: number = 100; // Used for the maximum radius in a post
 
-    static minMedia: number = 1;
-    static maxMedia: number = 25;
+    static minMedia: number = 1; // Used for the minimum number of media in a message
+    static maxMedia: number = 25; // Used for the maximum number of media in a message
 
-    static recentMessagesCount: number = 10;
+    static recentMessagesCount: number = 10; // Used for the number of recent messages to fetch
 
-    static maxAttachments: number = 10;
+    static maxAttachments: number = 10; // Used for the maximum number of attachments in a message
 
     static searchThreshold: number = 0; // Used for vector search threshold value for similarity search
 
