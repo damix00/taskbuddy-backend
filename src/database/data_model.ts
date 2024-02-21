@@ -6,16 +6,16 @@ export class DataModel {
     }
 
     // Called on every update function
-    // If refetchOnUpdate is true, refetches the user from the database
-    // Used to keep the user instance up to date
+    // If refetchOnUpdate is true, refetches the row from the database
+    // Used to keep the row instance up to date
     protected async _refetch(): Promise<void> {
         if (this.refetchOnUpdate) {
             this.refetch();
         }
     }
 
-    // Refetches the user from the database
-    // Used to keep the user instance up to date
+    // Refetches the row from the database
+    // Used to keep the row instance up to date
     public async refetch(): Promise<void> {
         throw new Error("Method not implemented.");
     }

@@ -103,14 +103,17 @@ export class UserReads {
 }
 
 export class UserWrites {
+    // Create a new user account, and return the user object
     static async addUser(user: writes.PartialUser): Promise<User | null> {
         return toUser(await writes.addUser(user));
     }
 
+    // Update a user's information
     static async updateUser(user: UserModel): Promise<boolean> {
         return await writes.updateUser(user);
     }
 
+    // Delete an account
     static async permaDelete(id: number): Promise<boolean> {
         return await writes.permaDelete(id);
     }
