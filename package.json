@@ -40,7 +40,7 @@
         "start": "tsc && node out/src/index.js",
         "build-windows": "rmdir /q /s out && tsc",
         "build": "rm -rf out && tsc",
-        "test-windows": "(if exist out\\tests del /q out\\tests) && echo Compiling TypeScript && tsc && echo Dome compiling. Running tests. && npx jest",
+        "test-windows": "(if exist out\\tests del /q out\\tests) && echo Compiling TypeScript && tsc && echo Dome compiling. Running tests. && npx jest --",
         "test": "rm -rf out/tests && tsc && npx jest"
     },
     "author": "damix",

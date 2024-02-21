@@ -25,8 +25,12 @@ export function connect() {
     });
 }
 
-export function disconnect() {
-    return pool.end();
+export async function disconnect() {
+    for (const client of (pool as any).clients) {
+        await client.release();
+    }
+
+    await pool.end();
 }
 
 /**

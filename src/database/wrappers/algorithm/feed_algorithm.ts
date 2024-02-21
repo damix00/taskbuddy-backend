@@ -271,7 +271,12 @@ export class FeedAlgorithm {
             }
 
             // Get the remaining random posts
-            const randomPosts = await this.getPosts(randomCount);
+            const randomPosts = await this.getPosts(
+                randomCount,
+                "",
+                false,
+                true
+            );
 
             tmpPosts.push(...randomPosts);
             this.loaded_post_ids.push(...randomPosts.map((p) => p.id));
