@@ -38,8 +38,15 @@
     "scripts": {
         "dev": "concurrently \"tsc --watch\" \"tsc && nodemon out/src/index.js\"",
         "start": "tsc && node out/src/index.js",
-        "test": "tsc && npx jest"
+        "build-windows": "rmdir /q /s out && tsc",
+        "build": "rm -rf out && tsc",
+        "test-windows": "(if exist out\\tests del /q out\\tests) && echo Compiling TypeScript && tsc && echo Dome compiling. Running tests. && npx jest",
+        "test": "rm -rf out/tests && tsc && npx jest"
     },
     "author": "damix",
-    "license": "ISC"
+    "license": "ISC",
+    "moduleDirectories": [
+        "node_modules",
+        "out"
+    ]
 }

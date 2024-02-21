@@ -122,6 +122,19 @@ namespace writes {
             return false;
         }
     }
+
+    export async function deleteChannel(id: number): Promise<boolean> {
+        try {
+            const q = `DELETE FROM channels WHERE id = $1`;
+
+            await executeQuery(q, [id]);
+
+            return true;
+        } catch (err) {
+            console.error(err);
+            return false;
+        }
+    }
 }
 
 export default writes;

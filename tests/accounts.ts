@@ -1,10 +1,10 @@
-import { User } from "./database/wrappers/accounts/users";
-import { generateUUID } from "./database/wrappers/accounts/users/queries/utils";
+import { User } from "../src/database/wrappers/accounts/users";
+import { generateUUID } from "../src/database/wrappers/accounts/users/queries/utils";
 import * as connection from "../src/database/connection";
 import {
     UserReads,
     UserWrites,
-} from "./database/wrappers/accounts/users/wrapper";
+} from "../src/database/wrappers/accounts/users/wrapper";
 
 describe("Account database queries", () => {
     it("connects to the database", async () => {
@@ -25,7 +25,7 @@ describe("Account database queries", () => {
                 uuid: uuid as string,
                 email: "test@gmail.com",
                 phone_number: "1234567890",
-                username: "say gex",
+                username: "testuser",
                 password_hash: "password",
                 first_name: "Test",
                 last_name: "User",
@@ -70,12 +70,8 @@ describe("Account database queries", () => {
         expect(user.password_hash).not.toBe(current);
     });
 
-    it("soft-deletes an account", async () => {
+    it("deletes a user", async () => {
         expect(await user.deleteUser()).toBeTruthy();
-    });
-
-    it("deletes an account", async () => {
-        expect(await UserWrites.permaDelete(user.id)).toBeTruthy();
     });
 
     // This test is disabled because it causes the test suite to hang

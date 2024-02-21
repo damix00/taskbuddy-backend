@@ -91,9 +91,11 @@ export namespace writes {
 
     export async function permaDelete(id: number): Promise<boolean> {
         try {
-            const query =
-                "DELETE FROM profiles WHERE user_id = $1; DELETE FROM users WHERE id = $1";
+            const query = "DELETE FROM profiles WHERE user_id = $1";
             await executeQuery<UserModel>(query, [id]);
+
+            const q2 = "DELETE FROM users WHERE id = $1";
+            await executeQuery<UserModel>(q2, [id]);
 
             return true;
         } catch (e) {

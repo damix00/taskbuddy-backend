@@ -53,4 +53,5 @@ export interface ChannelModel extends ChannelWithRelations {
         sender: User,
         profile_picture: string
     ) => Promise<Message | null>;
+    deleteChannel: () => Promise<boolean>;
 }

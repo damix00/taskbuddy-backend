@@ -148,6 +148,10 @@ class Channel extends DataModel implements ChannelModel {
             console.error(err);
         }
     }
+
+    public deleteChannel(): Promise<boolean> {
+        return writes.deleteChannel(this.id);
+    }
 }
 
 export default Channel;
