@@ -104,4 +104,8 @@ describe("Channel database queries", () => {
             expect(deleted).toBeTruthy();
         });
     });
+
+    it("disconnects from the database", async () => {
+        connection.disconnect();
+    });
 });

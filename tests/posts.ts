@@ -88,4 +88,8 @@ describe("Post database queries", () => {
 
         expect(deleted).toBeTruthy();
     });
+
+    it("disconnects from the database", async () => {
+        connection.disconnect();
+    });
 });

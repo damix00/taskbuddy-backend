@@ -74,9 +74,7 @@ describe("Account database queries", () => {
         expect(await user.deleteUser()).toBeTruthy();
     });
 
-    // This test is disabled because it causes the test suite to hang
-
-    // it("disconnects from the database", async () => {
-    //     expect(await connection.disconnect()).toBeTruthy();
-    // });
+    it("disconnects from the database", async () => {
+        connection.disconnect();
+    });
 });
