@@ -78,7 +78,7 @@ if (cluster.isMaster) {
     for (
         let i = 0;
         i <
-        (process.env?.PRODUCTION_MODE?.toLowerCase() == "true"
+        (process.env?.PRODUCTION_MODE?.toString() == "true"
             ? os.cpus().length
             : 1);
         i++

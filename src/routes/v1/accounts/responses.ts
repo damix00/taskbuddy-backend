@@ -23,7 +23,7 @@ export function getUserResponse(user: UserFields, login_id: number) {
             // verify_email: !user.email_verified,
             verify_email: false, // Disable email verification because it is not needed
             verify_phone_number:
-                process.env.DISABLE_PHONE_VERIFICATION == "true"
+                process.env.DISABLE_PHONE_VERIFICATION?.toString() == "true"
                     ? false
                     : !user.phone_number_verified,
         },
