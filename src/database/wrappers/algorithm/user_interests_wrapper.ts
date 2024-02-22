@@ -3,10 +3,10 @@ import { UserInterestsFields } from "../../models/algorithm/user_interests";
 
 export enum InterestValues {
     INTERACTION = 1, // An interaction is when a user spends significant time on a post
-    BOOKMARK = 2, // A bookmark is when a user saves a post
-    UNBOOKMARK = -2, // An unbookmark is when a user removes a post from their bookmarks
-    LIKE = 3,
-    UNLIKE = -3,
+    BOOKMARK = 3, // A bookmark is when a user saves a post
+    UNBOOKMARK = -3, // An unbookmark is when a user removes a post from their bookmarks
+    LIKE = 2,
+    UNLIKE = -2,
     MESSAGE = 4, // When a user creates a chat channel about a post
     COMPLETE = 7, // When a user completes a job
 }
