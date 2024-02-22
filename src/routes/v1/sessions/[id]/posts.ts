@@ -71,6 +71,11 @@ export default [
                     getPostResultResponse(post, req.user!)
                 ),
             });
+
+            // Add a view to each post
+            for (const post of posts) {
+                post.addImpression();
+            }
         } catch (err) {
             console.error(err);
             res.status(500).json({
