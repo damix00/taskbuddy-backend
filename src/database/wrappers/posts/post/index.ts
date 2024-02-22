@@ -320,13 +320,13 @@ class Post extends DataModel implements PostWithRelationsModel {
     }
 
     public async reserve(): Promise<boolean> {
-        return await this.update({
+        return await this.updatePostData({
             reserved: true,
         });
     }
 
     public async complete(): Promise<boolean> {
-        return await this.update({
+        return await this.updatePostData({
             status: PostStatus.COMPLETED,
         });
     }
@@ -384,7 +384,7 @@ class Post extends DataModel implements PostWithRelationsModel {
 
     public async cancelReservation(): Promise<boolean> {
         try {
-            return await this.update({
+            return await this.updatePostData({
                 reserved: false,
             });
         } catch (e) {
@@ -395,7 +395,7 @@ class Post extends DataModel implements PostWithRelationsModel {
 
     public async close(): Promise<boolean> {
         try {
-            return await this.update({
+            return await this.updatePostData({
                 status: PostStatus.CLOSED,
             });
         } catch (e) {
@@ -406,7 +406,7 @@ class Post extends DataModel implements PostWithRelationsModel {
 
     public async reopen(): Promise<boolean> {
         try {
-            return await this.update({
+            return await this.updatePostData({
                 status: PostStatus.OPEN,
             });
         } catch (e) {
@@ -417,7 +417,7 @@ class Post extends DataModel implements PostWithRelationsModel {
 
     public async expire(): Promise<boolean> {
         try {
-            return await this.update({
+            return await this.updatePostData({
                 status: PostStatus.EXPIRED,
             });
         } catch (e) {
