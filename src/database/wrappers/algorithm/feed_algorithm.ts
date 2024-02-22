@@ -197,6 +197,7 @@ export class FeedAlgorithm {
             switch (categories.length) {
                 case 0:
                     randomCount = limit - followingCount;
+
                     break;
                 case 1:
                     randomCount = Math.floor(
@@ -204,10 +205,11 @@ export class FeedAlgorithm {
                     );
                     // The first element is the remaining
                     categoryCounts[0] = limit - followingCount - randomCount;
+
                     break;
                 case 2:
                     randomCount = Math.floor(
-                        limit - followingCount - limit * 0.6
+                        limit - followingCount - limit * 0.5
                     );
                     // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
                     categoryCounts[0] = Math.floor(
@@ -222,12 +224,13 @@ export class FeedAlgorithm {
                     categoryCounts[1] = Math.floor(
                         limit - followingCount - randomCount - categoryCounts[0]
                     );
+
                     break;
                 default:
                     // Random distribution.
                     // First element has most posts, second element has less posts, third element has least posts
                     randomCount = Math.floor(
-                        limit - followingCount - limit * 0.8
+                        limit - followingCount - limit * 0.6
                     );
 
                     // The first element is random between 10% and 50% of (limit - followingCount - randomCount)
@@ -259,6 +262,8 @@ export class FeedAlgorithm {
                             categoryCounts[0] -
                             categoryCounts[1]
                     );
+
+                    break;
             }
 
             for (let i = 0; i < categories.length; i++) {
