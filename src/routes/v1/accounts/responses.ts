@@ -22,7 +22,10 @@ export function getUserResponse(user: UserFields, login_id: number) {
         required_actions: {
             // verify_email: !user.email_verified,
             verify_email: false, // Disable email verification because it is not needed
-            verify_phone_number: !user.phone_number_verified,
+            verify_phone_number:
+                process.env.DISABLE_PHONE_VERIFICATION == "true"
+                    ? false
+                    : !user.phone_number_verified,
         },
         login_id,
         token: signToken(toUserPayload(user, login_id)),
