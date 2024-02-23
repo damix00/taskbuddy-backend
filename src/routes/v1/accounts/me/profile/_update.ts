@@ -28,6 +28,10 @@ export default async (req: ExtendedRequest, res: Response) => {
             username,
         } = req.body;
 
+        console.log(req.body);
+        console.log(req.user);
+        console.log(req.profile);
+
         const { profile_picture } = req.files || {};
 
         if (!req.profile || !req.user) return;
@@ -94,6 +98,8 @@ export default async (req: ExtendedRequest, res: Response) => {
         });
 
         if (!success) {
+            console.error("Failed to update profile");
+
             return res.status(500).json({
                 message: "Internal server error",
             });

@@ -79,7 +79,11 @@ export function authorize(
                 });
             }
 
-            if (phoneNumberVerified && !user.phone_number_verified) {
+            if (
+                phoneNumberVerified &&
+                process.env.DISABLE_PHONE_VERIFICATION?.toString() != "true" &&
+                !user.phone_number_verified
+            ) {
                 console.log("Phone number not verified");
 
                 return res.status(403).json({
@@ -108,7 +112,7 @@ export function authorize(
                     if (profile) {
                         req.profile = profile;
                         req.profile.id = parseInt(
-                            req.user.id as unknown as string
+                            req.profile.id as unknown as string
                         );
                     }
                 }

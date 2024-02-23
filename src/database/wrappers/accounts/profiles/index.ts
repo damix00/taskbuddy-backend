@@ -73,7 +73,7 @@ export class Profile extends DataModel implements ProfileModel {
 
     // Updates the class instance with new data
     public override async refetch() {
-        const result = await reads.getProfileById(this.id);
+        const result = await reads.getProfileById(parseInt(this.id as any));
 
         if (!result) return;
 
@@ -91,7 +91,7 @@ export class Profile extends DataModel implements ProfileModel {
         const newProfile = { ...this, ...data };
         super.setData(newProfile); // Update the class instance
 
-        const r = await writes.updateProfile(this.getFields()); // Update the database
+        const r = await writes.updateProfile(this); // Update the database
 
         await this._refetch(); // Refetch the class instance if refetchOnUpdate is true
 
