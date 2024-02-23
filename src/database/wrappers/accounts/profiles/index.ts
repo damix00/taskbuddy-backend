@@ -75,7 +75,7 @@ export class Profile extends DataModel implements ProfileModel {
     public override async refetch() {
         const result = await reads.getProfileById(this.id);
 
-        if (!result) throw new Error("Profile not found");
+        if (!result) return false;
 
         super.setData(result);
     }
