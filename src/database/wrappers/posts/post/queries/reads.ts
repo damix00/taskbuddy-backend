@@ -269,7 +269,7 @@ namespace reads {
             AND posts.end_date > NOW()
             -- Post is within the posts suggestion radius or the user is following the author, postgis distance is in meters so divide by 1000 to get kilometers
             AND ((ST_DistanceSphere(ST_MakePoint($3, $2), ST_MakePoint(post_location.lon, post_location.lat)) / 1000) <= post_location.suggestion_radius OR EXISTS(SELECT 1 FROM follows WHERE follows.follower = $1 AND follows.following = posts.user_id))
-            AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $1)
+            AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $1) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $1 AND blocks.blocked = posts.user_id)
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
             ORDER BY ST_DistanceSphere(ST_MakePoint($3, $2), ST_MakePoint(post_location.lon, post_location.lat)) ASC
             LIMIT 10 OFFSET $4
