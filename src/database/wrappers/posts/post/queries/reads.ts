@@ -210,7 +210,7 @@ namespace reads {
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
             WHERE post_removals.shadow_banned = false AND post_removals.removed = false AND posts.user_id != $2
-            AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2)
+            AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = posts.user_id)
             AND title_vector <=> $1 > $3
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
             ORDER BY title_vector <=> $1
