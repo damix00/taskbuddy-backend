@@ -1,3 +1,6 @@
+// This is the cache for the killswitches
+// Also used to reduce the amount of database queries and improve performance
+
 import { Killswitch } from "../database/wrappers/killswitches";
 import { getKillswitches } from "../database/wrappers/killswitches/reads";
 

@@ -14,8 +14,8 @@ export async function initSocketServer(server: any) {
         payload     bytea
     )`);
 
-    io = new Server(server);
-    io.adapter(createAdapter(getPool()));
+    io = new Server(server); // Create the socket.io server
+    io.adapter(createAdapter(getPool())); // Use the Postgres adapter for socket.io
 
     io.on("connection", async (socket) => {
         console.log("Socket connected");

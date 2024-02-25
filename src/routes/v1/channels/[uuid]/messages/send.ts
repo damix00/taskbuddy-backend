@@ -17,9 +17,12 @@ import path from "path";
 import fs from "fs";
 import { AttachmentType } from "../../../../../database/models/chats/messages";
 import { listParser } from "../../../../../middleware/parsers";
+import setKillswitch from "../../../../../middleware/killswitch";
+import { KillswitchTypes } from "../../../../../database/models/killswitch";
 
 export default [
     requireMethod("POST"),
+    setKillswitch([KillswitchTypes.DISABLE_CHAT]),
     authorize(true),
     withChannel,
     listParser(["attachment_types"]),

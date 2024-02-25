@@ -55,6 +55,14 @@ export function randomNearbyLocation(
     return { lat: newLat, lon: newLng };
 }
 
+/**
+ * Returns the distance between two coordinates in meters
+ * @param lat1 Latitude of the first location
+ * @param lng1 Longitude of the first location
+ * @param lat2 Latitude of the second location
+ * @param lng2 Longitude of the second location
+ * @returns Distance in meters
+ */
 export function geoDistance(
     lat1: number,
     lng1: number,

@@ -5,8 +5,10 @@ import { accountSid, authToken, verifySid } from "../config";
 import { User } from "../database/wrappers/accounts/users";
 import { UserReads } from "../database/wrappers/accounts/users/wrapper";
 
+// Create a Twilio client
 const client = twilio(accountSid, authToken);
 
+// Send an OTP to the user's phone number via a specific channel (SMS or call)
 async function sendOTPViaChannel(uuid: string, channel: string) {
     const user = await UserReads.getUserByUUID(uuid);
 
@@ -26,6 +28,7 @@ export async function sendOTP(uuid: string) {
     return await sendOTPViaChannel(uuid, "sms");
 }
 
+// Call the user's phone number with an OTP
 export async function callOTP(uuid: string) {
     return await sendOTPViaChannel(uuid, "call");
 }
@@ -44,6 +47,8 @@ export async function verifyOTP(uuid: string, code: string) {
 
     user = new User(user);
 
+    // Send the verification code to Twilio and get the result
+    // Twilio automatically handles the code checking, so we don't need to do it ourselves
     const result = await client.verify.v2
         .services(verifySid)
         .verificationChecks.create({ to: user.phone_number, code });

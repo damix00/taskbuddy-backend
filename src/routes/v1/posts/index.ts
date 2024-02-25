@@ -30,9 +30,12 @@ import path from "path";
 import { randomNearbyLocation } from "../../../utils/utils";
 import { getPostResponse } from "./responses";
 import { checkText } from "../../../classification/text_check";
+import setKillswitch from "../../../middleware/killswitch";
+import { KillswitchTypes } from "../../../database/models/killswitch";
 
 export default [
     authorize(true),
+    setKillswitch([KillswitchTypes.DISABLE_POSTING]),
     intParser(["job_type"]),
     floatParser(["location_lat", "location_lon", "price", "suggestion_radius"]),
     boolParser(["is_remote", "is_urgent"]),

@@ -24,4 +24,6 @@ export enum KillswitchTypes {
     DISABLE_ALL = "disable_all",
     DISABLE_FAKE_DELAY = "disable_fake_delay",
     DISABLE_TWILIO = "disable_twilio",
+    DISABLE_POSTING = "disable_posting",
+    DISABLE_CHAT = "disable_chat",
 }

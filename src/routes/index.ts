@@ -1,3 +1,7 @@
+// Purpose: Main file for routing in the application. This file contains all the routes for the application.
+// The routes are organized into different categories such as user, posts, messages, etc.
+// Each category of routes is then organized into an array of route objects. Each route object contains a path and a handler.
+
 import checkExistence from "./v1/accounts/check-existence";
 import create from "./v1/accounts/create";
 import login from "./v1/accounts/login";
@@ -341,6 +345,7 @@ const reviewRoutes: route[] = [
     },
 ];
 
+// This is the main array of routes that will be used in the application
 const routes: route[] = [
     ...messageRoutes,
     ...channelRoutes,

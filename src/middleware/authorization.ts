@@ -135,29 +135,6 @@ export function authorize(
     };
 }
 
-// Require verified phone number and email
-export async function requireVerifiedInfo(
-    req: ExtendedRequest,
-    res: Response,
-    next: NextFunction
-) {
-    const user = req.user!;
-
-    // If the user is not verified, return error
-    if (user.email_verified || user.phone_number_verified) {
-        next();
-        return;
-    }
-
-    return res.status(403).json({
-        message: "Forbidden",
-        required_actions: {
-            verify_email: !user.email_verified,
-            verify_phone_number: !user.phone_number_verified,
-        },
-    });
-}
-
 export async function requireAdmin(
     req: ExtendedRequest,
     res: Response,

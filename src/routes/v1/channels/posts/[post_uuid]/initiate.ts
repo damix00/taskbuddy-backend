@@ -16,9 +16,12 @@ import {
     InterestValues,
     UserInterests,
 } from "../../../../../database/wrappers/algorithm/user_interests_wrapper";
+import setKillswitch from "../../../../../middleware/killswitch";
+import { KillswitchTypes } from "../../../../../database/models/killswitch";
 
 export default [
     requireMethod("POST"),
+    setKillswitch([KillswitchTypes.DISABLE_CHAT]),
     authorize(true),
     async (req: ExtendedRequest, res: Response) => {
         try {

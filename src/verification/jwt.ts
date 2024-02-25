@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { UserFields, UserModel } from "../database/models/users/user";
 
+// This is the payload of the JWT token
 export type UserPayload = {
     id: number; // User ID
     uuid: string; // Unique identifier
@@ -12,16 +13,19 @@ export type UserPayload = {
     login_id: number;
 };
 
+// Sign a token with the payload and the secret
 export function signToken(payload: UserPayload): string {
     return jwt.sign(payload, process.env.JWT_SECRET as string, {
         expiresIn: "7d",
     });
 }
 
+// Verify a token and return the payload
 export function verifyToken(token: string): UserPayload {
     return jwt.verify(token, process.env.JWT_SECRET as string) as UserPayload;
 }
 
+// Create a payload from a user model
 export function toUserPayload(user: UserFields, login_id: number): UserPayload {
     return {
         id: parseInt(user.id as any),

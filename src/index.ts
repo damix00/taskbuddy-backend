@@ -14,6 +14,7 @@ import initFirebase from "./firebase/config";
 import { createServer } from "http";
 import { initSocketServer } from "./socket/socket_server";
 
+// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -46,8 +47,8 @@ app.use(
     })
 );
 app.use(route_killswitch); // Check if route is disabled
-app.use(logger);
-app.use(express.json());
+app.use(logger); // Log all requests
+app.use(express.json()); // JSON parser
 app.disable("etag"); // Disable 304 responses
 // @ts-ignore
 app.use(userAgent); // add user agent to request

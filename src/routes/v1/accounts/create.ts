@@ -57,6 +57,7 @@ async function validate(
     }
 
     // Check if the captcha is valid
+    // Disabled as it's hard to implement in the mobile app
     // if (await checkCaptcha(captcha, ip)) {
     //     return false;
     // }
