@@ -59,10 +59,6 @@ export default [
 
                 await BlockWrites.block(req.user!.id, user.id);
 
-                // Unfollow
-                await FollowWrites.unfollow(req.user!.id, user.id);
-                await FollowWrites.unfollow(user.id, req.user!.id);
-
                 // Update follower/following count
                 if (await FollowReads.isFollowing(req.user!.id, user.id)) {
                     await req.profile!.setFollowing(req.profile!.following - 1);
@@ -73,6 +69,10 @@ export default [
                     await profile.setFollowing(profile.following - 1);
                     await req.profile!.setFollowers(req.profile!.followers - 1);
                 }
+
+                // Unfollow
+                await FollowWrites.unfollow(req.user!.id, user.id);
+                await FollowWrites.unfollow(user.id, req.user!.id);
             } else {
                 if (!(await BlockReads.isBlocked(req.user!.id, user.id))) {
                     return res.status(400).json({
