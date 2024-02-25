@@ -17,7 +17,7 @@ describe("Post database queries", () => {
         post = (await PostWrites.createPost({
             title: "Test Post",
             description: "This is a test post",
-            user_id: 13, // This must be a valid user ID
+            user_id: 45, // This must be a valid user ID
             title_vector: "[1, 2, 3]",
             classified_category: 1,
             tags: [1],

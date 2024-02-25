@@ -16,9 +16,9 @@ describe("Channel database queries", () => {
 
     it("adds a channel to the database", async () => {
         channel = (await ChannelWrites.createChannel({
-            created_by_id: 13,
-            recipient_id: 14,
-            post_id: 9,
+            created_by_id: 15,
+            recipient_id: 45,
+            post_id: 15,
             negotiated_price: 5,
             negotiated_date: new Date(),
         })) as Channel;
@@ -27,7 +27,7 @@ describe("Channel database queries", () => {
     });
 
     it("gets a channel by ID", async () => {
-        const channelById = await ChannelReads.getChannelById(channel.id, 13);
+        const channelById = await ChannelReads.getChannelById(channel.id, 45);
 
         expect(channelById).toBeTruthy();
 
@@ -39,7 +39,7 @@ describe("Channel database queries", () => {
     it("gets a channel by UUID", async () => {
         const channelByUUID = await ChannelReads.getChannelByUUID(
             channel.uuid,
-            13
+            15
         );
 
         expect(channelByUUID).toBeTruthy();
@@ -48,11 +48,14 @@ describe("Channel database queries", () => {
     });
 
     it("gets a channel by post ID", async () => {
-        const channelByPostId = await ChannelReads.getChannelByPostId(9, 13);
+        const channelByPostId = await ChannelReads.getChannelByPostId(
+            channel.post_id,
+            15
+        );
 
         expect(channelByPostId).toBeTruthy();
 
-        expect(channelByPostId?.post_id).toBe(9);
+        expect(channelByPostId?.post_id).toBe(channel.post_id);
     });
 
     it("updates the channel", async () => {
@@ -79,7 +82,7 @@ describe("Channel database queries", () => {
         it("adds a message to the database", async () => {
             message = (await channel.sendMessage(
                 {
-                    sender_id: 13,
+                    sender_id: 45,
                     channel_id: channel.id,
                     message: "This is a test message",
                     system_message: false,
