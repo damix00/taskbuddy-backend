@@ -10,7 +10,10 @@ import {
     BlockReads,
     BlockWrites,
 } from "../../../../database/wrappers/accounts/blocks/wrapper";
-import { FollowWrites } from "../../../../database/wrappers/accounts/follows/wrapper";
+import {
+    FollowReads,
+    FollowWrites,
+} from "../../../../database/wrappers/accounts/follows/wrapper";
 
 export default [
     authorize(true),
@@ -61,11 +64,15 @@ export default [
                 await FollowWrites.unfollow(user.id, req.user!.id);
 
                 // Update follower/following count
-                await req.profile!.setFollowing(req.profile!.following - 1);
-                await profile.setFollowers(profile.followers - 1);
+                if (await FollowReads.isFollowing(req.user!.id, user.id)) {
+                    await req.profile!.setFollowing(req.profile!.following - 1);
+                    await profile.setFollowers(profile.followers - 1);
+                }
 
-                await profile.setFollowing(profile.following - 1);
-                await req.profile!.setFollowers(req.profile!.followers - 1);
+                if (await FollowReads.isFollowing(user.id, req.user!.id)) {
+                    await profile.setFollowing(profile.following - 1);
+                    await req.profile!.setFollowers(req.profile!.followers - 1);
+                }
             } else {
                 if (!(await BlockReads.isBlocked(req.user!.id, user.id))) {
                     return res.status(400).json({
