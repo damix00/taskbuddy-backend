@@ -9,6 +9,10 @@ import Message from "../src/database/wrappers/chats/messages";
 
 let channel: Channel;
 
+const USER_ID = 15;
+const RECIPIENT_ID = 45;
+const POST_ID = 15;
+
 describe("Channel database queries", () => {
     it("connects to the database", async () => {
         expect(await connection.connect()).toBeTruthy();
@@ -16,9 +20,9 @@ describe("Channel database queries", () => {
 
     it("adds a channel to the database", async () => {
         channel = (await ChannelWrites.createChannel({
-            created_by_id: 15,
-            recipient_id: 45,
-            post_id: 15,
+            created_by_id: USER_ID,
+            recipient_id: RECIPIENT_ID,
+            post_id: POST_ID,
             negotiated_price: 5,
             negotiated_date: new Date(),
         })) as Channel;
@@ -27,7 +31,10 @@ describe("Channel database queries", () => {
     });
 
     it("gets a channel by ID", async () => {
-        const channelById = await ChannelReads.getChannelById(channel.id, 45);
+        const channelById = await ChannelReads.getChannelById(
+            channel.id,
+            RECIPIENT_ID
+        );
 
         expect(channelById).toBeTruthy();
 
@@ -39,7 +46,7 @@ describe("Channel database queries", () => {
     it("gets a channel by UUID", async () => {
         const channelByUUID = await ChannelReads.getChannelByUUID(
             channel.uuid,
-            15
+            USER_ID
         );
 
         expect(channelByUUID).toBeTruthy();
@@ -50,7 +57,7 @@ describe("Channel database queries", () => {
     it("gets a channel by post ID", async () => {
         const channelByPostId = await ChannelReads.getChannelByPostId(
             channel.post_id,
-            15
+            USER_ID
         );
 
         expect(channelByPostId).toBeTruthy();
@@ -82,7 +89,7 @@ describe("Channel database queries", () => {
         it("adds a message to the database", async () => {
             message = (await channel.sendMessage(
                 {
-                    sender_id: 45,
+                    sender_id: RECIPIENT_ID,
                     channel_id: channel.id,
                     message: "This is a test message",
                     system_message: false,
