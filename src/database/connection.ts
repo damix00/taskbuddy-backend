@@ -26,10 +26,6 @@ export function connect() {
 }
 
 export async function disconnect() {
-    for (const client of (pool as any).clients) {
-        await client.release();
-    }
-
     await pool.end();
 }
 
