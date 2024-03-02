@@ -2,6 +2,8 @@ import { Pool, QueryResult } from "pg";
 import * as fs from "fs";
 import * as path from "path";
 import { dbHost, dbPassword, dbPort, dbUser } from "../config";
+import { isKillswitchEnabled } from "../utils/global_killswitches";
+import { KillswitchTypes } from "./models/killswitch";
 
 const pool = new Pool({
     user: dbUser,
@@ -56,7 +58,9 @@ export function executeQuery<T>(
 ): Promise<T[]> {
     return new Promise((resolve, reject) => {
         pool.query(query, params, (err: Error, result: QueryResult) => {
-            if (err) {
+            if (isKillswitchEnabled(KillswitchTypes.DISABLE_ALL)) {
+                reject("Service Unavailable");
+            } else if (err) {
                 reject(err);
             } else {
                 resolve(result.rows);
