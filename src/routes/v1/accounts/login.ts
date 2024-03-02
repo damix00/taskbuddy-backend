@@ -13,6 +13,7 @@ import { KillswitchTypes } from "../../../database/models/killswitch";
 import * as killswitches from "../../../utils/global_killswitches";
 import { ProfileReads } from "../../../database/wrappers/accounts/profiles/wrapper";
 import { UserReads } from "../../../database/wrappers/accounts/users/wrapper";
+import { LimitedAccess } from "../../../database/models/users/user";
 
 export default [
     setKillswitch([
@@ -50,6 +51,12 @@ export default [
             if (!(await comparePassword(password, user.password_hash))) {
                 return res.status(401).json({
                     message: "Invalid email or password",
+                });
+            }
+
+            if (user.hasDisabledAccess(LimitedAccess.SUSPENDED)) {
+                return res.status(403).json({
+                    message: "Forbidden",
                 });
             }
 

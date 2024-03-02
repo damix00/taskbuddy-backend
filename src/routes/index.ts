@@ -65,6 +65,7 @@ import deleteLoginSession from "./v1/accounts/me/security/sessions/[id]";
 import logoutAll from "./v1/accounts/me/security/sessions/logout-all";
 import deleteAccount from "./v1/accounts/me/security/delete-acount";
 import changePassword from "./v1/accounts/me/security/change-password";
+import updateKillswitch from "./v1/admin/killswitches/[key]/update";
 
 export type route = {
     path: string;
@@ -345,6 +346,13 @@ const reviewRoutes: route[] = [
     },
 ];
 
+const adminRoutes: route[] = [
+    {
+        path: "/v1/admin/killswitches/:key/toggle",
+        handler: updateKillswitch,
+    },
+];
+
 // This is the main array of routes that will be used in the application
 const routes: route[] = [
     ...messageRoutes,
@@ -353,6 +361,7 @@ const routes: route[] = [
     ...postRoutes,
     ...sessions,
     ...reviewRoutes,
+    ...adminRoutes,
     {
         path: "/v1/ping",
         handler: ping,

@@ -1,9 +1,12 @@
 import { Login } from "../../wrappers/accounts/logins";
 
-export type LimitedAccess =
-    | "disabled_login"
-    | "disabled_premium"
-    | "disabled_listing";
+export enum LimitedAccess {
+    SUSPENDED = "suspended",
+    DISABLED_PREMIUM = "disabled_premium",
+    DISABLED_LISTING = "disabled_listing",
+    DISABLED_CHAT = "disabled_chat",
+}
+
 export type Role = "user" | "admin";
 
 export interface UserFields {

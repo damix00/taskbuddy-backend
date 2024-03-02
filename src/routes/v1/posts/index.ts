@@ -2,7 +2,7 @@
 
 import { Response } from "express";
 import { ExtendedRequest } from "../../../types/request";
-import { authorize } from "../../../middleware/authorization";
+import { authorize, limitAccess } from "../../../middleware/authorization";
 import { requireMethod } from "../../../middleware/require_method";
 import { UploadedFile } from "express-fileupload";
 import { JobType, PostStatus } from "../../../database/models/posts/post";
@@ -32,10 +32,12 @@ import { getPostResponse } from "./responses";
 import { checkText } from "../../../classification/text_check";
 import setKillswitch from "../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../database/models/killswitch";
+import { LimitedAccess } from "../../../database/models/users/user";
 
 export default [
     authorize(true),
     setKillswitch([KillswitchTypes.DISABLE_POSTING]),
+    limitAccess(LimitedAccess.DISABLED_LISTING),
     intParser(["job_type"]),
     floatParser(["location_lat", "location_lon", "price", "suggestion_radius"]),
     boolParser(["is_remote", "is_urgent"]),

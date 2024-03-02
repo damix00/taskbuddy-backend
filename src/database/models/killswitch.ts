@@ -3,6 +3,7 @@ export interface KillswitchFields {
     type: string;
     description: string;
     enabled: boolean;
+    added_by: number;
     created_at: Date;
     updated_at: Date;
 }

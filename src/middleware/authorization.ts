@@ -6,6 +6,7 @@ import { ProfileReads } from "../database/wrappers/accounts/profiles/wrapper";
 import { LoginReads } from "../database/wrappers/accounts/logins/wrapper";
 import * as killswitches from "../utils/global_killswitches";
 import { UserReads } from "../database/wrappers/accounts/users/wrapper";
+import { LimitedAccess } from "../database/models/users/user";
 
 // Middleware to authorize a user
 export function authorize(
@@ -94,7 +95,7 @@ export function authorize(
             // If the user is allowed to login, the password hashes match, the emails match
             // and the token versions match, set the req.user to the user
             if (
-                !user.hasDisabledAccess("disabled_login") &&
+                !user.hasDisabledAccess(LimitedAccess.SUSPENDED) &&
                 decoded.email == user.email &&
                 decoded.token_version == user.token_version &&
                 decoded.phone_number == user.phone_number &&
@@ -173,6 +174,20 @@ export async function requireOption(options: RequireOption[]) {
         }
 
         // Call next to continue to the next middleware
+        next();
+    };
+}
+
+export function limitAccess(access: LimitedAccess) {
+    return (req: ExtendedRequest, res: Response, next: NextFunction) => {
+        const user = req.user;
+
+        if (user!.hasDisabledAccess(access)) {
+            return res.status(403).json({
+                message: "Forbidden",
+            });
+        }
+
         next();
     };
 }

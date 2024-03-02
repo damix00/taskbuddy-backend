@@ -4,8 +4,9 @@ import { NextFunction, Request, Response } from "express";
 
 export default (req: Request, res: Response, next: NextFunction) => {
     if (
-        killswitches.isKillswitchEnabled(KillswitchTypes.DISABLE_ROUTES) ||
-        killswitches.isKillswitchEnabled(KillswitchTypes.DISABLE_ALL)
+        (killswitches.isKillswitchEnabled(KillswitchTypes.DISABLE_ROUTES) ||
+            killswitches.isKillswitchEnabled(KillswitchTypes.DISABLE_ALL)) &&
+        !req.path.startsWith("/v1/admin")
     ) {
         return res.status(503).json({
             message: "Service Unavailable",

@@ -2,7 +2,10 @@
 // Sends a message to a channel
 
 import { Response, request } from "express";
-import { authorize } from "../../../../../middleware/authorization";
+import {
+    authorize,
+    limitAccess,
+} from "../../../../../middleware/authorization";
 import { requireMethod } from "../../../../../middleware/require_method";
 import { ChannelRequest, withChannel } from "../middleware";
 import { BlockReads } from "../../../../../database/wrappers/accounts/blocks/wrapper";
@@ -11,19 +14,17 @@ import { ChannelStatus } from "../../../../../database/models/chats/channels";
 import { UploadedFile } from "express-fileupload";
 import RemoteConfigData from "../../../../../firebase/remote_config";
 import FirebaseStorage from "../../../../../firebase/storage/files";
-import uniqueFilename from "unique-filename";
-import os from "os";
-import path from "path";
-import fs from "fs";
 import { AttachmentType } from "../../../../../database/models/chats/messages";
 import { listParser } from "../../../../../middleware/parsers";
 import setKillswitch from "../../../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../../../database/models/killswitch";
+import { LimitedAccess } from "../../../../../database/models/users/user";
 
 export default [
     requireMethod("POST"),
     setKillswitch([KillswitchTypes.DISABLE_CHAT]),
     authorize(true),
+    limitAccess(LimitedAccess.DISABLED_CHAT),
     withChannel,
     listParser(["attachment_types"]),
     async (req: ChannelRequest, res: Response) => {

@@ -2,7 +2,10 @@
 // This is to initiate a conversation between the user and the post owner.
 
 import { Response } from "express";
-import { authorize } from "../../../../../middleware/authorization";
+import {
+    authorize,
+    limitAccess,
+} from "../../../../../middleware/authorization";
 import { requireMethod } from "../../../../../middleware/require_method";
 import { ExtendedRequest } from "../../../../../types/request";
 import { BlockReads } from "../../../../../database/wrappers/accounts/blocks/wrapper";
@@ -18,11 +21,13 @@ import {
 } from "../../../../../database/wrappers/algorithm/user_interests_wrapper";
 import setKillswitch from "../../../../../middleware/killswitch";
 import { KillswitchTypes } from "../../../../../database/models/killswitch";
+import { LimitedAccess } from "../../../../../database/models/users/user";
 
 export default [
     requireMethod("POST"),
     setKillswitch([KillswitchTypes.DISABLE_CHAT]),
     authorize(true),
+    limitAccess(LimitedAccess.DISABLED_CHAT),
     async (req: ExtendedRequest, res: Response) => {
         try {
             const { post_uuid } = req.params;

@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import { User } from "../database/wrappers/accounts/users";
 import { verifyToken } from "../verification/jwt";
 import { LoginReads } from "../database/wrappers/accounts/logins/wrapper";
+import { LimitedAccess } from "../database/models/users/user";
 
 export default async function authorizeSocket(
     token: string
@@ -31,7 +32,7 @@ export default async function authorizeSocket(
             if (!LoginReads.getLoginById(decoded.login_id)) return null;
 
             if (
-                !user.hasDisabledAccess("disabled_login") &&
+                !user.hasDisabledAccess(LimitedAccess.SUSPENDED) &&
                 decoded.email == user.email &&
                 decoded.token_version == user.token_version &&
                 decoded.phone_number == user.phone_number &&
