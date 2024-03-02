@@ -7,6 +7,10 @@ import { getPostOnlyResponse } from "../posts/responses";
 export function getChannelResponse(channel: Channel, requester: User) {
     const isUserCreator = requester.id == channel.created_by.id;
 
+    if (!channel.created_by || !channel.recipient) {
+        return null;
+    }
+
     return {
         uuid: channel.uuid,
         post: getPostOnlyResponse(channel.post),
