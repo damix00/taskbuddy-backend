@@ -5,11 +5,11 @@ import { getPublicUserProfileResponse } from "../accounts/responses";
 import { getPostOnlyResponse } from "../posts/responses";
 
 export function getChannelResponse(channel: Channel, requester: User) {
-    const isUserCreator = requester.id == channel.created_by.id;
-
-    if (!channel.created_by || !channel.recipient) {
+    if (!channel || !channel.created_by || !channel.recipient) {
         return null;
     }
+
+    const isUserCreator = requester.id == channel.created_by.id;
 
     return {
         uuid: channel.uuid,
@@ -46,6 +46,10 @@ export function getMessageResponse(
     requester: User,
     channel_uuid: string
 ) {
+    if (!message) {
+        return null;
+    }
+
     return {
         uuid: message.uuid,
         channel_uuid: channel_uuid,

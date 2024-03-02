@@ -38,9 +38,15 @@ export default [
             }
 
             res.status(200).json({
-                messages: messages.map((message) =>
-                    getMessageResponse(message, req.user!, req.channel!.uuid)
-                ),
+                messages: messages
+                    .filter((message) => !!message)
+                    .map((message) =>
+                        getMessageResponse(
+                            message,
+                            req.user!,
+                            req.channel!.uuid
+                        )
+                    ),
             });
         } catch (err) {
             console.error(err);

@@ -26,9 +26,9 @@ export default [
             );
 
             res.status(200).json({
-                channels: channels.map((channel) =>
-                    getChannelResponse(channel, req.user!)
-                ),
+                channels: channels
+                    .filter((channel) => !!channel)
+                    .map((channel) => getChannelResponse(channel, req.user!)),
             });
         } catch (err) {
             console.error(err);

@@ -26,17 +26,19 @@ export default [
 
             return res.status(200).json({
                 message: "Successfully retrieved posts",
-                posts: posts.map((post) =>
-                    getPostResponse(
-                        post,
-                        req.user!,
-                        req.profile!,
-                        false,
-                        post.user_id == req.user!.id,
-                        post.liked,
-                        post.bookmarked
-                    )
-                ),
+                posts: posts
+                    .filter((post) => !!post)
+                    .map((post) =>
+                        getPostResponse(
+                            post,
+                            req.user!,
+                            req.profile!,
+                            false,
+                            post.user_id == req.user!.id,
+                            post.liked,
+                            post.bookmarked
+                        )
+                    ),
             });
         } catch (e) {
             console.error(e);
