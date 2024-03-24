@@ -16,7 +16,7 @@ export type UserPayload = {
 // Sign a token with the payload and the secret
 export function signToken(payload: UserPayload): string {
     return jwt.sign(payload, process.env.JWT_SECRET as string, {
-        expiresIn: "7d",
+        expiresIn: "30d",
     });
 }
 

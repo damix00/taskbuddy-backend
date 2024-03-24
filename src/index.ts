@@ -52,6 +52,7 @@ app.use(express.json()); // JSON parser
 app.disable("etag"); // Disable 304 responses
 // @ts-ignore
 app.use(userAgent); // add user agent to request
+app.enable("trust proxy");
 
 for (const route of routes) {
     app.all(route.path, route.handler);
