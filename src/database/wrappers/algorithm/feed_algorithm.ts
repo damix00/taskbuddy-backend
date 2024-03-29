@@ -87,7 +87,7 @@ export class FeedAlgorithm {
             LEFT JOIN post_location ON posts.post_location_id = post_location.id
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
-            WHERE posts.status = 0 AND posts.reserved = FALSE AND ${
+            WHERE posts.status = 0 AND posts.reserved = FALSE AND post_removals.shadow_banned = FALSE AND ${
                 this.loaded_post_ids.length > 0
                     ? ` posts.id NOT IN (${this.loaded_post_ids.join(", ")})`
                     : " true"
