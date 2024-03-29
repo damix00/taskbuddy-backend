@@ -74,6 +74,20 @@ export default [
             }
 
             if (type == "post") {
+                let filteredTags: string | undefined = req.query.tags as string;
+                let filteredTagsArray: number[] = [];
+                let urgency = parseInt((req.query.urgency as string) || "0");
+                let location = parseInt((req.query.location as string) || "0");
+
+                try {
+                    let tmp = JSON.parse(filteredTags as string);
+                    if (Array.isArray(tmp)) {
+                        filteredTags = tmp.join(",");
+                    }
+                } catch (e) {
+                    filteredTagsArray = [];
+                }
+
                 // Generate the embedding for the query
                 // A vector embedding is basically a vector of numbers that represents the query
                 // This is used to find similar posts
@@ -90,7 +104,12 @@ export default [
                 const results = await PostReads.searchPosts(
                     req.user!.id,
                     vector,
-                    parseInt(offset as unknown as string)
+                    parseInt(offset as unknown as string),
+                    {
+                        filteredTags: filteredTagsArray,
+                        urgency,
+                        location,
+                    }
                 );
 
                 // If no posts are found, return an error

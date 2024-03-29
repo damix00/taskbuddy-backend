@@ -85,9 +85,19 @@ export class PostReads {
     public static async searchPosts(
         user_id: number,
         query_vector: any,
-        offset: number
+        offset: number,
+        filters: {
+            filteredTags?: number[];
+            urgency?: number;
+            location?: number;
+        }
     ) {
-        const posts = await reads.searchPosts(user_id, query_vector, offset);
+        const posts = await reads.searchPosts(
+            user_id,
+            query_vector,
+            offset,
+            filters
+        );
 
         if (!posts) return null;
 

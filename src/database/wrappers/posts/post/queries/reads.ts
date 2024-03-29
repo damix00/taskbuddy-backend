@@ -2,6 +2,10 @@ import { v4 } from "uuid";
 import { executeQuery } from "../../../../connection";
 import { PostWithRelations } from "../../../../models/posts/post";
 import RemoteConfigData from "../../../../../firebase/remote_config";
+import {
+    LocationType,
+    UrgencyType,
+} from "../../../../models/algorithm/scroll_sessions";
 
 const postFields = `posts.*,
 post_interactions.likes,
@@ -187,7 +191,12 @@ namespace reads {
     export async function searchPosts(
         user_id: number,
         query_vector: any,
-        offset: number
+        offset: number,
+        filters: {
+            filteredTags?: number[];
+            urgency?: number;
+            location?: number;
+        }
     ): Promise<PostWithRelations[] | null> {
         try {
             const threshold = RemoteConfigData.searchThreshold;
@@ -210,6 +219,27 @@ namespace reads {
             LEFT JOIN post_interactions ON posts.interactions_id = post_interactions.id
             LEFT JOIN post_removals ON posts.removals_id = post_removals.id
             WHERE post_removals.shadow_banned = false AND post_removals.removed = false AND posts.user_id != $2
+            ${
+                (filters.filteredTags?.length ?? 0) > 0
+                    ? ` AND post_tag_relationship.tag_id IN (${filters.filteredTags!.join(
+                          ", "
+                      )})`
+                    : ""
+            }
+            ${
+                filters.urgency != UrgencyType.ALL
+                    ? filters.urgency == UrgencyType.URGENT
+                        ? " AND posts.urgent = true"
+                        : " AND posts.urgent = false"
+                    : ""
+            }
+            ${
+                filters.location != LocationType.ALL
+                    ? filters.location == LocationType.REMOTE
+                        ? " AND post_location.remote = true"
+                        : " AND post_location.remote = false"
+                    : ""
+            }
             AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = posts.user_id)
             AND title_vector <=> $1 > $3
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id
