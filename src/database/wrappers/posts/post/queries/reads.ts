@@ -221,9 +221,11 @@ namespace reads {
             WHERE post_removals.shadow_banned = false AND post_removals.removed = false AND posts.user_id != $2
             ${
                 (filters.filteredTags?.length ?? 0) > 0
-                    ? ` AND post_tag_relationship.tag_id IN (${filters.filteredTags!.join(
-                          ", "
-                      )})`
+                    ? `AND (${filters
+                          .filteredTags!.map(
+                              (id, i) => ` post_tag_relationship.tag_id = ${id}`
+                          )
+                          .join(" OR ")})`
                     : ""
             }
             ${

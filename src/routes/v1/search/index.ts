@@ -80,10 +80,7 @@ export default [
                 let location = parseInt((req.query.location as string) || "0");
 
                 try {
-                    let tmp = JSON.parse(filteredTags as string);
-                    if (Array.isArray(tmp)) {
-                        filteredTags = tmp.join(",");
-                    }
+                    filteredTagsArray = JSON.parse(filteredTags as string);
                 } catch (e) {
                     filteredTagsArray = [];
                 }

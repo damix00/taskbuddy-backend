@@ -108,9 +108,12 @@ export class FeedAlgorithm {
                 }
                 ${
                     this.filters.tags.length > 0
-                        ? ` AND post_tag_relationship.tag_id IN (${this.filters.tags.join(
-                              ", "
-                          )})`
+                        ? `AND (${this.filters.tags
+                              .map(
+                                  (id, i) =>
+                                      ` post_tag_relationship.tag_id = ${id}`
+                              )
+                              .join(" OR ")})`
                         : ""
                 }
                 ${
