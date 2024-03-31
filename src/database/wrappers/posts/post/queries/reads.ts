@@ -196,6 +196,8 @@ namespace reads {
             filteredTags?: number[];
             urgency?: number;
             location?: number;
+            minPrice?: number;
+            maxPrice?: number;
         }
     ): Promise<PostWithRelations[] | null> {
         try {
@@ -242,6 +244,8 @@ namespace reads {
                         : " AND post_location.remote = false"
                     : ""
             }
+            ${filters.minPrice ? ` AND posts.price >= ${filters.minPrice}` : ""}
+            ${filters.maxPrice ? ` AND posts.price <= ${filters.maxPrice}` : ""}
             AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = $2) AND NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = $2 AND blocks.blocked = posts.user_id)
             AND title_vector <=> $1 > $3
             GROUP BY posts.id, post_interactions.id, post_removals.id, post_location.id, users.id, profiles.id

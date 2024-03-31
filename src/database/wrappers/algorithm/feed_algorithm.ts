@@ -130,6 +130,16 @@ export class FeedAlgorithm {
                         ? ` AND EXISTS(SELECT 1 FROM follows WHERE follows.follower = ${this.user_id} AND follows.following = posts.user_id)`
                         : ""
                 }
+                ${
+                    this.filters.min_price
+                        ? ` AND posts.price >= ${this.filters.min_price}`
+                        : ""
+                }
+                ${
+                    this.filters.max_price
+                        ? ` AND posts.price <= ${this.filters.max_price}`
+                        : ""
+                }
                 AND posts.end_date > NOW()
                 AND (NOT EXISTS(SELECT 1 FROM blocks WHERE blocks.blocker = posts.user_id AND blocks.blocked = ${
                     this.user_id

@@ -20,6 +20,8 @@ export interface SessionFilters {
     location: LocationType; // 0 = all, 1 = remote, 2 = local
     tags: number[]; // tag ids
     type: SessionType; // 0 = all, 1 = following
+    min_price?: number;
+    max_price?: number;
 }
 
 export interface ScrollSessionFields {

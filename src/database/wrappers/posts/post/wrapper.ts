@@ -90,6 +90,8 @@ export class PostReads {
             filteredTags?: number[];
             urgency?: number;
             location?: number;
+            minPrice?: number;
+            maxPrice?: number;
         }
     ) {
         const posts = await reads.searchPosts(

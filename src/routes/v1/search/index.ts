@@ -78,6 +78,20 @@ export default [
                 let filteredTagsArray: number[] = [];
                 let urgency = parseInt((req.query.urgency as string) || "0");
                 let location = parseInt((req.query.location as string) || "0");
+                let minPrice: number | undefined = parseInt(
+                    req.query.min_price as string
+                );
+                let maxPrice: number | undefined = parseInt(
+                    req.query.max_price as string
+                );
+
+                if (isNaN(minPrice)) {
+                    minPrice = undefined;
+                }
+
+                if (isNaN(maxPrice)) {
+                    maxPrice = undefined;
+                }
 
                 try {
                     filteredTagsArray = JSON.parse(filteredTags as string);
@@ -106,6 +120,8 @@ export default [
                         filteredTags: filteredTagsArray,
                         urgency,
                         location,
+                        minPrice,
+                        maxPrice,
                     }
                 );
 
