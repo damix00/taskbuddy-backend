@@ -4,7 +4,7 @@ TaskBuddy is a mobile application that connects people who need help with errand
 
 🏆 The TaskBuddy project won 1st Place in the national computer science competition in the Software Development category in Croatia, 2024.
 
-You can also check out the mobile app source code [here](https://github.com/damix00/taskbuddy-flutter).
+You can also check out the [mobile app source code](https://github.com/damix00/taskbuddy-flutter) and the [admin panel repo](https://github.com/damix00/taskbuddy-admin).
 
 ## Features
 
