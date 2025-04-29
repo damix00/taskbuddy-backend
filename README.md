@@ -89,7 +89,7 @@ DISABLE_PHONE_VERIFICATION=true
 
 ### Database Setup
 
-Set up a PostgreSQL database and ensure the DATABASE_URL in the .env file points to it. The schema is defined in src/database/queries.
+Set up a PostgreSQL database and ensure the DATABASE_URL in the `.env` file points to it. The schema is defined in `src/database/queries`.
 
 ### Run the Backend
 
@@ -115,8 +115,8 @@ if you're on Windows.
 
 ## Notes
 
-- Phone Verification: Twilio's free trial limits SMS to approved numbers. Use the DISABLE_PHONE_VERIFICATION environment variable for testing.
-- Firebase: Ensure Firebase services (Storage, FCM, Remote Config) are properly configured in your Firebase project.
+- Twilio's free trial limits SMS to approved numbers. Use the DISABLE_PHONE_VERIFICATION environment variable for testing.
+- Ensure Firebase services (Storage, FCM, Remote Config) are properly configured in your Firebase project.
 
 ## Contributing
 
